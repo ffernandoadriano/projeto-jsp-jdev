@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/*As Servlets são chamado de controller*/
 @WebServlet("/ServletLogin") /* Mapeamento de URL que vem da tela */
 public class ServletLogin extends HttpServlet {
 	private static final long serialVersionUID = 1L;
