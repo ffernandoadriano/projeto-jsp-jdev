@@ -5,15 +5,17 @@
 <head>
 <meta charset="UTF-8">
 <title>curso JSP</title>
-	<style>
-		.msgError{
-			color: red;		
-		}
-	</style>
+<style>
+.msgError {
+	color: red;
+}
+</style>
 
 </head>
 <body>
 	<h1>Seja bem-vindo ao projeto JSP!</h1>
+
+	<!--  <input type="hidden" value="${param.url}" name="url" />  -->
 
 	<form method="post" action="ServletLogin">
 		<table aria-hidden="true">
@@ -31,9 +33,9 @@
 			</tr>
 		</table>
 	</form>
-	
+
 	<!-- Expressão EL -->
-	<h4 class="msgError" >${messageErro}</h4>
-	
+	<h4 class="msgError">${messageErro}</h4>
+
 </body>
 </html>
