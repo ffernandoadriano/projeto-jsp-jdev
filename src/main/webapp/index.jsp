@@ -19,11 +19,11 @@
 		<table aria-hidden="true">
 			<tr>
 				<td><label>Login:</label></td>
-				<td><input type="text" name="login" /></td>
+				<td><input type="text" name="login" required="required" /></td>
 			</tr>
 			<tr>
 				<td><label>Senha:</label></td>
-				<td><input type="password" name="senha" /></td>
+				<td><input type="password" name="senha" required="required" /></td>
 			</tr>
 			<tr>
 				<td colspan="2" align="right"><input type="submit"
