@@ -1,7 +1,11 @@
 package servlet;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import dao.DaoException;
+import dao.LoginDao;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -12,7 +16,12 @@ import model.Login;
 /*As Servlets são chamado de controller*/
 @WebServlet(urlPatterns = { "/principal/ServletLogin", "/ServletLogin" }) /* Mapeamento de URL que vem da tela */
 public class ServletLogin extends HttpServlet {
+
 	private static final long serialVersionUID = 1L;
+	
+	private final LoginDao loginDao = new LoginDao();
+	
+	private static final Logger LOGGER = Logger.getLogger(ServletLogin.class.getName());
 
 	/* Recebe os dados vindo pelo método get */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -39,23 +48,27 @@ public class ServletLogin extends HttpServlet {
 			loginTela.setLogin(login);
 			loginTela.setSenha(senha);
 
-			/* Simulando um login */
-			if (loginTela.getLogin().equalsIgnoreCase("admin") && loginTela.getSenha().equalsIgnoreCase("admin")) {
+			try {
+				/* Simulando um login */
+				if (loginDao.validarAutenticacao(loginTela)) {
 
-				if (url.equals("/ServletLogin")) {
-					url = "principal/principal.jsp";
+					if (url.equals("/ServletLogin")) {
+						url = "principal/principal.jsp";
+					} else {
+						url = "principal.jsp";
+					}
+
+					request.getSession().setAttribute("loginSession", loginTela);
+					request.getRequestDispatcher(url).forward(request, response);
+
 				} else {
-					url = "principal.jsp";
+
+					request.setAttribute("messageErro", "Informe o login e senha corretamente!");
+					forwardIndex(request, response);
+
 				}
-
-				request.getSession().setAttribute("loginSession", loginTela);
-				request.getRequestDispatcher(url).forward(request, response);
-
-			} else {
-
-				request.setAttribute("messageErro", "Informe o login e senha corretamente!");
-				forwardIndex(request, response);
-
+			} catch (DaoException e) {
+				LOGGER.log(Level.SEVERE, "Error", e);
 			}
 
 		} else {

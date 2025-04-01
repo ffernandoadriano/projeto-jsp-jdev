@@ -14,3 +14,4 @@ CREATE TABLE login (
     senha VARCHAR(255) NOT NULL
 ); 
     
+INSERT INTO login(login, senha) VALUES ('admin', 'admin');
