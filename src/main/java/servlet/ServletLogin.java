@@ -18,9 +18,9 @@ import model.Login;
 public class ServletLogin extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private final LoginDao loginDao = new LoginDao();
-	
+
 	private static final Logger LOGGER = Logger.getLogger(ServletLogin.class.getName());
 
 	/* Recebe os dados vindo pelo método get */
