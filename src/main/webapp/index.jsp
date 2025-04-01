@@ -36,17 +36,18 @@
 		    margin-top: 20px;
 		    font-size: 17px
 		}
-
 		
+		#inputPassword4{
+			margin-bottom: 20px;
+		}
 		
-	
+		#loginCampo{
+			margin-bottom: 15px;
+		}
+		
 	</style>
-<title>curso JSP</title>
-<style>
-.msgError {
-	color: red;
-}
-</style>
+	
+	<title>curso JSP</title>
 
 </head>
 <body>
@@ -57,16 +58,16 @@
 	
 		<!--  <input type="hidden" value="${param.url}" name="url" />  -->
 	
-		<form method="post" action="ServletLogin" class="row g-3">
+		<form method="post" action="ServletLogin">
 	
 			<div class="col-md-12">
 				<label class="form-label">Login</label>
-				<input type="text" name="login" required="required" class="form-control" />
+				<input type="text" name="login"  class="form-control"  required="required" id="loginCampo"/>
 			</div>
 		
 			<div class="col-md-12">
 				<label class="form-label">Senha</label>
-				<input type="password" name="senha"	required="required"  class="form-control" id="inputPassword4" />
+				<input type="password" name="senha"	class="form-control" required="required" id="inputPassword4" />
 			</div>
 			
 			<div class="d-grid gap-2 col-6 mx-auto">
