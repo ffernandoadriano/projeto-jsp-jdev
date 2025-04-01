@@ -1,9 +1,46 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+	crossorigin="anonymous">
+	
+	<style type="text/css">
+		.container-center {
+		    display: flex;               /* Transforma em um contêiner flexível */
+		    flex-direction: column;      /* Organiza os elementos na vertical */
+		    align-items: center;         /* Centraliza horizontalmente */
+		    justify-content: center;     /* Centraliza verticalmente */
+		    height: 100vh;               /* Ocupa toda a altura da tela */
+		    text-align: center;          /* Centraliza o texto */
+		}
+		
+		form {
+		    width: 30%;
+		    min-width: 300px; /* Garante que o formulário não fique pequeno demais */
+		    text-align: left;
+		}
+		
+		.tituloLogin {
+    		margin-bottom: 40px; /* Ajuste o valor conforme necessário */
+		}
+
+		.msgError {
+		    color: red;
+		    margin-top: 20px;
+		    font-size: 17px
+		}
+
+		
+		
+	
+	</style>
 <title>curso JSP</title>
 <style>
 .msgError {
@@ -13,29 +50,39 @@
 
 </head>
 <body>
-	<h1>Seja bem-vindo ao projeto JSP!</h1>
 
-	<!--  <input type="hidden" value="${param.url}" name="url" />  -->
+	 <div class="container-center">
+	 
+		<h1 class="tituloLogin">Seja bem-vindo ao projeto JSP!</h1>
+	
+		<!--  <input type="hidden" value="${param.url}" name="url" />  -->
+	
+		<form method="post" action="ServletLogin" class="row g-3">
+	
+			<div class="col-md-12">
+				<label class="form-label">Login</label>
+				<input type="text" name="login" required="required" class="form-control" />
+			</div>
+		
+			<div class="col-md-12">
+				<label class="form-label">Senha</label>
+				<input type="password" name="senha"	required="required"  class="form-control" id="inputPassword4" />
+			</div>
+			
+			<div class="d-grid gap-2 col-6 mx-auto">
+				<input type="submit" value="Acessar" class="btn btn-primary btn-lg" />
+			</div>
+	
+		</form>
+	
+		<!-- Expressão EL -->
+		<h4 class="msgError">${messageErro}</h4>
+	
+	 </div>
 
-	<form method="post" action="ServletLogin">
-		<table aria-hidden="true">
-			<tr>
-				<td><label>Login:</label></td>
-				<td><input type="text" name="login" required="required" /></td>
-			</tr>
-			<tr>
-				<td><label>Senha:</label></td>
-				<td><input type="password" name="senha" required="required" /></td>
-			</tr>
-			<tr>
-				<td colspan="2" align="right"><input type="submit"
-					value="Enviar" /></td>
-			</tr>
-		</table>
-	</form>
-
-	<!-- Expressão EL -->
-	<h4 class="msgError">${messageErro}</h4>
-
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+		crossorigin="anonymous"></script>
 </body>
 </html>
