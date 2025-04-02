@@ -49,8 +49,30 @@
 	
 	<title>curso JSP</title>
 
+	<!-- Google font-->
+      <link href="https://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet">
+      <!-- waves.css -->
+      <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/pages/waves/css/waves.min.css" type="text/css" media="all">
+      <!-- Required Fremwork -->
+      <link rel="stylesheet" type="text/css" href="<%= request.getContextPath() %>/assets/css/bootstrap/css/bootstrap.min.css">
+      <!-- waves.css -->
+      <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/pages/waves/css/waves.min.css" type="text/css" media="all">
+      <!-- themify icon -->
+      <link rel="stylesheet" type="text/css" href="<%= request.getContextPath() %>/assets/icon/themify-icons/themify-icons.css">
+      <!-- Font Awesome -->
+      <link rel="stylesheet" type="text/css" href="<%= request.getContextPath() %>/assets/icon/font-awesome/css/font-awesome.min.css">
+      <!-- scrollbar.css -->
+      <link rel="stylesheet" type="text/css" href="<%= request.getContextPath() %>/assets/css/jquery.mCustomScrollbar.css">
+        <!-- am chart export.css -->
+      <link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
+      <!-- Style.css -->
+      <link rel="stylesheet" type="text/css" href="<%= request.getContextPath() %>/assets/css/style.css">
+      
 </head>
 <body>
+
+	<!-- Carregamento inicial -->
+ 	<jsp:include page="loaderstart.jsp"></jsp:include>
 
 	 <div class="container-center">
 	 
@@ -85,5 +107,7 @@
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
 		integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
 		crossorigin="anonymous"></script>
+		
+		<jsp:include page="javascript.jsp"></jsp:include>
 </body>
 </html>
