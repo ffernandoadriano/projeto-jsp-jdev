@@ -9,9 +9,13 @@ CREATE DATABASE "curso-jsp"
     CONNECTION LIMIT = -1
     IS_TEMPLATE = False;
     
-CREATE TABLE login (
-    login VARCHAR(50) PRIMARY KEY,
+CREATE TABLE usuario (
+    id BIGSERIAL PRIMARY KEY,
+    nome VARCHAR(255) NOT NULL,
+    email VARCHAR(320) NOT NULL UNIQUE,
+    login VARCHAR(50) NOT NULL,
     senha VARCHAR(255) NOT NULL
-); 
+);
+
     
-INSERT INTO login(login, senha) VALUES ('admin', 'admin');
+INSERT INTO usuario(nome, email, login, senha)VALUES ('Fernando Adriano','lfernando.adriano@gmail.com' ,'admin', 'admin');

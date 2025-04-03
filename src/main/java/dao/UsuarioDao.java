@@ -27,7 +27,7 @@ public class UsuarioDao implements Serializable {
 	}
 
 	public boolean validarAutenticacao(Usuario usuario) throws DaoException {
-		String sql = "SELECT login, senha FROM login WHERE login = ? AND senha = ?";
+		String sql = "SELECT login, senha FROM usuario WHERE login = ? AND senha = ?";
 
 		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
 			pstmt.setString(1, usuario.getLogin());
