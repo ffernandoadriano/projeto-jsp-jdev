@@ -1,14 +1,18 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
 <!DOCTYPE html>
 <html lang="pt-br">
+
 
 <jsp:include page="head.jsp" />
 
 <body>
 	<!-- Carregamento inicial -->
 	<jsp:include page="loaderstart.jsp"></jsp:include>
+
 
 
 	<div id="pcoded" class="pcoded">
@@ -50,8 +54,7 @@
 																<label class="col-sm-1 col-form-label">ID:</label>
 																<div class="col-sm-1">
 																	<input type="text" name="id" id="id"
-																		class="form-control" readonly="readonly"
-																		value="${usuario.id}">
+																		class="form-control" readonly="readonly" value="${id}">
 																</div>
 															</div>
 															<div class="form-group row">
@@ -59,7 +62,7 @@
 																<div class="col-sm-8">
 																	<input type="text" name="nome" id="nome"
 																		class="form-control" required="required"
-																		value="${usuario.nome}" />
+																		value="${nome}" />
 																</div>
 															</div>
 															<div class="form-group row">
@@ -67,7 +70,7 @@
 																<div class="col-sm-8">
 																	<input type="email" name="email" id="email"
 																		class="form-control" required="required"
-																		value="${usuario.email}" />
+																		value="${email}" />
 																</div>
 															</div>
 															<div class="form-group row">
@@ -75,7 +78,7 @@
 																<div class="col-sm-8">
 																	<input type="text" name="login" id="login"
 																		class="form-control" required="required"
-																		value="${usuario.login}" />
+																		value="${login}" />
 																</div>
 															</div>
 															<div class="form-group row">
@@ -83,7 +86,7 @@
 																<div class="col-sm-8">
 																	<input type="password" name="senha" id="senha"
 																		class="form-control" required="required"
-																		value="${usuario.senha}" />
+																		value="${senha}" />
 
 																</div>
 															</div>
@@ -106,6 +109,21 @@
 														</form>
 													</div>
 												</div>
+
+												<c:choose>
+													<c:when test="${erros != null}">
+														<c:forEach var="erro" items="${erros}">
+															<span class="erro">${erro}</span>
+															<br>
+														</c:forEach>
+													</c:when>
+													<%-- Este é um comentário JSP, que não causa erro --%>
+													<c:when test="${param.acao eq 'salvo'}">
+														<span class="sucessoSalvo">O registro foi salvo com sucesso!</span>
+													</c:when>
+												</c:choose>
+
+
 												<!-- Basic Form Inputs card end -->
 											</div>
 

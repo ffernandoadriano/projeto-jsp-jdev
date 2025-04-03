@@ -34,6 +34,16 @@
       			margin-left: 10px;
       			width: 100px;
       		}
+      		
+      		.erro {
+				color: #F80000;
+				font-weight: bold;
+			}
+			
+			.sucessoSalvo{
+				color: #28a745;
+				font-weight: bold;
+			}
       	
       </style>
   </head>

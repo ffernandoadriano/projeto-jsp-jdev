@@ -47,4 +47,25 @@ public class UsuarioDao implements Serializable {
 
 		return false; /* Não Autenticado */
 	}
+
+	public void salvar(Usuario obj) throws DaoException {
+
+		String insertSql = "INSERT INTO usuario (nome, email, login, senha) VALUES ( ?, ?, ?, ?)";
+
+		try (PreparedStatement pstmt = connection.prepareStatement(insertSql)) {
+			pstmt.setString(1, obj.getNome());
+			pstmt.setString(2, obj.getEmail());
+			pstmt.setString(3, obj.getLogin());
+			pstmt.setString(4, obj.getSenha());
+			
+			// Executa a query
+			pstmt.executeUpdate();
+			
+			//Confirma a transação no banco
+			connection.commit();
+
+		} catch (SQLException e) {
+			throw new DaoException(e);
+		}
+	}
 }
