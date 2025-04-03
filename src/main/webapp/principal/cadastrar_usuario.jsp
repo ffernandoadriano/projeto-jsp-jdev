@@ -1,59 +1,122 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-    
+	pageEncoding="UTF-8"%>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 
-<jsp:include page="head.jsp"/>
+<jsp:include page="head.jsp" />
 
- <body>
- 	<!-- Carregamento inicial -->
- 	<jsp:include page="loaderstart.jsp"></jsp:include>
- 	
+<body>
+	<!-- Carregamento inicial -->
+	<jsp:include page="loaderstart.jsp"></jsp:include>
 
-  <div id="pcoded" class="pcoded">
-      <div class="pcoded-overlay-box"></div>
-      <div class="pcoded-container navbar-wrapper">
-          
-          <!-- Menu topo -->
-          <jsp:include page="menu-top.jsp"></jsp:include>
 
-          <div class="pcoded-main-container">
-              <div class="pcoded-wrapper">
-                  
-                  <!-- Menu Lateral -->
-                  <jsp:include page="menu-lateral.jsp"></jsp:include>
-                  
-                  <div class="pcoded-content">
-                  
-                      <!-- Page-header abaixo do menu topo -->
-                      <jsp:include page="page-header.jsp"></jsp:include>
-                    
-                        <div class="pcoded-inner-content">
-                            <!-- Main-body start -->
-                            <div class="main-body">
-                                <div class="page-wrapper">
-                                    <!-- Page-body start -->
-                                    <div class="page-body">
-                                        <div class="row">
-                                          
-                                           <h1>Cadastro de Usuário</h1>
-                                            
-                                        </div>
-                                    </div>
-                                    <!-- Page-body end -->
-                                </div>
-                                <div id="styleSelector"> </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-     
-    <jsp:include page="javascript.jsp"></jsp:include>
-    
+	<div id="pcoded" class="pcoded">
+		<div class="pcoded-overlay-box"></div>
+		<div class="pcoded-container navbar-wrapper">
+
+			<!-- Menu topo -->
+			<jsp:include page="menu-top.jsp"></jsp:include>
+
+			<div class="pcoded-main-container">
+				<div class="pcoded-wrapper">
+
+					<!-- Menu Lateral -->
+					<jsp:include page="menu-lateral.jsp"></jsp:include>
+
+					<div class="pcoded-content">
+
+						<!-- Page-header abaixo do menu topo -->
+						<jsp:include page="page-header.jsp"></jsp:include>
+
+						<div class="pcoded-inner-content">
+							<!-- Main-body start -->
+							<div class="main-body">
+								<div class="page-wrapper">
+									<!-- Page-body start -->
+									<div class="page-body">
+										<div class="row">
+
+											<div class="col-sm-12">
+												<!-- Basic Form Inputs card start -->
+												<div class="card">
+
+													<div class="card-block">
+														<h4 class="sub-title">Formulário</h4>
+														<form action="<%= request.getContextPath() %>/SalvarUsuarioServlet" method="post">
+															<div class="form-group row">
+																<label class="col-sm-1 col-form-label">ID:</label>
+																<div class="col-sm-1">
+																	<input type="text" name="id" id="id"
+																		class="form-control" readonly="readonly">
+																</div>
+															</div>
+															<div class="form-group row">
+																<label class="col-sm-1 col-form-label">Nome:</label>
+																<div class="col-sm-8">
+																	<input type="text" name="nome" id="nome"
+																		class="form-control" required="required" />
+																</div>
+															</div>
+															<div class="form-group row">
+																<label class="col-sm-1 col-form-label">E-mail:</label>
+																<div class="col-sm-8">
+																	<input type="email" name="email" id="email"
+																		class="form-control" required="required" />
+																</div>
+															</div>
+															<div class="form-group row">
+																<label class="col-sm-1 col-form-label">login:</label>
+																<div class="col-sm-8">
+																	<input type="text" name="login" id="login"
+																		class="form-control" required="required" />
+																</div>
+															</div>
+															<div class="form-group row">
+																<label class="col-sm-1 col-form-label">Senha:</label>
+																<div class="col-sm-8">
+																	<input type="password" name="senha" id="senha"
+																		class="form-control" required="required" />
+
+																</div>
+															</div>
+
+
+															<div class="form-group row">
+																<label class="col-sm-1 col-form-label"></label>
+																<button
+																	class="btn btn-success btn-round waves-effect hor-grd btn-grd-success"
+																	id="btn-form-cadastro">Novo</button>
+																<button
+																	class="btn btn-primary btn-round waves-effect hor-grd btn-grd-primary"
+																	id="btn-form-cadastro">Salvar</button>
+																<button
+																	class="btn btn-danger btn-round waves-effect hor-grd btn-grd-danger"
+																	id="btn-form-cadastro">Excluir</button>
+															</div>
+
+
+														</form>
+													</div>
+												</div>
+												<!-- Basic Form Inputs card end -->
+											</div>
+
+										</div>
+									</div>
+									<!-- Page-body end -->
+								</div>
+								<div id="styleSelector"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<jsp:include page="javascript.jsp"></jsp:include>
+
 </body>
 
 </html>

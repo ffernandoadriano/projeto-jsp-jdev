@@ -3,12 +3,39 @@ package model;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class Login implements Serializable {
+public class Usuario implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	private Long id;
+	private String nome;
+	private String email;
 	private String login;
 	private String senha;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getNome() {
+		return nome;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
 	public String getLogin() {
 		return login;
@@ -28,7 +55,7 @@ public class Login implements Serializable {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(login, senha);
+		return Objects.hash(id);
 	}
 
 	@Override
@@ -39,13 +66,14 @@ public class Login implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Login other = (Login) obj;
-		return Objects.equals(login, other.login) && Objects.equals(senha, other.senha);
+		Usuario other = (Usuario) obj;
+		return Objects.equals(id, other.id);
 	}
 
 	@Override
 	public String toString() {
-		return "Login [login=" + login + ", senha=" + senha + "]";
+		return "Usuario [id=" + id + ", nome=" + nome + ", email=" + email + ", login=" + login + ", senha=" + senha
+				+ "]";
 	}
 
 }

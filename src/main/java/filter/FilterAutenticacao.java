@@ -11,7 +11,7 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import model.Login;
+import model.Usuario;
 
 @WebFilter("/principal/*") /* intercepta todas as requisições do mapeamento */
 public class FilterAutenticacao implements Filter {
@@ -44,12 +44,12 @@ public class FilterAutenticacao implements Filter {
 		String urlParaAutenticar = req.getServletPath(); // url que está sendo acessado
 
 		// session retorna um objeto
-		Login login = (Login) session.getAttribute("loginSession");
+		Usuario usuario = (Usuario) session.getAttribute("usuarioSession");
 
 		/* validar se está logado, senão, redireciona para tela de login */
-		if (login == null && !urlParaAutenticar.contains("ServletLogin")) {
+		if (usuario == null && !urlParaAutenticar.contains("LoginFormServlet") && !urlParaAutenticar.contains("LoginServlet")) {
 			req.setAttribute("messageErro", "Por favor, realize o login!");
-			req.getRequestDispatcher(String.format("/index.jsp?url=%s", urlParaAutenticar)).forward(request, response);
+			req.getRequestDispatcher(String.format("/LoginFormServlet?url=%s", urlParaAutenticar)).forward(request, response);
 		} else {
 
 			// redireciona para Servlet desejada

@@ -28,4 +28,12 @@
       <link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
       <!-- Style.css -->
       <link rel="stylesheet" type="text/css" href="<%= request.getContextPath() %>/assets/css/style.css">
+      
+      <style type="text/css">
+      		#btn-form-cadastro{
+      			margin-left: 10px;
+      			width: 100px;
+      		}
+      	
+      </style>
   </head>

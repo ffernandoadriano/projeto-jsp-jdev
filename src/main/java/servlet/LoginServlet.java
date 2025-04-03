@@ -5,38 +5,27 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import dao.DaoException;
-import dao.LoginDao;
+import dao.UsuarioDao;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import model.Login;
+import model.Usuario;
 
 /*As Servlets são chamado de controller*/
-@WebServlet(urlPatterns = { "/principal/ServletLogin", "/ServletLogin" }) /* Mapeamento de URL que vem da tela */
-public class ServletLogin extends HttpServlet {
-
+@WebServlet(urlPatterns = { "/principal/LoginServlet", "/LoginServlet" }) /* Mapeamento de URL que vem da tela */
+public class LoginServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	private final LoginDao loginDao = new LoginDao();
+	private final UsuarioDao usuarioDao = new UsuarioDao();
 
-	private static final Logger LOGGER = Logger.getLogger(ServletLogin.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(LoginServlet.class.getName());
 
 	/* Recebe os dados vindo pelo método get */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
-		String acao = request.getParameter("acao");
-
-		if (acao != null && acao.equals("Logout")) {
-			
-			request.getSession().invalidate(); // invalida a sessão - Remove todos os atributos armazenados na sessão.
-			request.getRequestDispatcher("index.jsp").forward(request, response); // redireciona para página inicial
-			
-		} else {
-			doIt(request, response);
-		}
+		doIt(request, response);
 	}
 
 	/* Recebe os dados vindo pelo método post */
@@ -50,25 +39,19 @@ public class ServletLogin extends HttpServlet {
 
 		String login = request.getParameter("login");
 		String senha = request.getParameter("senha");
-		String url = request.getServletPath();
+		String url = "/principal/principal.jsp"; /* request.getServletPath(); */
 
 		if (login != null && senha != null) {
 
-			Login loginTela = new Login();
-			loginTela.setLogin(login);
-			loginTela.setSenha(senha);
+			Usuario usuario = new Usuario();
+			usuario.setLogin(login);
+			usuario.setSenha(senha);
 
 			try {
 				/* Simulando um login */
-				if (loginDao.validarAutenticacao(loginTela)) {
+				if (usuarioDao.validarAutenticacao(usuario)) {
 
-					if (url.equals("/ServletLogin")) {
-						url = "principal/principal.jsp";
-					} else {
-						url = "principal.jsp";
-					}
-
-					request.getSession().setAttribute("loginSession", loginTela);
+					request.getSession().setAttribute("usuarioSession", usuario);
 					request.getRequestDispatcher(url).forward(request, response);
 
 				} else {
@@ -88,7 +71,6 @@ public class ServletLogin extends HttpServlet {
 
 	private void forwardIndex(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		request.getRequestDispatcher("/index.jsp").forward(request, response); // redirecionamento interno
+		request.getRequestDispatcher("LoginFormServlet").forward(request, response); // redirecionamento interno
 	}
-
 }

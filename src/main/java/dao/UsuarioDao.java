@@ -7,9 +7,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import connection.ConnectionFactory;
-import model.Login;
+import model.Usuario;
 
-public class LoginDao implements Serializable {
+public class UsuarioDao implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -22,16 +22,16 @@ public class LoginDao implements Serializable {
 	/**
 	 * Construtor que inicializa a conexão com o banco de dados.
 	 */
-	public LoginDao() {
+	public UsuarioDao() {
 		this.connection = ConnectionFactory.getConnection();
 	}
 
-	public boolean validarAutenticacao(Login login) throws DaoException {
+	public boolean validarAutenticacao(Usuario usuario) throws DaoException {
 		String sql = "SELECT login, senha FROM login WHERE login = ? AND senha = ?";
 
 		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-			pstmt.setString(1, login.getLogin());
-			pstmt.setString(2, login.getSenha());
+			pstmt.setString(1, usuario.getLogin());
+			pstmt.setString(2, usuario.getSenha());
 
 			try (ResultSet rs = pstmt.executeQuery()) {
 
