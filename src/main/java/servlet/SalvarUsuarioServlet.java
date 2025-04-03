@@ -38,7 +38,9 @@ public class SalvarUsuarioServlet extends HttpServlet {
 		usuario.setEmail(email);
 		usuario.setLogin(login);
 		usuario.setSenha(senha);
-
-		response.sendRedirect(request.getContextPath()+"/principal/cadastrar_usuario.jsp");
+		
+		request.setAttribute("usuario", usuario);
+		
+		request.getRequestDispatcher("/principal/cadastrar_usuario.jsp").forward(request, response);
 	}
 }

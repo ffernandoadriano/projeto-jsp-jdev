@@ -43,40 +43,47 @@
 
 													<div class="card-block">
 														<h4 class="sub-title">Formulário</h4>
-														<form action="<%= request.getContextPath() %>/SalvarUsuarioServlet" method="post">
+														<form
+															action="<%=request.getContextPath()%>/SalvarUsuarioServlet"
+															method="post">
 															<div class="form-group row">
 																<label class="col-sm-1 col-form-label">ID:</label>
 																<div class="col-sm-1">
 																	<input type="text" name="id" id="id"
-																		class="form-control" readonly="readonly">
+																		class="form-control" readonly="readonly"
+																		value="${usuario.id}">
 																</div>
 															</div>
 															<div class="form-group row">
 																<label class="col-sm-1 col-form-label">Nome:</label>
 																<div class="col-sm-8">
 																	<input type="text" name="nome" id="nome"
-																		class="form-control" required="required" />
+																		class="form-control" required="required"
+																		value="${usuario.nome}" />
 																</div>
 															</div>
 															<div class="form-group row">
 																<label class="col-sm-1 col-form-label">E-mail:</label>
 																<div class="col-sm-8">
 																	<input type="email" name="email" id="email"
-																		class="form-control" required="required" />
+																		class="form-control" required="required"
+																		value="${usuario.email}" />
 																</div>
 															</div>
 															<div class="form-group row">
 																<label class="col-sm-1 col-form-label">login:</label>
 																<div class="col-sm-8">
 																	<input type="text" name="login" id="login"
-																		class="form-control" required="required" />
+																		class="form-control" required="required"
+																		value="${usuario.login}" />
 																</div>
 															</div>
 															<div class="form-group row">
 																<label class="col-sm-1 col-form-label">Senha:</label>
 																<div class="col-sm-8">
 																	<input type="password" name="senha" id="senha"
-																		class="form-control" required="required" />
+																		class="form-control" required="required"
+																		value="${usuario.senha}" />
 
 																</div>
 															</div>
