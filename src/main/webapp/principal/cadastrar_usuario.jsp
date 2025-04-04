@@ -54,7 +54,8 @@
 																<label class="col-sm-1 col-form-label">ID:</label>
 																<div class="col-sm-1">
 																	<input type="text" name="id" id="id"
-																		class="form-control" readonly="readonly" value="${id}">
+																		class="form-control" readonly="readonly"
+																		value="${empty id ? usuarioSalvo.id : id}">
 																</div>
 															</div>
 															<div class="form-group row">
@@ -62,7 +63,7 @@
 																<div class="col-sm-8">
 																	<input type="text" name="nome" id="nome"
 																		class="form-control" required="required"
-																		value="${nome}" />
+																		value="${empty nome ? usuarioSalvo.nome : nome}" />
 																</div>
 															</div>
 															<div class="form-group row">
@@ -70,7 +71,7 @@
 																<div class="col-sm-8">
 																	<input type="email" name="email" id="email"
 																		class="form-control" required="required"
-																		value="${email}" />
+																		value="${empty email ? usuarioSalvo.email : email}" />
 																</div>
 															</div>
 															<div class="form-group row">
@@ -78,7 +79,7 @@
 																<div class="col-sm-8">
 																	<input type="text" name="login" id="login"
 																		class="form-control" required="required"
-																		value="${login}" />
+																		value="${empty login ? usuarioSalvo.login : login}" />
 																</div>
 															</div>
 															<div class="form-group row">
@@ -86,11 +87,13 @@
 																<div class="col-sm-8">
 																	<input type="password" name="senha" id="senha"
 																		class="form-control" required="required"
-																		value="${senha}" />
+																		value="${empty senha ? usuarioSalvo.senha : senha}" />
 
 																</div>
 															</div>
 
+															<% /*removendo o usuarioSalvo da sessão com JSTL*/ %>
+															<c:remove var="usuarioSalvo" scope="session"/>
 
 															<div class="form-group row">
 																<label class="col-sm-1 col-form-label"></label>
@@ -119,7 +122,8 @@
 													</c:when>
 													<%-- Este é um comentário JSP, que não causa erro --%>
 													<c:when test="${param.acao eq 'salvo'}">
-														<span class="sucessoSalvo">O registro foi salvo com sucesso!</span>
+														<span class="sucessoSalvo">O registro foi salvo com
+															sucesso!</span>
 													</c:when>
 												</c:choose>
 

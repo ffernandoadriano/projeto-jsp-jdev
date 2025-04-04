@@ -19,6 +19,7 @@ public class SalvarUsuarioServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	private HttpServletRequest request;
+	private final UsuarioDao usuarioDao = new UsuarioDao();
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -34,6 +35,7 @@ public class SalvarUsuarioServlet extends HttpServlet {
 
 		this.request = request;
 
+		// Extrai os dados digitados no formulário
 		String idParam = request.getParameter("id");
 		// null não pode ser passado diretamente para Long.valueOf()
 		Long id = (idParam == null || idParam.isEmpty()) ? null : Long.valueOf(idParam.trim());
@@ -64,15 +66,18 @@ public class SalvarUsuarioServlet extends HttpServlet {
 		usuario.setLogin(login);
 		usuario.setSenha(senha);
 
-		UsuarioDao usuarioDao = new UsuarioDao();
-
 		try {
 			usuarioDao.salvar(usuario);
 		} catch (DaoException e) {
 			throw new ServletException(e);
 		}
 
+		// coloco na sessão o objeto criado e removo assim que ele é redirecionado no
+		// jsp.
+		// somente para exibir o objeto criado
 		response.sendRedirect(request.getContextPath() + "/principal/cadastrar_usuario.jsp?acao=salvo");
+
+		request.getSession().setAttribute("usuarioSalvo", usuario);
 	}
 
 	/**
@@ -106,8 +111,9 @@ public class SalvarUsuarioServlet extends HttpServlet {
 	 * Valida o e-mail
 	 * 
 	 * @param email
+	 * @throws ServletException
 	 */
-	private void validarEmail(String email) {
+	private void validarEmail(String email) throws ServletException {
 		if (StringUtils.isEmpty(email)) {
 			adicionarErro("O e-mail é obrigatório");
 		}
@@ -120,20 +126,38 @@ public class SalvarUsuarioServlet extends HttpServlet {
 		if (!email.matches("[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}")) {
 			adicionarErro("O e-mail digitado não tem formato válido");
 		}
+
+		try {
+			if (usuarioDao.existeEmail(email)) {
+				adicionarErro("O e-mail informado já está cadastrado. Por favor, utilize outro.");
+			}
+		} catch (DaoException e) {
+			throw new ServletException(e);
+		}
 	}
 
 	/**
 	 * Valida o login
 	 * 
 	 * @param login
+	 * @throws ServletException
+	 * 
 	 */
-	private void validarLogin(String login) {
+	private void validarLogin(String login) throws ServletException {
 		if (StringUtils.isEmpty(login)) {
 			adicionarErro("O login é obrigatório");
 		}
 
 		if (login.length() > 50) {
 			adicionarErro("O login digitado é muito grande");
+		}
+
+		try {
+			if (usuarioDao.existeLogin(login)) {
+				adicionarErro("O login informado já está em uso. Por favor, escolha outro.");
+			}
+		} catch (DaoException e) {
+			throw new ServletException(e);
 		}
 	}
 
