@@ -44,6 +44,24 @@
 				color: #28a745;
 				font-weight: bold;
 			}
-      	
       </style>
+      
+      <script type="text/javascript">
+      
+	      function limparFormulario() {
+
+		      let elementos = document.getElementById("usuarioForm").elements;
+	
+	    	  for(let i = 0; i < elementos.length; i ++){
+		    	  	elementos[i].value = ''; // Limpa o campo existante no formulário
+		    	  }
+
+	    	// Oculta mensagens de sucesso e erro (definido no atributo 'class') 
+	    	  const mensagens = document.querySelectorAll(".sucessoSalvo, .erro");
+	    	  mensagens.forEach(msg => msg.style.display = "none");
+
+	    	  // Limpa os parâmetros da URL
+	    	  history.replaceState(null, '', window.location.pathname);
+			}
+      </script>
   </head>

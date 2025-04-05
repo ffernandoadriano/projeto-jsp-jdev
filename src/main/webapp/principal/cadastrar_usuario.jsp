@@ -49,7 +49,7 @@
 														<h4 class="sub-title">Formulário</h4>
 														<form
 															action="<%=request.getContextPath()%>/SalvarUsuarioServlet"
-															method="post">
+															method="post" id="usuarioForm">
 															<div class="form-group row">
 																<label class="col-sm-1 col-form-label">ID:</label>
 																<div class="col-sm-1">
@@ -101,7 +101,7 @@
 																<label class="col-sm-1 col-form-label"></label>
 																<button
 																	class="btn btn-success btn-round waves-effect hor-grd btn-grd-success"
-																	id="btn-form-cadastro">Novo</button>
+																	id="btn-form-cadastro" onclick="limparFormulario();">Novo</button>
 																<button
 																	class="btn btn-primary btn-round waves-effect hor-grd btn-grd-primary"
 																	id="btn-form-cadastro">Salvar</button>
