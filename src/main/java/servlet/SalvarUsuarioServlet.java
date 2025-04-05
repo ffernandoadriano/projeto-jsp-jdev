@@ -46,8 +46,8 @@ public class SalvarUsuarioServlet extends HttpServlet {
 
 		// Faz a validação dos dados digitados
 		validarNome(nome);
-		validarEmail(email);
-		validarLogin(login);
+		validarEmail(email, id);
+		validarLogin(login, id);
 		validarSenha(senha);
 
 		// Caso tenha ocorrido algum erro de validação, coloca as informações novamente
@@ -66,16 +66,27 @@ public class SalvarUsuarioServlet extends HttpServlet {
 		usuario.setLogin(login);
 		usuario.setSenha(senha);
 
+		String acao;
+
 		try {
-			usuarioDao.salvar(usuario);
+
+			if (usuario.getId() == null) {
+				usuarioDao.salvar(usuario);
+				acao = "salvo";
+			} else {
+				usuarioDao.atualizar(usuario);
+				acao = "atualizado";
+			}
+
 		} catch (DaoException e) {
 			throw new ServletException(e);
 		}
 
-		// coloco na sessão o objeto criado e removo assim que ele é redirecionado no
-		// jsp.
-		// somente para exibir o objeto criado
-		response.sendRedirect(request.getContextPath() + "/principal/cadastrar_usuario.jsp?acao=salvo");
+		/*
+		 * coloco na sessão o objeto criado e removo assim que ele é redirecionado no
+		 * jsp. Obs: somente para exibir o objeto criado
+		 */
+		response.sendRedirect(request.getContextPath() + String.format("/principal/cadastrar_usuario.jsp?acao=%s", acao));
 
 		request.getSession().setAttribute("usuarioSalvo", usuario);
 	}
@@ -113,7 +124,7 @@ public class SalvarUsuarioServlet extends HttpServlet {
 	 * @param email
 	 * @throws ServletException
 	 */
-	private void validarEmail(String email) throws ServletException {
+	private void validarEmail(String email, Long id) throws ServletException {
 		if (StringUtils.isEmpty(email)) {
 			adicionarErro("O e-mail é obrigatório");
 		}
@@ -128,9 +139,26 @@ public class SalvarUsuarioServlet extends HttpServlet {
 		}
 
 		try {
-			if (usuarioDao.existeEmail(email)) {
+			boolean emailEmUso = false;
+
+			// Verifica UPDATE de formulário
+			if (id != null) {
+				Usuario usuarioBanco = usuarioDao.encontrarPorId(id);
+				String emailBanco = usuarioBanco.getEmail();
+
+				if (!emailBanco.equalsIgnoreCase(email)) {
+					emailEmUso = usuarioDao.existeEmail(email);
+				}
+
+				// Verifica INSERT formulários
+			} else {
+				emailEmUso = usuarioDao.existeEmail(email);
+			}
+
+			if (emailEmUso) {
 				adicionarErro("O e-mail informado já está cadastrado. Por favor, utilize outro.");
 			}
+
 		} catch (DaoException e) {
 			throw new ServletException(e);
 		}
@@ -143,7 +171,7 @@ public class SalvarUsuarioServlet extends HttpServlet {
 	 * @throws ServletException
 	 * 
 	 */
-	private void validarLogin(String login) throws ServletException {
+	private void validarLogin(String login, Long id) throws ServletException {
 		if (StringUtils.isEmpty(login)) {
 			adicionarErro("O login é obrigatório");
 		}
@@ -153,9 +181,25 @@ public class SalvarUsuarioServlet extends HttpServlet {
 		}
 
 		try {
-			if (usuarioDao.existeLogin(login)) {
+			boolean loginEmUso = false;
+
+			// Verifica UPDATE de formulário
+			if (id != null) {
+				Usuario usuarioBanco = usuarioDao.encontrarPorId(id);
+				String loginBanco = usuarioBanco.getLogin();
+
+				if (!loginBanco.equalsIgnoreCase(login)) {
+					loginEmUso = usuarioDao.existeLogin(login);
+				}
+				// Verifica INSERT formulários
+			} else {
+				loginEmUso = usuarioDao.existeLogin(login);
+			}
+
+			if (loginEmUso) {
 				adicionarErro("O login informado já está em uso. Por favor, escolha outro.");
 			}
+
 		} catch (DaoException e) {
 			throw new ServletException(e);
 		}

@@ -92,8 +92,10 @@
 																</div>
 															</div>
 
-															<% /*removendo o usuarioSalvo da sessão com JSTL*/ %>
-															<c:remove var="usuarioSalvo" scope="session"/>
+															<%
+															/*removendo o usuarioSalvo da sessão com JSTL*/
+															%>
+															<c:remove var="usuarioSalvo" scope="session" />
 
 															<div class="form-group row">
 																<label class="col-sm-1 col-form-label"></label>
@@ -124,6 +126,10 @@
 													<c:when test="${param.acao eq 'salvo'}">
 														<span class="sucessoSalvo">O registro foi salvo com
 															sucesso!</span>
+													</c:when>
+													<c:when test="${param.acao eq 'atualizado'}">
+														<span class="sucessoSalvo">O registro foi
+															atualizado com sucesso!</span>
 													</c:when>
 												</c:choose>
 

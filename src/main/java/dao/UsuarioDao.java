@@ -149,4 +149,26 @@ public class UsuarioDao implements Serializable {
 			throw new DaoException(e);
 		}
 	}
+
+	public void atualizar(Usuario obj) throws DaoException {
+
+		String sql = "UPDATE usuario SET nome = ?, email = ?, login = ?, senha = ? WHERE id = ?";
+
+		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+			pstmt.setString(1, obj.getNome());
+			pstmt.setString(2, obj.getEmail());
+			pstmt.setString(3, obj.getLogin());
+			pstmt.setString(4, obj.getSenha());
+			pstmt.setLong(5, obj.getId());
+
+			// Executa a query
+			pstmt.executeUpdate();
+
+			// Confirma a transação no banco
+			connection.commit();
+
+		} catch (SQLException e) {
+			throw new DaoException(e);
+		}
+	}
 }
