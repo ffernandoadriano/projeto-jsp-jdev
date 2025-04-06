@@ -137,11 +137,11 @@
 														</c:forEach>
 													</c:when>
 													<%-- Este é um comentário JSP, que não causa erro --%>
-													<c:when test="${param.acao eq 'salvo'}">
+													<c:when test="${param.acao eq 'salvar'}">
 														<span class="sucessoSalvo">O registro foi salvo com
 															sucesso!</span>
 													</c:when>
-													<c:when test="${param.acao eq 'atualizado'}">
+													<c:when test="${param.acao eq 'atualizar'}">
 														<span class="sucessoSalvo">O registro foi
 															atualizado com sucesso!</span>
 													</c:when>

@@ -72,10 +72,10 @@ public class SalvarUsuarioServlet extends HttpServlet {
 
 			if (usuario.getId() == null) {
 				usuarioDao.salvar(usuario);
-				acao = "salvo";
+				acao = "salvar";
 			} else {
 				usuarioDao.atualizar(usuario);
-				acao = "atualizado";
+				acao = "atualizar";
 			}
 
 		} catch (DaoException e) {
