@@ -50,7 +50,7 @@
       
 	      function limparFormulario() {
 
-		      let elementos = document.getElementById("usuarioForm").elements;
+		      let elementos = document.getElementById("usuarioForm").elements; // retorna os elementos html dentro do formulário
 	
 	    	  for(let i = 0; i < elementos.length; i ++){
 		    	  	elementos[i].value = ''; // Limpa o campo existante no formulário
@@ -63,5 +63,23 @@
 	    	  // Limpa os parâmetros da URL
 	    	  history.replaceState(null, '', window.location.pathname);
 			}
+
+			function excluirCadastro(){
+					let id = document.forms["usuarioForm"].id.value; // captura o nome do campo do formulário
+
+					// se diferente de vazio, significa que estou tentando excluir um usuario já cadastro no banco
+					if(id != ""){
+						
+						let resposta = confirm("Deseja realmente excluir o registro?");
+
+						if(resposta){
+							window.location = "<%=request.getContextPath()%>/ExcluirUsuarioServlet?id=" + id; 
+							// redireciona a página
+
+						}
+						
+					}
+				}
+			
       </script>
   </head>

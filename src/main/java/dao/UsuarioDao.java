@@ -171,4 +171,22 @@ public class UsuarioDao implements Serializable {
 			throw new DaoException(e);
 		}
 	}
+
+	public void deletarPorId(Long id) throws DaoException {
+
+		String deleteSql = "DELETE FROM usuario WHERE id = ?";
+
+		try (PreparedStatement pstmt = connection.prepareStatement(deleteSql)) {
+			pstmt.setLong(1, id);
+
+			// Executa a query
+			pstmt.executeUpdate();
+
+			// Confirma a transação no banco
+			connection.commit();
+
+		} catch (SQLException e) {
+			throw new DaoException("Erro ao remover um registro");
+		}
+	}
 }

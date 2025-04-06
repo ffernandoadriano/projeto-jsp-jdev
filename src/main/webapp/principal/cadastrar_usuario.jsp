@@ -47,6 +47,8 @@
 
 													<div class="card-block">
 														<h4 class="sub-title">Formulário</h4>
+														
+														
 														<form
 															action="<%=request.getContextPath()%>/SalvarUsuarioServlet"
 															method="post" id="usuarioForm">
@@ -97,17 +99,29 @@
 															%>
 															<c:remove var="usuarioSalvo" scope="session" />
 
+
 															<div class="form-group row">
 																<label class="col-sm-1 col-form-label"></label>
-																<button
+																<%
+																/*Ao definir o 'type' como 'button' dentro do formulário, ele não envia.
+																obs: não faz nada sozinho, só executa o que você manda via JavaScript
+																*/
+																%>
+																<button type="button"
 																	class="btn btn-success btn-round waves-effect hor-grd btn-grd-success"
 																	id="btn-form-cadastro" onclick="limparFormulario();">Novo</button>
+																<%
+																/*
+																Ao não definir nenhum 'type' para o botão. exemplo: <button>Salvar</button>
+																O navegador assume automaticamente que é type="submit", ou seja: ele vai enviar o formulário.
+																*/
+																%>
 																<button
 																	class="btn btn-primary btn-round waves-effect hor-grd btn-grd-primary"
 																	id="btn-form-cadastro">Salvar</button>
-																<button
+																<button type="button"
 																	class="btn btn-danger btn-round waves-effect hor-grd btn-grd-danger"
-																	id="btn-form-cadastro">Excluir</button>
+																	id="btn-form-cadastro" onclick="excluirCadastro();">Excluir</button>
 															</div>
 
 
