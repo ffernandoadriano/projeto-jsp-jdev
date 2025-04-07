@@ -100,9 +100,11 @@
 							url: urlDirecionamento,
 							data: "id="+ id + "&acao=excluirComAjax",  // uma forma de passar os parâmetros
 							success: function(response){
-									alert(response);
+				
 									limparFormulario(); // chamando função
-								}
+									
+									// document.getElementById("msg").textContent = response; // Um exemplo caso precise enviar a resposta do servidor para alguma id especifico
+								} 
 
 						}).fail(function(xhr, status, errorThrown){
 								alert("Erro ao tentar deletar por id: "+ xhr.responseText);
