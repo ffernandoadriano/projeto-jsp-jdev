@@ -29,18 +29,29 @@ public class ExcluirUsuarioServlet extends HttpServlet {
 
 	private void doIt(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+		String acao = request.getParameter("acao");
+		Long id = Long.parseLong(request.getParameter("id"));
+
+		if (acao.equalsIgnoreCase("excluirComAjax")) {
+			deletarRegistro(id);
+			response.getWriter().append("Operação realizada com sucesso!");
+
+		} else {
+			deletarRegistro(id);
+			response.sendRedirect(request.getContextPath() + "/CadastrarUsuarioServlet");
+		}
+
+	}
+
+	private void deletarRegistro(Long id) throws ServletException {
 		try {
-			Long id = Long.parseLong(request.getParameter("id"));
 
 			UsuarioDao usuarioDao = new UsuarioDao();
 			usuarioDao.deletarPorId(id);
-						
+
 		} catch (DaoException | NumberFormatException e) {
 			throw new ServletException(e);
 		}
-		
-		response.sendRedirect(request.getContextPath() + "/CadastrarUsuarioServlet");
-
 	}
 
 }

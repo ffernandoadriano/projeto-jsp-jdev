@@ -80,6 +80,36 @@
 						
 					}
 				}
+
+			function excluirCadastroComAjax(){
+				let id = document.forms["usuarioForm"].id.value; // captura o nome do campo do formulário
+				
+				// se diferente de vazio, significa que estou tentando excluir um usuario já cadastro no banco
+				if(id != ""){
+					
+					let resposta = confirm("Deseja realmente excluir o registro?");
+
+					if(resposta){
+
+						// URL para onde vai ser redirecionada
+						let urlDirecionamento = "<%=request.getContextPath()%>/ExcluirUsuarioServlet";
+
+						$.ajax({
+							
+							method: "GET",
+							url: urlDirecionamento,
+							data: "id="+ id + "&acao=excluirComAjax",  // uma forma de passar os parâmetros
+							success: function(response){
+									alert(response);
+									limparFormulario(); // chamando função
+								}
+
+						}).fail(function(xhr, status, errorThrown){
+								alert("Erro ao tentar deletar por id: "+ xhr.responseText);
+							} ); // xhr- detalhes do erro // status - status do erro // errorThrown - exceção de erro
+					}		
+				}
+			}
 			
       </script>
   </head>

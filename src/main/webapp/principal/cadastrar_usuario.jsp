@@ -47,8 +47,8 @@
 
 													<div class="card-block">
 														<h4 class="sub-title">Formulário</h4>
-														
-														
+
+
 														<form
 															action="<%=request.getContextPath()%>/SalvarUsuarioServlet"
 															method="post" id="usuarioForm">
@@ -121,7 +121,7 @@
 																	id="btn-form-cadastro">Salvar</button>
 																<button type="button"
 																	class="btn btn-danger btn-round waves-effect hor-grd btn-grd-danger"
-																	id="btn-form-cadastro" onclick="excluirCadastro();">Excluir</button>
+																	id="btn-form-cadastro" onclick="excluirCadastroComAjax();">Excluir</button>
 															</div>
 
 

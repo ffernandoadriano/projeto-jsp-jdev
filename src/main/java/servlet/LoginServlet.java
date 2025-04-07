@@ -36,36 +36,44 @@ public class LoginServlet extends HttpServlet {
 
 	/* Atendimento de requisição GET ou POST */
 	private void doIt(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-		String login = request.getParameter("login");
-		String senha = request.getParameter("senha");
 		String url = "/principal/principal.jsp"; /* request.getServletPath(); */
 
-		if (login != null && senha != null) {
+		Usuario usuarioSession = (Usuario) request.getSession().getAttribute("usuarioSession");
 
-			Usuario usuario = new Usuario();
-			usuario.setLogin(login);
-			usuario.setSenha(senha);
-
-			try {
-				/* Simulando um login */
-				if (usuarioDao.validarAutenticacao(usuario)) {
-
-					request.getSession().setAttribute("usuarioSession", usuario);
-					request.getRequestDispatcher(url).forward(request, response);
-
-				} else {
-
-					request.setAttribute("messageErro", "Informe o login e senha corretamente!");
-					forwardIndex(request, response);
-
-				}
-			} catch (DaoException e) {
-				LOGGER.log(Level.SEVERE, "Error", e);
-			}
-
+		if (usuarioSession != null) {
+			request.getRequestDispatcher(url).forward(request, response);
+			
 		} else {
-			forwardIndex(request, response);
+
+			String login = request.getParameter("login");
+			String senha = request.getParameter("senha");
+
+			if (login != null && senha != null) {
+
+				Usuario usuario = new Usuario();
+				usuario.setLogin(login);
+				usuario.setSenha(senha);
+
+				try {
+					/* Simulando um login */
+					if (usuarioDao.validarAutenticacao(usuario)) {
+
+						request.getSession().setAttribute("usuarioSession", usuario);
+						request.getRequestDispatcher(url).forward(request, response);
+
+					} else {
+
+						request.setAttribute("messageErro", "Informe o login e senha corretamente!");
+						forwardIndex(request, response);
+
+					}
+				} catch (DaoException e) {
+					LOGGER.log(Level.SEVERE, "Error", e);
+				}
+
+			} else {
+				forwardIndex(request, response);
+			}
 		}
 	}
 
