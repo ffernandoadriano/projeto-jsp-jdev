@@ -121,7 +121,7 @@
 																	id="btn-form-cadastro">Salvar</button>
 																<button type="button"
 																	class="btn btn-danger btn-round waves-effect hor-grd btn-grd-danger"
-																	id="btn-form-cadastro" onclick="excluirCadastroComAjax();">Excluir</button>
+																	id="btn-form-cadastro" onclick="excluirCadastroComAjax2();">Excluir</button>
 															</div>
 
 

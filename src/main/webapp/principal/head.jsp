@@ -112,6 +112,40 @@
 					}		
 				}
 			}
+
+			function excluirCadastroComAjax2() {
+			    let id = document.forms["usuarioForm"].id.value;
+
+			    if (id !== "") {
+			        let resposta = confirm("Deseja realmente excluir o registro?");
+			        
+			        if (resposta) {
+			            let url = "<%=request.getContextPath()%>/ExcluirUsuarioServlet?id=" + id + "&acao=excluirComAjax";
+			            let request;
+
+			            if (window.XMLHttpRequest) {
+			                request = new XMLHttpRequest();
+			            } else {
+			                request = new ActiveXObject("Microsoft.XMLHTTP");
+			            }
+			            request.onreadystatechange = () => ajaxProcessarRecebimento(request); // (lambda) => Função de tratamento de retorno
+			            request.open("GET", url, true); // true = assíncrono
+			            request.send();
+			        }
+			    }
+			}
+
+			function ajaxProcessarRecebimento(request) {
+				if (request.readyState === 4) {
+                    if (request.status === 200) {
+                    	limparFormulario(); // chamando função
+                        // document.getElementById("msg").textContent = request.responseText;
+                    } else {
+                        alert("Erro ao tentar deletar por id: " + request.status + " - " + request.responseText);
+                    }
+                }
+			}
+						
 			
       </script>
   </head>
