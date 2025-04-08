@@ -121,7 +121,13 @@
 																	id="btn-form-cadastro">Salvar</button>
 																<button type="button"
 																	class="btn btn-danger btn-round waves-effect hor-grd btn-grd-danger"
-																	id="btn-form-cadastro" onclick="excluirCadastroComAjax2();">Excluir</button>
+																	id="btn-form-cadastro"
+																	onclick="excluirCadastroComAjax2();">Excluir</button>
+																<button type="button"
+																	class="btn btn-inverse btn-round waves-effect hor-grd btn-grd-inverse"
+																	id="btn-form-cadastro" data-toggle="modal"
+																	data-target=".bd-example-modal-lg">Pesquisar</button>
+
 															</div>
 
 
@@ -165,6 +171,23 @@
 	</div>
 
 	<jsp:include page="javascript.jsp"></jsp:include>
+
+	<!-- Large modal -->
+	<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog"
+		aria-labelledby="myLargeModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+				</div>
+				<div class="modal-body">Modal body text goes here.</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-inverse btn-round waves-effect hor-grd btn-grd-inverse"
+						data-dismiss="modal">Fechar</button>
+				</div>
+			</div>
+		</div>
+	</div>
 
 </body>
 

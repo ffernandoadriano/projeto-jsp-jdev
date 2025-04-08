@@ -32,7 +32,7 @@
       <style type="text/css">
       		#btn-form-cadastro{
       			margin-left: 10px;
-      			width: 100px;
+      			width: 110px;
       		}
       		
       		.erro {
