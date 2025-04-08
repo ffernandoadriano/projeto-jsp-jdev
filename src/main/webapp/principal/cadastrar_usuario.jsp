@@ -126,7 +126,7 @@
 																<button type="button"
 																	class="btn btn-inverse btn-round waves-effect hor-grd btn-grd-inverse"
 																	id="btn-form-cadastro" data-toggle="modal"
-																	data-target=".bd-example-modal-lg">Pesquisar</button>
+																	data-target="#modalCadastro">Pesquisar</button>
 
 															</div>
 
@@ -173,16 +173,48 @@
 	<jsp:include page="javascript.jsp"></jsp:include>
 
 	<!-- Large modal -->
-	<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog"
+	<div class="modal fade" id="modalCadastro" tabindex="-1" role="dialog"
 		aria-labelledby="myLargeModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-lg">
+		<div class="modal-dialog modal-xl-custom">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+					<h5 class="modal-title" id="exampleModalLabel">Pesquisa de
+						Usuário</h5>
 				</div>
-				<div class="modal-body">Modal body text goes here.</div>
+				<div class="modal-body">
+				<!-- inicio do body -->
+
+					<div class="input-group mb-3">
+						<input type="text" class="form-control"
+							placeholder="Digite o nome"
+							aria-label="nome" aria-describedby="basic-addon2" name="pesquisarNome" id ="pesquisarNome">
+						<div class="input-group-append">
+							<button type="button" class="btn btn-success btn-round waves-effect hor-grd btn-grd-success" type="button" onclick="buscarUsuarioPorNome();" style="margin-left: 5px">Pesquisar</button>
+						</div>
+					</div>
+
+					<div class="card-block table-border-style">
+                                                <div class="table-responsive">
+                                                    <table class="table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>ID</th>
+                                                                <th>Nome</th>
+                                                                <th>Ver</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+
+				<!-- fim do body -->
+				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-inverse btn-round waves-effect hor-grd btn-grd-inverse"
+					<button type="button"
+						class="btn btn-inverse btn-round waves-effect hor-grd btn-grd-inverse"
 						data-dismiss="modal">Fechar</button>
 				</div>
 			</div>

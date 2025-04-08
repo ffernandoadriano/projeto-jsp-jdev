@@ -44,6 +44,12 @@
 				color: #28a745;
 				font-weight: bold;
 			}
+			
+			
+			.modal-xl-custom {
+				max-width: 60%; <!-- Estilo personalizado para aumentar o tamanho do modal -->
+			}
+			
       </style>
       
       <script type="text/javascript">
@@ -145,6 +151,17 @@
                     }
                 }
 			}
+
+			function buscarUsuarioPorNome(){
+
+				const pesquisarNome = document.getElementById("pesquisarNome").value; // Validando para ter valor p/ buscar no banco de dados
+
+				if(pesquisarNome != "" && pesquisarNome.trim() != ""){
+					alert("Sei");	
+				}
+
+
+				}
 						
 			
       </script>
