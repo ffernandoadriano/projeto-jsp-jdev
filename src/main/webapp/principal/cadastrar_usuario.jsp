@@ -187,7 +187,7 @@
 					<div class="input-group mb-3">
 						<input type="text" class="form-control"
 							placeholder="Digite o nome"
-							aria-label="nome" aria-describedby="basic-addon2" name="pesquisarNome" id ="pesquisarNome">
+							aria-label="nome" aria-describedby="basic-addon2" name="pesquisarNome" id ="pesquisarNome" autocomplete="off">
 						<div class="input-group-append">
 							<button type="button" class="btn btn-success btn-round waves-effect hor-grd btn-grd-success" type="button" onclick="buscarUsuarioPorNome();" style="margin-left: 5px">Pesquisar</button>
 						</div>

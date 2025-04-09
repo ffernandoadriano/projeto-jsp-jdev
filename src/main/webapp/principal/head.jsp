@@ -157,11 +157,26 @@
 				const pesquisarNome = document.getElementById("pesquisarNome").value; // Validando para ter valor p/ buscar no banco de dados
 
 				if(pesquisarNome != "" && pesquisarNome.trim() != ""){
-					alert("Sei");	
+
+					// URL para onde vai ser redirecionada
+					let urlDirecionamento = "<%=request.getContextPath()%>/PesquisarUsuarioServlet";
+
+					$.ajax({
+						
+						method: "GET",
+						url: urlDirecionamento,
+						data: "nome="+ pesquisarNome,   // uma forma de passar os parâmetros
+						success: function(response){
+									
+							} 
+
+					}).fail(function(xhr, status, errorThrown){
+							alert("Erro ao tentar pesquisar por nome: "+ xhr.responseText);
+						} ); // xhr- detalhes do erro // status - status do erro // errorThrown - exceção de erro
+
 				}
 
-
-				}
+			}
 						
 			
       </script>
