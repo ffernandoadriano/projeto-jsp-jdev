@@ -6,6 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import connection.ConnectionFactory;
 import model.Usuario;
@@ -29,25 +31,21 @@ public class UsuarioDao implements Serializable {
 
 	public boolean validarAutenticacao(Usuario usuario) throws DaoException {
 
-		String sql = "SELECT login, senha FROM usuario WHERE UPPER(login) = UPPER(?) AND senha = ?";
+		String sql = "SELECT 1 FROM usuario WHERE UPPER(login) = UPPER(?) AND senha = ?";
 
+		// Mais leve e rápido ⚡ Só quer saber se existe ou não
 		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
 			pstmt.setString(1, usuario.getLogin());
 			pstmt.setString(2, usuario.getSenha());
 
 			try (ResultSet rs = pstmt.executeQuery()) {
 
-				// caso seja encontrado
-				if (rs.next()) {
-					return true; /* Autenticado */
-				}
+				return rs.next(); // Será autenticado se for encontrado; caso contrário, não será autenticado.
 			}
 
 		} catch (SQLException e) {
 			throw new DaoException(e);
 		}
-
-		return false; /* Não Autenticado */
 	}
 
 	public void salvar(Usuario obj) throws DaoException {
@@ -112,6 +110,36 @@ public class UsuarioDao implements Serializable {
 		}
 
 		return null;
+	}
+
+	public List<Usuario> encontrarPorNome(String nome) throws DaoException {
+
+		String sql = "SELECT id, nome, email, login, senha FROM usuario WHERE UPPER(nome) LIKE CONCAT('%',UPPER(?),'%')";
+
+		List<Usuario> usuarios = new ArrayList<>();
+
+		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+			pstmt.setString(1, nome);
+
+			try (ResultSet rs = pstmt.executeQuery()) {
+
+				while (rs.next()) {
+					Usuario usuario = new Usuario();
+
+					usuario.setId(rs.getLong("id"));
+					usuario.setNome(rs.getString("nome"));
+					usuario.setEmail(rs.getString("email"));
+					usuario.setLogin(rs.getString("login"));
+					// usuario.setSenha(rs.getString("senha"));
+
+					usuarios.add(usuario);
+				}
+			}
+		} catch (SQLException e) {
+			throw new DaoException(e);
+		}
+
+		return usuarios;
 	}
 
 	public boolean existeEmail(String email) throws DaoException {

@@ -30,6 +30,7 @@
       <link rel="stylesheet" type="text/css" href="<%= request.getContextPath() %>/assets/css/style.css">
       
       <style type="text/css">
+      
       		#btn-form-cadastro{
       			margin-left: 10px;
       			width: 110px;
@@ -44,7 +45,6 @@
 				color: #28a745;
 				font-weight: bold;
 			}
-			
 			
 			.modal-xl-custom {
 				max-width: 60%; <!-- Estilo personalizado para aumentar o tamanho do modal -->
@@ -167,8 +167,8 @@
 						url: urlDirecionamento,
 						data: "nome="+ pesquisarNome,   // uma forma de passar os parâmetros
 						success: function(response){
-									
-							} 
+							alert(response);
+						} 
 
 					}).fail(function(xhr, status, errorThrown){
 							alert("Erro ao tentar pesquisar por nome: "+ xhr.responseText);
