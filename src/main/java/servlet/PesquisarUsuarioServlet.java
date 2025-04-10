@@ -3,8 +3,7 @@ package servlet;
 import java.io.IOException;
 import java.util.List;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dao.DaoException;
 import dao.UsuarioDao;
@@ -39,8 +38,8 @@ public class PesquisarUsuarioServlet extends HttpServlet {
 		try {
 			List<Usuario> usuarios = usuarioDao.encontrarPorNome(nome);
 
-			Gson gson = new GsonBuilder().setPrettyPrinting().create();
-			String json = gson.toJson(usuarios);
+			ObjectMapper mapper = new ObjectMapper();
+			String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(usuarios);
 
 			response.getWriter().append(json).flush();
 
