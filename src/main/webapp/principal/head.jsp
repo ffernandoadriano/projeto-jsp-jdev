@@ -160,14 +160,34 @@
 
 					// URL para onde vai ser redirecionada
 					let urlDirecionamento = "<%=request.getContextPath()%>/PesquisarUsuarioServlet";
-
+					
+					// ajax do Bootstrap
 					$.ajax({
 						
 						method: "GET",
 						url: urlDirecionamento,
 						data: "nome="+ pesquisarNome,   // uma forma de passar os parâmetros
 						success: function(response){
-							alert(response);
+
+							const json = JSON.parse(response); // convertendo uma String json para JSON em javaScript
+
+							// Remove linhas antigas
+							$("#tbPesquisarUsuario > tbody > tr").remove(); // jQuery, esse código remove todas as linhas da <tbody> da tabela com ID tbPesquisarUsuario.
+
+							
+							for(let i = 0; i < json.length; i++){
+
+								const linha = "<tr><td>"+ json[i].id +"</td> <td>"+ json[i].nome +"</td> <td>"+ json[i].email +"</td> <td> <button type=\"button\" class=\"btn btn-info btn-round waves-effect hor-grd btn-grd-info\">Ver</button> </td> </tr>"; // tag HTML de inserção na tabela
+								
+								$("#tbPesquisarUsuario > tbody").append(linha); // adicionando no body da tabela
+								document.getElementById("qtdRegistros").textContent = "Total de Registros: "+ json.length; // Apresentará a quantidade de registros encontrados.
+							}
+
+							// Apresentará 0 quando não encontrar nenhum registro.
+							if(json.length == 0){
+								document.getElementById("qtdRegistros").textContent = "Total de Registros: "+ json.length;
+							}
+							
 						} 
 
 					}).fail(function(xhr, status, errorThrown){
@@ -176,6 +196,16 @@
 
 				}
 
+			}
+
+			function limparTabelaPesquisarUsuario(){
+				// Remove linhas antigas
+				$("#tbPesquisarUsuario > tbody > tr").remove(); // jQuery, esse código remove todas as linhas da <tbody> da tabela com ID tbPesquisarUsuario.
+				
+				document.getElementById("qtdRegistros").textContent = ""; // limpa a quantidade de registros
+				document.getElementById("pesquisarNome").value = ""; // limpa o campo pesquisar nome
+
+				
 			}
 						
 			

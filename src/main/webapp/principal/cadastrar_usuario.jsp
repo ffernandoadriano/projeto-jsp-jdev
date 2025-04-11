@@ -126,7 +126,7 @@
 																<button type="button"
 																	class="btn btn-inverse btn-round waves-effect hor-grd btn-grd-inverse"
 																	id="btn-form-cadastro" data-toggle="modal"
-																	data-target="#modalCadastro">Pesquisar</button>
+																	data-target="#modalCadastro" onclick="limparTabelaPesquisarUsuario();">Pesquisar</button>
 
 															</div>
 
@@ -181,38 +181,44 @@
 					<h5 class="modal-title" id="exampleModalLabel">Pesquisa de
 						Usuário</h5>
 				</div>
-				<div class="modal-body">
-				<!-- inicio do body -->
+				<!-- AQUI FOI ADICIONADO O SCROLL -->
+				<div class="modal-body" style="max-height: 60vh; overflow-y: auto;">
+					<!-- inicio do body -->
 
 					<div class="input-group mb-3">
 						<input type="text" class="form-control"
-							placeholder="Digite o nome"
-							aria-label="nome" aria-describedby="basic-addon2" name="pesquisarNome" id ="pesquisarNome" autocomplete="off">
+							placeholder="Digite o nome" aria-label="nome"
+							aria-describedby="basic-addon2" name="pesquisarNome"
+							id="pesquisarNome" autocomplete="off">
 						<div class="input-group-append">
-							<button type="button" class="btn btn-success btn-round waves-effect hor-grd btn-grd-success" type="button" onclick="buscarUsuarioPorNome();" style="margin-left: 5px">Pesquisar</button>
+							<button type="button"
+								class="btn btn-success btn-round waves-effect hor-grd btn-grd-success"
+								type="button" onclick="buscarUsuarioPorNome();"
+								style="margin-left: 5px">Pesquisar</button>
 						</div>
 					</div>
 
 					<div class="card-block table-border-style">
-                                                <div class="table-responsive">
-                                                    <table class="table">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>ID</th>
-                                                                <th>Nome</th>
-                                                                <th>Ver</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
+						<div class="table-responsive">
+							<table class="table" id="tbPesquisarUsuario">
+								<thead>
+									<tr>
+										<th>ID</th>
+										<th>Nome</th>
+										<th>Email</th>
+										<th>Ver</th>
+									</tr>
+								</thead>
+								<tbody>
 
-				<!-- fim do body -->
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<!-- fim do body -->
 				</div>
-				<div class="modal-footer">
+				<div class="modal-footer d-flex justify-content-between w-100">
+					<span class="align-self-center" id="qtdRegistros"></span>
 					<button type="button"
 						class="btn btn-inverse btn-round waves-effect hor-grd btn-grd-inverse"
 						data-dismiss="modal">Fechar</button>
