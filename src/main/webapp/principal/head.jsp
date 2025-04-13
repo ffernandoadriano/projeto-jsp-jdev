@@ -47,13 +47,13 @@
 			}
 			
 			.modal-xl-custom {
-				max-width: 60%; <!-- Estilo personalizado para aumentar o tamanho do modal -->
+				max-width: 50%; <!-- Estilo personalizado para aumentar o tamanho do modal -->
 			}
 			
       </style>
       
       <script type="text/javascript">
-      
+
 	      function limparFormulario() {
 
 		      let elementos = document.getElementById("usuarioForm").elements; // retorna os elementos html dentro do formulário
@@ -177,7 +177,20 @@
 							
 							for(let i = 0; i < json.length; i++){
 
-								const linha = "<tr><td>"+ json[i].id +"</td> <td>"+ json[i].nome +"</td> <td>"+ json[i].email +"</td> <td> <button type=\"button\" class=\"btn btn-info btn-round waves-effect hor-grd btn-grd-info\">Ver</button> </td> </tr>"; // tag HTML de inserção na tabela
+								//  A melhor forma de simular um StringBuilder é usar um array de strings + join() em JS.
+								const sb = [];
+
+								sb.push("<tr>");
+								sb.push("<td>" + json[i].id + "</td>");
+								sb.push("<td>" + json[i].nome + "</td>");
+								sb.push("<td>" + json[i].email + "</td>");
+								sb.push("<td>");
+								sb.push("<button type=\"button\" class=\"btn btn-info btn-round waves-effect hor-grd btn-grd-info\" " +
+								         "onclick=\"editarFormularioUsuario(" + json[i].id + ");\">Editar</button>");
+								sb.push("</td>");
+								sb.push("</tr>");
+
+								const linha = sb.join("");
 								
 								$("#tbPesquisarUsuario > tbody").append(linha); // adicionando no body da tabela
 								document.getElementById("qtdRegistros").textContent = "Total de Registros: "+ json.length; // Apresentará a quantidade de registros encontrados.
@@ -204,10 +217,12 @@
 				
 				document.getElementById("qtdRegistros").textContent = ""; // limpa a quantidade de registros
 				document.getElementById("pesquisarNome").value = ""; // limpa o campo pesquisar nome
-
-				
 			}
-						
+
+			function editarFormularioUsuario(id){
+
+				window.location.href = "<%=request.getContextPath()%>/PesquisarUsuarioServlet?acao=editar&id="+ id;
+			}	
 			
       </script>
   </head>

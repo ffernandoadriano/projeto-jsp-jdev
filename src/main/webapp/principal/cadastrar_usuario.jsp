@@ -189,11 +189,11 @@
 						<input type="text" class="form-control"
 							placeholder="Digite o nome" aria-label="nome"
 							aria-describedby="basic-addon2" name="pesquisarNome"
-							id="pesquisarNome" autocomplete="off">
+							id="pesquisarNome" autocomplete="off" onkeydown="if (event.key === 'Enter') { event.preventDefault(); document.getElementById('btnPesquisar').click(); }">
 						<div class="input-group-append">
 							<button type="button"
 								class="btn btn-success btn-round waves-effect hor-grd btn-grd-success"
-								type="button" onclick="buscarUsuarioPorNome();"
+								type="button" onclick="buscarUsuarioPorNome();" id= "btnPesquisar"
 								style="margin-left: 5px">Pesquisar</button>
 						</div>
 					</div>
@@ -206,7 +206,7 @@
 										<th>ID</th>
 										<th>Nome</th>
 										<th>Email</th>
-										<th>Ver</th>
+										<th>Editar</th>
 									</tr>
 								</thead>
 								<tbody>
