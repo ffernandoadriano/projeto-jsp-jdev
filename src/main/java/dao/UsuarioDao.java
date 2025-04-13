@@ -85,7 +85,7 @@ public class UsuarioDao implements Serializable {
 
 	public Usuario encontrarPorId(Long id) throws DaoException {
 
-		String sql = "SELECT id, nome, email, login, senha FROM usuario WHERE id = ?";
+		String sql = "SELECT id, nome, email, login, senha FROM usuario WHERE id = ? AND admin is false";
 
 		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
 			pstmt.setLong(1, id);
@@ -114,7 +114,7 @@ public class UsuarioDao implements Serializable {
 
 	public List<Usuario> encontrarPorNome(String nome) throws DaoException {
 
-		String sql = "SELECT id, nome, email, login, senha FROM usuario WHERE UPPER(nome) LIKE CONCAT('%',UPPER(?),'%')";
+		String sql = "SELECT id, nome, email, login, senha FROM usuario WHERE UPPER(nome) LIKE CONCAT('%',UPPER(?),'%') AND admin is false";
 
 		List<Usuario> usuarios = new ArrayList<>();
 
@@ -144,7 +144,7 @@ public class UsuarioDao implements Serializable {
 	
 	public List<Usuario> encontrarTudo() throws DaoException {
 
-		String sql = "SELECT id, nome, email, login, senha FROM usuario ORDER BY id";
+		String sql = "SELECT id, nome, email, login, senha FROM usuario WHERE admin is false ORDER BY id";
 
 		List<Usuario> usuarios = new ArrayList<>();
 
@@ -231,7 +231,7 @@ public class UsuarioDao implements Serializable {
 
 	public void deletarPorId(Long id) throws DaoException {
 
-		String deleteSql = "DELETE FROM usuario WHERE id = ?";
+		String deleteSql = "DELETE FROM usuario WHERE id = ? AND admin is false";
 
 		try (PreparedStatement pstmt = connection.prepareStatement(deleteSql)) {
 			pstmt.setLong(1, id);

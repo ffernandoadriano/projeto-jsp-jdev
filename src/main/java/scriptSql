@@ -19,3 +19,5 @@ CREATE TABLE usuario (
 
     
 INSERT INTO usuario(nome, email, login, senha)VALUES ('Fernando Adriano','lfernando.adriano@gmail.com' ,'admin', 'admin');
+
+ALTER TABLE usuario ADD COLUMN admin BOOLEAN NOT NULL DEFAULT false;
