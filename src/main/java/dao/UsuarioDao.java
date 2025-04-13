@@ -141,6 +141,35 @@ public class UsuarioDao implements Serializable {
 
 		return usuarios;
 	}
+	
+	public List<Usuario> encontrarTudo() throws DaoException {
+
+		String sql = "SELECT id, nome, email, login, senha FROM usuario ORDER BY id";
+
+		List<Usuario> usuarios = new ArrayList<>();
+
+		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+
+			try (ResultSet rs = pstmt.executeQuery()) {
+
+				while (rs.next()) {
+					Usuario usuario = new Usuario();
+
+					usuario.setId(rs.getLong("id"));
+					usuario.setNome(rs.getString("nome"));
+					usuario.setEmail(rs.getString("email"));
+					usuario.setLogin(rs.getString("login"));
+					// usuario.setSenha(rs.getString("senha"));
+
+					usuarios.add(usuario);
+				}
+			}
+		} catch (SQLException e) {
+			throw new DaoException(e);
+		}
+
+		return usuarios;
+	}
 
 	public boolean existeEmail(String email) throws DaoException {
 

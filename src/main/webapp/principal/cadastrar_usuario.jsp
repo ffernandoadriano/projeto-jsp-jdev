@@ -13,8 +13,6 @@
 	<!-- Carregamento inicial -->
 	<jsp:include page="loaderstart.jsp"></jsp:include>
 
-
-
 	<div id="pcoded" class="pcoded">
 		<div class="pcoded-overlay-box"></div>
 		<div class="pcoded-container navbar-wrapper">
@@ -126,7 +124,8 @@
 																<button type="button"
 																	class="btn btn-inverse btn-round waves-effect hor-grd btn-grd-inverse"
 																	id="btn-form-cadastro" data-toggle="modal"
-																	data-target="#modalCadastro" onclick="limparTabelaPesquisarUsuario();">Pesquisar</button>
+																	data-target="#modalCadastro"
+																	onclick="limparTabelaPesquisarUsuario();">Pesquisar</button>
 
 															</div>
 
@@ -159,6 +158,51 @@
 
 										</div>
 									</div>
+
+									<!-- linha de usuários -->
+									<div class="row">
+										<div class="col-lg-12">
+											<div class="card">
+												<div class="card-block table-border-style">
+													<h4 class="sub-title">Lista de Usuários</h4>
+													<div class="table-responsive">
+														<table class="table table-hover">
+															<thead>
+																<tr>
+																	<th>ID</th>
+																	<th>Nome</th>
+																	<th>Email</th>
+																	<th></th>
+																	<th></th>
+																</tr>
+															</thead>
+															<tbody>
+																<c:forEach items="${listarUsuariosSession}"
+																	var="usuario">
+																	<tr>
+																		<td>${usuario.id}</td>
+																		<td>${usuario.nome}</td>
+																		<td>${usuario.email}</td>
+																		<td><a
+																			class="btn btn-info btn-round waves-effect hor-grd btn-grd-info"
+																			href="<%=request.getContextPath()%>/PesquisarUsuarioServlet?acao=editar&id=${usuario.id}">Editar</a></td>
+																		<td><button type="button"
+																				class="btn btn-danger btn-round waves-effect hor-grd btn-grd-danger"
+																				onclick="excluirCadastro(${usuario.id})">Excluir</button></td>
+																	</tr>
+
+																</c:forEach>
+
+															</tbody>
+														</table>
+													</div>
+												</div>
+
+											</div>
+										</div>
+									</div>
+
+
 									<!-- Page-body end -->
 								</div>
 								<div id="styleSelector"></div>
@@ -189,12 +233,13 @@
 						<input type="text" class="form-control"
 							placeholder="Digite o nome" aria-label="nome"
 							aria-describedby="basic-addon2" name="pesquisarNome"
-							id="pesquisarNome" autocomplete="off" onkeydown="if (event.key === 'Enter') { event.preventDefault(); document.getElementById('btnPesquisar').click(); }">
+							id="pesquisarNome" autocomplete="off"
+							onkeydown="if (event.key === 'Enter') { event.preventDefault(); document.getElementById('btnPesquisar').click(); }">
 						<div class="input-group-append">
 							<button type="button"
 								class="btn btn-success btn-round waves-effect hor-grd btn-grd-success"
-								type="button" onclick="buscarUsuarioPorNome();" id= "btnPesquisar"
-								style="margin-left: 5px">Pesquisar</button>
+								type="button" onclick="buscarUsuarioPorNome();"
+								id="btnPesquisar" style="margin-left: 5px">Pesquisar</button>
 						</div>
 					</div>
 
@@ -206,7 +251,7 @@
 										<th>ID</th>
 										<th>Nome</th>
 										<th>Email</th>
-										<th>Editar</th>
+										<th></th>
 									</tr>
 								</thead>
 								<tbody>
@@ -226,7 +271,7 @@
 			</div>
 		</div>
 	</div>
-
+	<jsp:include page="jsWhatsAppIcone.jsp"></jsp:include>
 </body>
 
 </html>

@@ -28,6 +28,9 @@
       <link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
       <!-- Style.css -->
       <link rel="stylesheet" type="text/css" href="<%= request.getContextPath() %>/assets/css/style.css">
+      <!-- icone whatsApp -->
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+      
       
       <style type="text/css">
       
@@ -50,6 +53,25 @@
 				max-width: 50%; <!-- Estilo personalizado para aumentar o tamanho do modal -->
 			}
 			
+			/*botão de propagando*/
+			.fixed-button {
+		    	display: none !important;
+			}
+			
+			.footerwhatsapp {
+				display: none;
+				position: fixed;
+				bottom: 25px;
+				right: 15px;
+				z-index: 99999999;
+				transition: opacity 0.3s ease;
+			}
+
+			.footerwhatsapp img {
+				height: 60px;
+				width: 50px;
+			}	
+						
       </style>
       
       <script type="text/javascript">
@@ -141,6 +163,7 @@
 			    }
 			}
 
+
 			function ajaxProcessarRecebimento(request) {
 				if (request.readyState === 4) {
                     if (request.status === 200) {
@@ -222,7 +245,19 @@
 			function editarFormularioUsuario(id){
 
 				window.location.href = "<%=request.getContextPath()%>/PesquisarUsuarioServlet?acao=editar&id="+ id;
-			}	
+			}
+
+			
+			function excluirCadastro(id) {
+
+			    if (id !== "") {
+			        let resposta = confirm("Deseja realmente excluir o registro?");
+			        
+			        if (resposta) {
+			        	window.location.href = "<%=request.getContextPath()%>/ExcluirUsuarioServlet?id=" + id +"&acao=excluir";
+			        }
+			    }
+			}
 			
       </script>
   </head>
