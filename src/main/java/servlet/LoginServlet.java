@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.Usuario;
+import session.AuthSession;
 
 /*As Servlets são chamado de controller*/
 @WebServlet(urlPatterns = { "/principal/LoginServlet", "/LoginServlet" }) /* Mapeamento de URL que vem da tela */
@@ -38,11 +39,11 @@ public class LoginServlet extends HttpServlet {
 	private void doIt(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String url = "/principal/principal.jsp"; /* request.getServletPath(); */
 
-		Usuario usuarioSession = (Usuario) request.getSession().getAttribute("usuarioSession");
+		Usuario usuarioLogado = AuthSession.getUsuarioLogado(request);
 
-		if (usuarioSession != null) {
+		if (usuarioLogado != null) {
 			request.getRequestDispatcher(url).forward(request, response);
-			
+
 		} else {
 
 			String login = request.getParameter("login");
@@ -58,7 +59,7 @@ public class LoginServlet extends HttpServlet {
 					/* Simulando um login */
 					if (usuarioDao.validarAutenticacao(usuario)) {
 
-						request.getSession().setAttribute("usuarioSession", usuario);
+						AuthSession.logar(request, usuario);
 						request.getRequestDispatcher(url).forward(request, response);
 
 					} else {

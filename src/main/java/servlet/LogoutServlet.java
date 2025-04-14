@@ -1,11 +1,13 @@
 package servlet;
 
+import java.io.IOException;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import session.AuthSession;
 
 @WebServlet("/LogoutServlet")
 public class LogoutServlet extends HttpServlet {
@@ -27,7 +29,7 @@ public class LogoutServlet extends HttpServlet {
 
 		if (acao != null && acao.equals("Logout")) {
 
-			request.getSession().invalidate(); // invalida a sessão - Remove todos os atributos armazenados na sessão.
+			AuthSession.deslogar(request);
 			request.getRequestDispatcher("index.jsp").forward(request, response); // redireciona para página inicial
 			return;
 		}

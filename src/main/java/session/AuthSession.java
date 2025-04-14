@@ -4,19 +4,21 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import model.Usuario;
 
-public class SessaoUsuario {
+public class AuthSession {
+	
+	public static final String USUARIO_LOGADO = "usuarioLogado";
 
-	private SessaoUsuario() {
+	private AuthSession() {
 	}
 
 	public static void logar(HttpServletRequest request, Usuario usuario) {
 		HttpSession session = request.getSession(); // cria uma nova session automaticamente.
-		session.setAttribute("usuarioLogado", usuario);
+		session.setAttribute(USUARIO_LOGADO, usuario);
 	}
 
 	public static Usuario getUsuarioLogado(HttpServletRequest request) {
 		HttpSession session = request.getSession(false); // não cria uma sessão automaticamente, apenas consulta.
-		return (session != null) ? (Usuario) session.getAttribute("usuarioLogado") : null;
+		return (session != null) ? (Usuario) session.getAttribute(USUARIO_LOGADO) : null;
 	}
 
 	public static void deslogar(HttpServletRequest request) {
