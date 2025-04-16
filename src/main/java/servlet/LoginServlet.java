@@ -1,6 +1,7 @@
 package servlet;
 
 import java.io.IOException;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -12,11 +13,12 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.Usuario;
-import session.AuthSession;
+import session.UsuarioLogadoSession;
 
 /*As Servlets são chamado de controller*/
 @WebServlet(urlPatterns = { "/principal/LoginServlet", "/LoginServlet" }) /* Mapeamento de URL que vem da tela */
 public class LoginServlet extends HttpServlet {
+
 	private static final long serialVersionUID = 1L;
 
 	private final UsuarioDao usuarioDao = new UsuarioDao();
@@ -39,7 +41,7 @@ public class LoginServlet extends HttpServlet {
 	private void doIt(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String url = "/principal/principal.jsp"; /* request.getServletPath(); */
 
-		Usuario usuarioLogado = AuthSession.getUsuarioLogado(request);
+		Usuario usuarioLogado = UsuarioLogadoSession.getUsuarioLogado(request);
 
 		if (usuarioLogado != null) {
 			request.getRequestDispatcher(url).forward(request, response);
@@ -56,10 +58,21 @@ public class LoginServlet extends HttpServlet {
 				usuario.setSenha(senha);
 
 				try {
-					/* Simulando um login */
+
 					if (usuarioDao.validarAutenticacao(usuario)) {
 
-						AuthSession.logar(request, usuario);
+						Optional<Usuario> optionalUser = usuarioDao.encontrarPorLogin(login);
+
+						/*
+						 * muda referencia do obj para ter mais informações na sessão (obs: quando o
+						 * usuário não é adm)
+						 */
+						if (optionalUser.isPresent()) {
+							usuario = optionalUser.get();
+						}
+
+						// coloca o obj na sessão
+						UsuarioLogadoSession.logar(request, usuario);
 						request.getRequestDispatcher(url).forward(request, response);
 
 					} else {

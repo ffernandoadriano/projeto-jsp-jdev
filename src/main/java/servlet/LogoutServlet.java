@@ -7,7 +7,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import session.AuthSession;
+import session.UsuarioLogadoSession;
 
 @WebServlet("/LogoutServlet")
 public class LogoutServlet extends HttpServlet {
@@ -29,7 +29,7 @@ public class LogoutServlet extends HttpServlet {
 
 		if (acao != null && acao.equals("Logout")) {
 
-			AuthSession.deslogar(request);
+			UsuarioLogadoSession.deslogar(request);
 			request.getRequestDispatcher("index.jsp").forward(request, response); // redireciona para página inicial
 			return;
 		}

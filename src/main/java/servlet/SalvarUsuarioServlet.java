@@ -12,13 +12,16 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.Usuario;
+import session.UsuarioLogadoSession;
 import util.StringUtils;
 
 @WebServlet("/SalvarUsuarioServlet")
 public class SalvarUsuarioServlet extends HttpServlet {
+
 	private static final long serialVersionUID = 1L;
 
 	private HttpServletRequest request;
+
 	private final UsuarioDao usuarioDao = new UsuarioDao();
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -71,24 +74,28 @@ public class SalvarUsuarioServlet extends HttpServlet {
 		try {
 
 			if (usuario.getId() == null) {
-				usuarioDao.salvar(usuario);
+				usuarioDao.salvar(usuario, UsuarioLogadoSession.getUsuarioLogado(request).getId());
 				acao = "salvar";
+
 			} else {
 				usuarioDao.atualizar(usuario);
 				acao = "atualizar";
 			}
 
+			/*
+			 * coloco na sessão o objeto criado e removo assim que ele é redirecionado no
+			 * jsp. Obs: somente para exibir o objeto criado
+			 */
+			response.sendRedirect(request.getContextPath() + String.format("/principal/cadastrar_usuario.jsp?acao=%s", acao));
+
+			List<Usuario> usuarios = usuarioDao.encontrarTudo(UsuarioLogadoSession.getUsuarioLogado(request).getId());
+			
+			request.getSession().setAttribute("listarUsuariosSession", usuarios);
+			request.getSession().setAttribute("usuarioSalvo", usuario);
+			
 		} catch (DaoException e) {
 			throw new ServletException(e);
 		}
-
-		/*
-		 * coloco na sessão o objeto criado e removo assim que ele é redirecionado no
-		 * jsp. Obs: somente para exibir o objeto criado
-		 */
-		response.sendRedirect(request.getContextPath() + String.format("/principal/cadastrar_usuario.jsp?acao=%s", acao));
-
-		request.getSession().setAttribute("usuarioSalvo", usuario);
 	}
 
 	/**
@@ -143,7 +150,7 @@ public class SalvarUsuarioServlet extends HttpServlet {
 
 			// Verifica UPDATE de formulário
 			if (id != null) {
-				Usuario usuarioBanco = usuarioDao.encontrarPorId(id);
+				Usuario usuarioBanco = usuarioDao.encontrarPorId(id, UsuarioLogadoSession.getUsuarioLogado(request).getId());
 				String emailBanco = usuarioBanco.getEmail();
 
 				if (!emailBanco.equalsIgnoreCase(email)) {
@@ -185,7 +192,7 @@ public class SalvarUsuarioServlet extends HttpServlet {
 
 			// Verifica UPDATE de formulário
 			if (id != null) {
-				Usuario usuarioBanco = usuarioDao.encontrarPorId(id);
+				Usuario usuarioBanco = usuarioDao.encontrarPorId(id, UsuarioLogadoSession.getUsuarioLogado(request).getId());
 				String loginBanco = usuarioBanco.getLogin();
 
 				if (!loginBanco.equalsIgnoreCase(login)) {

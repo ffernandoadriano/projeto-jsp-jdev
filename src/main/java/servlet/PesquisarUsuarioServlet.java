@@ -13,13 +13,14 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.Usuario;
+import session.UsuarioLogadoSession;
 
 @WebServlet("/PesquisarUsuarioServlet")
 public class PesquisarUsuarioServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
-	private UsuarioDao usuarioDao = new UsuarioDao();
+	private static UsuarioDao usuarioDao = new UsuarioDao();
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -39,7 +40,7 @@ public class PesquisarUsuarioServlet extends HttpServlet {
 			String id = request.getParameter("id");
 
 			try {
-				Usuario usuario = usuarioDao.encontrarPorId(Long.parseLong(id));
+				Usuario usuario = usuarioDao.encontrarPorId(Long.parseLong(id),  UsuarioLogadoSession.getUsuarioLogado(request).getId());
 
 				request.setAttribute("usuarioSalvo", usuario);
 				request.getRequestDispatcher("/principal/cadastrar_usuario.jsp").forward(request, response);
@@ -53,7 +54,7 @@ public class PesquisarUsuarioServlet extends HttpServlet {
 		String nome = request.getParameter("nome");
 
 		try {
-			List<Usuario> usuarios = usuarioDao.encontrarPorNome(nome);
+			List<Usuario> usuarios = usuarioDao.encontrarPorNome(nome, UsuarioLogadoSession.getUsuarioLogado(request).getId());
 
 			ObjectMapper mapper = new ObjectMapper();
 			String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(usuarios);

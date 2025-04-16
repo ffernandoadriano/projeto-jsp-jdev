@@ -12,10 +12,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import model.Usuario;
+import session.UsuarioLogadoSession;
 
 @WebServlet("/CadastrarUsuarioServlet")
 public class CadastrarUsuarioServlet extends HttpServlet {
+	
 	private static final long serialVersionUID = 1L;
+	
 	private UsuarioDao usuarioDao = new UsuarioDao();
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -32,7 +35,7 @@ public class CadastrarUsuarioServlet extends HttpServlet {
 		try {
 			HttpSession session = request.getSession();
 
-			List<Usuario> usuarios = usuarioDao.encontrarTudo();
+			List<Usuario> usuarios = usuarioDao.encontrarTudo(UsuarioLogadoSession.getUsuarioLogado(request).getId());
 			session.setAttribute("listarUsuariosSession", usuarios);
 			response.sendRedirect(request.getContextPath() + "/principal/cadastrar_usuario.jsp");
 

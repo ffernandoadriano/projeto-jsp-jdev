@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import connection.ConnectionFactory;
 import model.Usuario;
@@ -31,9 +32,9 @@ public class UsuarioDao implements Serializable {
 
 	public boolean validarAutenticacao(Usuario usuario) throws DaoException {
 
+		// Mais leve e rápido ⚡ Só quer saber se existe ou não
 		String sql = "SELECT 1 FROM usuario WHERE UPPER(login) = UPPER(?) AND senha = ?";
 
-		// Mais leve e rápido ⚡ Só quer saber se existe ou não
 		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
 			pstmt.setString(1, usuario.getLogin());
 			pstmt.setString(2, usuario.getSenha());
@@ -48,15 +49,17 @@ public class UsuarioDao implements Serializable {
 		}
 	}
 
-	public void salvar(Usuario obj) throws DaoException {
+	/* É necessário apenas saber quem cadastrou identificando pelo usuário logado */
+	public void salvar(Usuario obj, Long idUsuarioLogado) throws DaoException {
 
-		String insertSql = "INSERT INTO usuario (nome, email, login, senha) VALUES ( ?, ?, ?, ?)";
+		String insertSql = "INSERT INTO usuario (nome, email, login, senha, usuario_id) VALUES (?, ?, ?, ?, ?)";
 
 		try (PreparedStatement pstmt = connection.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS)) {
 			pstmt.setString(1, obj.getNome());
 			pstmt.setString(2, obj.getEmail());
 			pstmt.setString(3, obj.getLogin());
 			pstmt.setString(4, obj.getSenha());
+			pstmt.setLong(5, idUsuarioLogado);
 
 			// Executa a query
 			int linhasAfetas = pstmt.executeUpdate();
@@ -83,12 +86,13 @@ public class UsuarioDao implements Serializable {
 		}
 	}
 
-	public Usuario encontrarPorId(Long id) throws DaoException {
+	public Usuario encontrarPorId(Long id, Long idUsuarioLogado) throws DaoException {
 
-		String sql = "SELECT id, nome, email, login, senha FROM usuario WHERE id = ? AND admin is false";
+		String sql = "SELECT id, nome, email, login, senha FROM usuario WHERE id = ? AND admin is false AND usuario_id = ?";
 
 		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
 			pstmt.setLong(1, id);
+			pstmt.setLong(2, idUsuarioLogado);
 
 			try (ResultSet rs = pstmt.executeQuery()) {
 
@@ -112,14 +116,75 @@ public class UsuarioDao implements Serializable {
 		return null;
 	}
 
-	public List<Usuario> encontrarPorNome(String nome) throws DaoException {
+	/* Query sem restrição por causa dos admins */
+	public Optional<Usuario> encontrarPorLogin(String login) throws DaoException {
 
-		String sql = "SELECT id, nome, email, login, senha FROM usuario WHERE UPPER(nome) LIKE CONCAT('%',UPPER(?),'%') AND admin is false";
+		String sql = "SELECT id, nome, email, login, senha FROM usuario WHERE UPPER(login) = UPPER(?)";
+
+		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+			pstmt.setString(1, login);
+
+			try (ResultSet rs = pstmt.executeQuery()) {
+
+				if (rs.next()) {
+					Usuario usuario = new Usuario();
+
+					usuario.setId(rs.getLong("id"));
+					usuario.setNome(rs.getString("nome"));
+					usuario.setEmail(rs.getString("email"));
+					usuario.setLogin(rs.getString("login"));
+					usuario.setSenha(rs.getString("senha"));
+
+					return Optional.of(usuario);
+				}
+
+			}
+		} catch (SQLException e) {
+			throw new DaoException(e);
+		}
+
+		return Optional.empty();
+	}
+
+	public Optional<Usuario> encontrarPorLogin(String login, Long idUsuarioLogado) throws DaoException {
+
+		String sql = "SELECT id, nome, email, login, senha FROM usuario WHERE UPPER(login) = UPPER(?) AND admin is false AND usuario_id = ?";
+
+		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+			pstmt.setString(1, login);
+			pstmt.setLong(2, idUsuarioLogado);
+
+			try (ResultSet rs = pstmt.executeQuery()) {
+
+				if (rs.next()) {
+					Usuario usuario = new Usuario();
+
+					usuario.setId(rs.getLong("id"));
+					usuario.setNome(rs.getString("nome"));
+					usuario.setEmail(rs.getString("email"));
+					usuario.setLogin(rs.getString("login"));
+					usuario.setSenha(rs.getString("senha"));
+
+					return Optional.of(usuario);
+				}
+
+			}
+		} catch (SQLException e) {
+			throw new DaoException(e);
+		}
+
+		return Optional.empty();
+	}
+
+	public List<Usuario> encontrarPorNome(String nome, Long idUsuarioLogado) throws DaoException {
+
+		String sql = "SELECT id, nome, email, login, senha FROM usuario WHERE UPPER(nome) LIKE CONCAT('%',UPPER(?),'%') AND admin is false AND usuario_id = ?";
 
 		List<Usuario> usuarios = new ArrayList<>();
 
 		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
 			pstmt.setString(1, nome);
+			pstmt.setLong(2, idUsuarioLogado);
 
 			try (ResultSet rs = pstmt.executeQuery()) {
 
@@ -130,7 +195,6 @@ public class UsuarioDao implements Serializable {
 					usuario.setNome(rs.getString("nome"));
 					usuario.setEmail(rs.getString("email"));
 					usuario.setLogin(rs.getString("login"));
-					// usuario.setSenha(rs.getString("senha"));
 
 					usuarios.add(usuario);
 				}
@@ -141,14 +205,15 @@ public class UsuarioDao implements Serializable {
 
 		return usuarios;
 	}
-	
-	public List<Usuario> encontrarTudo() throws DaoException {
 
-		String sql = "SELECT id, nome, email, login, senha FROM usuario WHERE admin is false ORDER BY id";
+	public List<Usuario> encontrarTudo(Long idUsuarioLogado) throws DaoException {
+
+		String sql = "SELECT id, nome, email, login, senha FROM usuario WHERE admin is false AND usuario_id = ? ORDER BY id";
 
 		List<Usuario> usuarios = new ArrayList<>();
 
 		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+			pstmt.setLong(1, idUsuarioLogado);
 
 			try (ResultSet rs = pstmt.executeQuery()) {
 
@@ -159,7 +224,6 @@ public class UsuarioDao implements Serializable {
 					usuario.setNome(rs.getString("nome"));
 					usuario.setEmail(rs.getString("email"));
 					usuario.setLogin(rs.getString("login"));
-					// usuario.setSenha(rs.getString("senha"));
 
 					usuarios.add(usuario);
 				}

@@ -4,11 +4,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import model.Usuario;
 
-public class AuthSession {
-	
-	public static final String USUARIO_LOGADO = "usuarioLogado";
+public class UsuarioLogadoSession {
 
-	private AuthSession() {
+	private static final String USUARIO_LOGADO = "usuarioLogado";
+
+	private UsuarioLogadoSession() {
 	}
 
 	public static void logar(HttpServletRequest request, Usuario usuario) {
