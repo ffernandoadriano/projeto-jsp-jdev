@@ -119,7 +119,7 @@ public class UsuarioDao implements Serializable {
 	/* Query sem restrição por causa dos admins */
 	public Optional<Usuario> encontrarPorLogin(String login) throws DaoException {
 
-		String sql = "SELECT id, nome, email, login, senha FROM usuario WHERE UPPER(login) = UPPER(?)";
+		String sql = "SELECT id, nome, email, login, senha, admin FROM usuario WHERE UPPER(login) = UPPER(?)";
 
 		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
 			pstmt.setString(1, login);
@@ -134,6 +134,7 @@ public class UsuarioDao implements Serializable {
 					usuario.setEmail(rs.getString("email"));
 					usuario.setLogin(rs.getString("login"));
 					usuario.setSenha(rs.getString("senha"));
+					usuario.setAdmin(rs.getBoolean("admin"));
 
 					return Optional.of(usuario);
 				}

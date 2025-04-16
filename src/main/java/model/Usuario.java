@@ -12,6 +12,7 @@ public class Usuario implements Serializable {
 	private String email;
 	private String login;
 	private String senha;
+	private boolean admin;
 
 	public Long getId() {
 		return id;
@@ -53,6 +54,14 @@ public class Usuario implements Serializable {
 		this.senha = senha;
 	}
 
+	public boolean isAdmin() {
+		return admin;
+	}
+
+	public void setAdmin(boolean admin) {
+		this.admin = admin;
+	}
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);
@@ -73,7 +82,7 @@ public class Usuario implements Serializable {
 	@Override
 	public String toString() {
 		return "Usuario [id=" + id + ", nome=" + nome + ", email=" + email + ", login=" + login + ", senha=" + senha
-				+ "]";
+				+ ", admin=" + admin + "]";
 	}
 
 }

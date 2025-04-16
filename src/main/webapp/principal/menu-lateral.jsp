@@ -1,3 +1,5 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
 <nav class="pcoded-navbar">
 	<div class="sidebar_toggle"><a href="#"><i class="icon-close icons"></i></a></div>
 	    <div class="pcoded-inner-navbar main-menu">
@@ -44,13 +46,22 @@
 	                  <span class="pcoded-mcaret"></span>
 	              </a>
 	              <ul class="pcoded-submenu">
-	                  <li class=" ">
-	                      <a href="<%= request.getContextPath() %>/CadastrarUsuarioServlet" class="waves-effect waves-dark">
-	                          <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
-	                          <span class="pcoded-mtext" data-i18n="nav.basic-components.alert">Cadastrar Usuário</span>
-	                          <span class="pcoded-mcaret"></span>
-	                      </a>
-	                  </li>
+	              
+	              		<!-- Inicio cadastro de usuário -->
+	              		
+	              		<!-- Verifica se o usuário logado é admin -->
+	              	<c:if test="${usuarioLogado.admin}">
+		                  <li class=" ">
+		                      <a href="<%= request.getContextPath() %>/CadastrarUsuarioServlet" class="waves-effect waves-dark">
+		                          <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+		                          <span class="pcoded-mtext" data-i18n="nav.basic-components.alert">Cadastrar Usuário</span>
+		                          <span class="pcoded-mcaret"></span>
+		                      </a>
+		                  </li>
+	                  </c:if>
+	                  
+	                	<!-- Final cadastro de usuário -->
+	                  
 	                  <li class=" ">
 	                      <a href="breadcrumb.html" class="waves-effect waves-dark">
 	                          <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
