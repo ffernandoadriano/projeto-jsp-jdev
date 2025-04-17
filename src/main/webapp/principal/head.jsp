@@ -36,6 +36,7 @@
      <link rel="stylesheet" type="text/css" href="<%= request.getContextPath() %>/assets/pages/notification/notification.css">
      <!-- Animate.css -->
      <link rel="stylesheet" type="text/css" href="<%= request.getContextPath() %>/assets/css/animate.css/css/animate.css">
+     
       
       <style type="text/css">
       
@@ -76,8 +77,8 @@
 			.footerwhatsapp img {
 				height: 60px;
 				width: 50px;
-			}	
-						
+			}
+				
       </style>
       
       <script type="text/javascript">
@@ -96,6 +97,10 @@
 
 	    	  // Limpa os parâmetros da URL
 	    	  history.replaceState(null, '', window.location.pathname);
+
+	    	  // Limpar o radio
+	    	  const radios = document.getElementsByName("sexo");
+	    	  radios.forEach(radio => radio.checked = false);
 			}
 
 			function excluirCadastro(){

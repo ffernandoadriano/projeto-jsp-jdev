@@ -3,12 +3,15 @@ package model;
 import java.io.Serializable;
 import java.util.Objects;
 
+import model.enums.Sexo;
+
 public class Usuario implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
 	private String nome;
+	private Sexo sexo;
 	private String email;
 	private String login;
 	private Integer perfil;
@@ -29,6 +32,14 @@ public class Usuario implements Serializable {
 
 	public void setNome(String nome) {
 		this.nome = nome;
+	}
+
+	public Sexo getSexo() {
+		return sexo;
+	}
+
+	public void setSexo(Sexo sexo) {
+		this.sexo = sexo;
 	}
 
 	public String getEmail() {
@@ -90,8 +101,8 @@ public class Usuario implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Usuario [id=" + id + ", nome=" + nome + ", email=" + email + ", login=" + login + ", perfil=" + perfil
-				+ ", senha=" + senha + ", admin=" + admin + "]";
+		return "Usuario [id=" + id + ", nome=" + nome + ", sexo=" + sexo + ", email=" + email + ", login=" + login
+				+ ", perfil=" + perfil + ", senha=" + senha + ", admin=" + admin + "]";
 	}
 
 }

@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.Usuario;
+import model.enums.Sexo;
 import session.UsuarioLogadoSession;
 import util.StringUtils;
 
@@ -43,8 +44,9 @@ public class SalvarUsuarioServlet extends HttpServlet {
 		// null não pode ser passado diretamente para Long.valueOf()
 		Long id = (idParam == null || idParam.isEmpty()) ? null : Long.valueOf(idParam.trim());
 		String nome = request.getParameter("nome").trim();
+		String sexo = request.getParameter("sexo").trim();
 		String email = request.getParameter("email").trim();
-		String perfil = request.getParameter("perfil");
+		String perfil = request.getParameter("perfil").trim();
 		String login = request.getParameter("login").trim();
 		String senha = request.getParameter("senha").trim();
 
@@ -59,7 +61,7 @@ public class SalvarUsuarioServlet extends HttpServlet {
 		// na request (para permitir que o formulário
 		// exiba os campos preenchidos) e volta para a mesma tela.
 		if (existemErros()) {
-			definirValores(idParam, nome, email, login, senha);
+			definirValores(idParam, nome, sexo, email, perfil, login, senha);
 			request.getRequestDispatcher("/principal/cadastrar_usuario.jsp").forward(request, response);
 			return;
 		}
@@ -67,6 +69,7 @@ public class SalvarUsuarioServlet extends HttpServlet {
 		Usuario usuario = new Usuario();
 		usuario.setId(id);
 		usuario.setNome(nome);
+		usuario.setSexo(Sexo.fromValor(sexo));
 		usuario.setEmail(email);
 		usuario.setLogin(login);
 		usuario.setSenha(senha);
@@ -106,10 +109,13 @@ public class SalvarUsuarioServlet extends HttpServlet {
 	 * Coloca os valores submetidos pelo formulário novamente na request, para que
 	 * possam ser exibidos novamente após o carregamento da página
 	 */
-	private void definirValores(String id, String nome, String email, String login, String senha) {
+	private void definirValores(String id, String nome, String sexo, String email, String perfil, String login,
+			String senha) {
 		request.setAttribute("id", id);
 		request.setAttribute("nome", nome);
+		request.setAttribute("sexo", sexo);
 		request.setAttribute("email", email);
+		request.setAttribute("perfil", perfil);
 		request.setAttribute("login", login);
 		request.setAttribute("senha", senha);
 	}

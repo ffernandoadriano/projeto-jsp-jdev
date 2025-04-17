@@ -66,6 +66,34 @@
 																		value="${empty nome ? usuarioSalvo.nome : nome}" />
 																</div>
 															</div>
+
+															<div class="form-group row">
+																<label class="col-sm-1 col-form-label">Sexo:</label>
+
+																<div class="col-sm-1 col-form-label">
+																	<div
+																		class="custom-control custom-radio custom-control-inline"
+																		id="radioSexo">
+																		<input class="form-check-input" type="radio"
+																			name="sexo" id="inlineRadio1" value="M"
+																			required="required"
+																			${sexo eq 'M' or usuarioSalvo.sexo.sigla eq 'M' ? 'checked' : ''}>
+																		<label class="form-check-label" for="inlineRadio1">Masculino</label>
+																	</div>
+																	<div
+																		class="custom-control custom-radio custom-control-inline">
+																		<input class="form-check-input" type="radio"
+																			name="sexo" id="inlineRadio2" value="F"
+																			required="required"
+																			${sexo eq 'F' or usuarioSalvo.sexo.sigla eq 'F' ? 'checked' : ''}>
+																		<label class="form-check-label" for="inlineRadio2">Feminino</label>
+																	</div>
+																</div>
+
+															</div>
+
+
+
 															<div class="form-group row">
 																<label class="col-sm-1 col-form-label">E-mail:</label>
 																<div class="col-sm-8">
@@ -80,9 +108,12 @@
 																	<select name="perfil" class="form-control"
 																		required="required">
 																		<option value="0">Selecione o Perfil</option>
-																		<option value="1" <c:if test="${usuarioSalvo.perfil == 1}">selected</c:if>>Admin</option>
-																		<option value="2" <c:if test="${usuarioSalvo.perfil == 2}">selected</c:if>>Secretária</option>
-																		<option value="3" <c:if test="${usuarioSalvo.perfil == 3}">selected</c:if>>Auxiliar</option>
+																		<option value="1"
+																			${perfil == 1 or usuarioSalvo.perfil == 1 ? 'selected' : ''}>Admin</option>
+																		<option value="2"
+																			${perfil == 2 or usuarioSalvo.perfil == 2 ?  'selected' : ''}>Secretária</option>
+																		<option value="3"
+																			${perfil == 3 or usuarioSalvo.perfil == 3 ? 'selected' : ''}>Auxiliar</option>
 																	</select>
 																</div>
 															</div>
@@ -145,7 +176,7 @@
 														</form>
 													</div>
 												</div>
-												
+
 												<!-- Basic Form Inputs card end -->
 											</div>
 
@@ -265,8 +296,8 @@
 		</div>
 	</div>
 	<jsp:include page="jsWhatsAppIcone.jsp"></jsp:include>
-	
-	
+
+
 	<!-- Notificações -->
 	<script>
 			 $(document).ready(function () {
