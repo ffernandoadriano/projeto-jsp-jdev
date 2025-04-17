@@ -74,6 +74,17 @@
 																		value="${empty email ? usuarioSalvo.email : email}" />
 																</div>
 															</div>
+															 <div class="form-group row">
+                                                                    <label class="col-sm-1 col-form-label">Perfil:</label>
+                                                                    <div class="col-sm-8">
+                                                                        <select name="perfil" class="form-control" required="required">
+                                                                            <option value="0">Selecione o Perfil</option>
+                                                                            <option value="1">Admin</option>
+                                                                            <option value="2">Secretária</option>
+                                                                            <option value="3">Auxiliar</option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
 															<div class="form-group row">
 																<label class="col-sm-1 col-form-label">login:</label>
 																<div class="col-sm-8">

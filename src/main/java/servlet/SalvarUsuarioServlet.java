@@ -44,12 +44,14 @@ public class SalvarUsuarioServlet extends HttpServlet {
 		Long id = (idParam == null || idParam.isEmpty()) ? null : Long.valueOf(idParam.trim());
 		String nome = request.getParameter("nome").trim();
 		String email = request.getParameter("email").trim();
+		String perfil = request.getParameter("perfil");
 		String login = request.getParameter("login").trim();
 		String senha = request.getParameter("senha").trim();
 
 		// Faz a validação dos dados digitados
 		validarNome(nome);
 		validarEmail(email, id);
+		validarPerfil(perfil);
 		validarLogin(login, id);
 		validarSenha(senha);
 
@@ -68,6 +70,7 @@ public class SalvarUsuarioServlet extends HttpServlet {
 		usuario.setEmail(email);
 		usuario.setLogin(login);
 		usuario.setSenha(senha);
+		usuario.setPerfil(Integer.valueOf(perfil));
 
 		String acao;
 
@@ -86,13 +89,14 @@ public class SalvarUsuarioServlet extends HttpServlet {
 			 * coloco na sessão o objeto criado e removo assim que ele é redirecionado no
 			 * jsp. Obs: somente para exibir o objeto criado
 			 */
-			response.sendRedirect(request.getContextPath() + String.format("/principal/cadastrar_usuario.jsp?acao=%s", acao));
+			response.sendRedirect(
+					request.getContextPath() + String.format("/principal/cadastrar_usuario.jsp?acao=%s", acao));
 
 			List<Usuario> usuarios = usuarioDao.encontrarTudo(UsuarioLogadoSession.getUsuarioLogado(request).getId());
-			
+
 			request.getSession().setAttribute("listarUsuariosSession", usuarios);
 			request.getSession().setAttribute("usuarioSalvo", usuario);
-			
+
 		} catch (DaoException e) {
 			throw new ServletException(e);
 		}
@@ -150,7 +154,8 @@ public class SalvarUsuarioServlet extends HttpServlet {
 
 			// Verifica UPDATE de formulário
 			if (id != null) {
-				Usuario usuarioBanco = usuarioDao.encontrarPorId(id, UsuarioLogadoSession.getUsuarioLogado(request).getId());
+				Usuario usuarioBanco = usuarioDao.encontrarPorId(id,
+						UsuarioLogadoSession.getUsuarioLogado(request).getId());
 				String emailBanco = usuarioBanco.getEmail();
 
 				if (!emailBanco.equalsIgnoreCase(email)) {
@@ -168,6 +173,17 @@ public class SalvarUsuarioServlet extends HttpServlet {
 
 		} catch (DaoException e) {
 			throw new ServletException(e);
+		}
+	}
+
+	/**
+	 * Valida o perfil
+	 * 
+	 * @param perfil
+	 */
+	private void validarPerfil(String perfil) {
+		if (perfil == null || perfil.equals("0")) {
+			adicionarErro("Selecione um perfil válido.");
 		}
 	}
 
@@ -192,7 +208,8 @@ public class SalvarUsuarioServlet extends HttpServlet {
 
 			// Verifica UPDATE de formulário
 			if (id != null) {
-				Usuario usuarioBanco = usuarioDao.encontrarPorId(id, UsuarioLogadoSession.getUsuarioLogado(request).getId());
+				Usuario usuarioBanco = usuarioDao.encontrarPorId(id,
+						UsuarioLogadoSession.getUsuarioLogado(request).getId());
 				String loginBanco = usuarioBanco.getLogin();
 
 				if (!loginBanco.equalsIgnoreCase(login)) {

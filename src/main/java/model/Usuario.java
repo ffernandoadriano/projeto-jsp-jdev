@@ -11,6 +11,7 @@ public class Usuario implements Serializable {
 	private String nome;
 	private String email;
 	private String login;
+	private Integer perfil;
 	private String senha;
 	private boolean admin;
 
@@ -44,6 +45,14 @@ public class Usuario implements Serializable {
 
 	public void setLogin(String login) {
 		this.login = login;
+	}
+
+	public Integer getPerfil() {
+		return perfil;
+	}
+
+	public void setPerfil(Integer perfil) {
+		this.perfil = perfil;
 	}
 
 	public String getSenha() {
@@ -81,8 +90,8 @@ public class Usuario implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Usuario [id=" + id + ", nome=" + nome + ", email=" + email + ", login=" + login + ", senha=" + senha
-				+ ", admin=" + admin + "]";
+		return "Usuario [id=" + id + ", nome=" + nome + ", email=" + email + ", login=" + login + ", perfil=" + perfil
+				+ ", senha=" + senha + ", admin=" + admin + "]";
 	}
 
 }

@@ -50,7 +50,7 @@
 	              		<!-- Inicio cadastro de usuário -->
 	              		
 	              		<!-- Verifica se o usuário logado é admin -->
-	              	<c:if test="${usuarioLogado.admin}">
+	              	<c:if test="${usuarioLogado.perfil == 1}">
 		                  <li class=" ">
 		                      <a href="<%= request.getContextPath() %>/CadastrarUsuarioServlet" class="waves-effect waves-dark">
 		                          <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
