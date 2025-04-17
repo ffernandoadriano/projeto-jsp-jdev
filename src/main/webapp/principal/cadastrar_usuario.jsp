@@ -74,17 +74,18 @@
 																		value="${empty email ? usuarioSalvo.email : email}" />
 																</div>
 															</div>
-															 <div class="form-group row">
-                                                                    <label class="col-sm-1 col-form-label">Perfil:</label>
-                                                                    <div class="col-sm-8">
-                                                                        <select name="perfil" class="form-control" required="required">
-                                                                            <option value="0">Selecione o Perfil</option>
-                                                                            <option value="1">Admin</option>
-                                                                            <option value="2">Secretária</option>
-                                                                            <option value="3">Auxiliar</option>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
+															<div class="form-group row">
+																<label class="col-sm-1 col-form-label">Perfil:</label>
+																<div class="col-sm-8">
+																	<select name="perfil" class="form-control"
+																		required="required">
+																		<option value="0">Selecione o Perfil</option>
+																		<option value="1">Admin</option>
+																		<option value="2">Secretária</option>
+																		<option value="3">Auxiliar</option>
+																	</select>
+																</div>
+															</div>
 															<div class="form-group row">
 																<label class="col-sm-1 col-form-label">login:</label>
 																<div class="col-sm-8">
@@ -144,26 +145,7 @@
 														</form>
 													</div>
 												</div>
-
-												<c:choose>
-													<c:when test="${erros != null}">
-														<c:forEach var="erro" items="${erros}">
-															<span class="erro">${erro}</span>
-															<br>
-														</c:forEach>
-													</c:when>
-													<%-- Este é um comentário JSP, que não causa erro --%>
-													<c:when test="${param.acao eq 'salvar'}">
-														<span class="sucessoSalvo">O registro foi salvo com
-															sucesso!</span>
-													</c:when>
-													<c:when test="${param.acao eq 'atualizar'}">
-														<span class="sucessoSalvo">O registro foi
-															atualizado com sucesso!</span>
-													</c:when>
-												</c:choose>
-
-
+												
 												<!-- Basic Form Inputs card end -->
 											</div>
 
@@ -283,6 +265,34 @@
 		</div>
 	</div>
 	<jsp:include page="jsWhatsAppIcone.jsp"></jsp:include>
+	
+	
+	<!-- Notificações -->
+	<script>
+			 $(document).ready(function () {
+				<c:choose>
+					<c:when test="${erros != null}">
+					
+						<c:forEach var="erro" items="${erros}">
+						 	triggerNotification("top", "right", "fa fa-exclamation-triangle", "danger", "animated fadeInRight", "animated fadeOutRight", " ${erro}", '');
+						</c:forEach>
+						
+					</c:when>
+					<%-- Este é um comentário JSP, que não causa erro --%>
+					<c:when test="${param.acao eq 'salvar'}">
+					
+						 triggerNotification('top', 'center', 'fa fa-check', 'success', 'animated bounceIn', 'animated bounceOut', ' Registro salvo com sucesso!', '');
+						 
+					</c:when>
+					<c:when test="${param.acao eq 'atualizar'}">
+					
+					 	triggerNotification('top', 'center', 'fa fa-check', 'success', 'animated bounceIn', 'animated bounceOut', ' Registro atualizado com sucesso!', '');
+					 
+					</c:when>
+				</c:choose>
+			 });
+		</script>
+
 </body>
 
 </html>

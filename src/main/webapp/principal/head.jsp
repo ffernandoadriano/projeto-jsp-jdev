@@ -30,7 +30,12 @@
       <link rel="stylesheet" type="text/css" href="<%= request.getContextPath() %>/assets/css/style.css">
       <!-- icone whatsApp -->
      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-      
+     <!-- ico font -->
+     <link rel="stylesheet" type="text/css" href="<%= request.getContextPath() %>/assets/icon/icofont/css/icofont.css">
+     <!-- Notification.css -->
+     <link rel="stylesheet" type="text/css" href="<%= request.getContextPath() %>/assets/pages/notification/notification.css">
+     <!-- Animate.css -->
+     <link rel="stylesheet" type="text/css" href="<%= request.getContextPath() %>/assets/css/animate.css/css/animate.css">
       
       <style type="text/css">
       
@@ -57,6 +62,7 @@
 			.fixed-button {
 		    	display: none !important;
 			}
+			
 			
 			.footerwhatsapp {
 				display: none;
