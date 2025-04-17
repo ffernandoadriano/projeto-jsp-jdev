@@ -80,9 +80,9 @@
 																	<select name="perfil" class="form-control"
 																		required="required">
 																		<option value="0">Selecione o Perfil</option>
-																		<option value="1">Admin</option>
-																		<option value="2">Secretária</option>
-																		<option value="3">Auxiliar</option>
+																		<option value="1" <c:if test="${usuarioSalvo.perfil == 1}">selected</c:if>>Admin</option>
+																		<option value="2" <c:if test="${usuarioSalvo.perfil == 2}">selected</c:if>>Secretária</option>
+																		<option value="3" <c:if test="${usuarioSalvo.perfil == 3}">selected</c:if>>Auxiliar</option>
 																	</select>
 																</div>
 															</div>
