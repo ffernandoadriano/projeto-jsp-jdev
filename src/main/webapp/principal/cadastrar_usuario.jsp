@@ -109,11 +109,11 @@
 																		required="required">
 																		<option value="0">Selecione o Perfil</option>
 																		<option value="1"
-																			${perfil == 1 or usuarioSalvo.perfil == 1 ? 'selected' : ''}>Admin</option>
+																			${perfil == 1 or usuarioSalvo.perfil.id == 1 ? 'selected' : ''}>Admin</option>
 																		<option value="2"
-																			${perfil == 2 or usuarioSalvo.perfil == 2 ?  'selected' : ''}>Secretária</option>
+																			${perfil == 2 or usuarioSalvo.perfil.id == 2 ?  'selected' : ''}>Secretária</option>
 																		<option value="3"
-																			${perfil == 3 or usuarioSalvo.perfil == 3 ? 'selected' : ''}>Auxiliar</option>
+																			${perfil == 3 or usuarioSalvo.perfil.id == 3 ? 'selected' : ''}>Auxiliar</option>
 																	</select>
 																</div>
 															</div>

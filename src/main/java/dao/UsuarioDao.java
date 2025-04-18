@@ -12,6 +12,7 @@ import java.util.Optional;
 
 import connection.ConnectionFactory;
 import model.Usuario;
+import model.enums.Perfil;
 import model.enums.Sexo;
 
 public class UsuarioDao implements Serializable {
@@ -61,7 +62,7 @@ public class UsuarioDao implements Serializable {
 			pstmt.setString(3, obj.getLogin());
 			pstmt.setString(4, obj.getSenha());
 			pstmt.setLong(5, idUsuarioLogado);
-			pstmt.setInt(6, obj.getPerfil());
+			pstmt.setInt(6, obj.getPerfil().getId());
 			pstmt.setString(7, String.valueOf(obj.getSexo().getSigla()));
 
 			// Executa a query
@@ -104,11 +105,11 @@ public class UsuarioDao implements Serializable {
 
 					usuario.setId(rs.getLong("id"));
 					usuario.setNome(rs.getString("nome"));
-					usuario.setSexo(Sexo.fromValor(rs.getString("sexo")));
+					usuario.setSexo(Sexo.fromSigla(rs.getString("sexo")));
 					usuario.setEmail(rs.getString("email"));
 					usuario.setLogin(rs.getString("login"));
 					usuario.setSenha(rs.getString("senha"));
-					usuario.setPerfil(rs.getInt("perfil_id"));
+					usuario.setPerfil(Perfil.fromId(rs.getInt("perfil_id")));
 
 					return usuario;
 				}
@@ -136,12 +137,12 @@ public class UsuarioDao implements Serializable {
 
 					usuario.setId(rs.getLong("id"));
 					usuario.setNome(rs.getString("nome"));
-					usuario.setSexo(Sexo.fromValor(rs.getString("sexo")));
+					usuario.setSexo(Sexo.fromSigla(rs.getString("sexo")));
 					usuario.setEmail(rs.getString("email"));
 					usuario.setLogin(rs.getString("login"));
 					usuario.setSenha(rs.getString("senha"));
 					usuario.setAdmin(rs.getBoolean("admin"));
-					usuario.setPerfil(rs.getInt("perfil_id"));
+					usuario.setPerfil(Perfil.fromId(rs.getInt("perfil_id")));
 
 					return Optional.of(usuario);
 				}
@@ -169,11 +170,11 @@ public class UsuarioDao implements Serializable {
 
 					usuario.setId(rs.getLong("id"));
 					usuario.setNome(rs.getString("nome"));
-					usuario.setSexo(Sexo.fromValor(rs.getString("sexo")));
+					usuario.setSexo(Sexo.fromSigla(rs.getString("sexo")));
 					usuario.setEmail(rs.getString("email"));
 					usuario.setLogin(rs.getString("login"));
 					usuario.setSenha(rs.getString("senha"));
-					usuario.setPerfil(rs.getInt("perfil_id"));
+					usuario.setPerfil(Perfil.fromId(rs.getInt("perfil_id")));
 
 					return Optional.of(usuario);
 				}
@@ -203,10 +204,10 @@ public class UsuarioDao implements Serializable {
 
 					usuario.setId(rs.getLong("id"));
 					usuario.setNome(rs.getString("nome"));
-					usuario.setSexo(Sexo.fromValor(rs.getString("sexo")));
+					usuario.setSexo(Sexo.fromSigla(rs.getString("sexo")));
 					usuario.setEmail(rs.getString("email"));
 					usuario.setLogin(rs.getString("login"));
-					usuario.setPerfil(rs.getInt("perfil_id"));
+					usuario.setPerfil(Perfil.fromId(rs.getInt("perfil_id")));
 
 					usuarios.add(usuario);
 				}
@@ -292,7 +293,7 @@ public class UsuarioDao implements Serializable {
 			pstmt.setString(2, obj.getEmail());
 			pstmt.setString(3, obj.getLogin());
 			pstmt.setString(4, obj.getSenha());
-			pstmt.setInt(5, obj.getPerfil());
+			pstmt.setInt(5, obj.getPerfil().getId());
 			pstmt.setString(6, String.valueOf(obj.getSexo().getSigla()));
 			pstmt.setLong(7, obj.getId());
 

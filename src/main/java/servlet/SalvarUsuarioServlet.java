@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.Usuario;
+import model.enums.Perfil;
 import model.enums.Sexo;
 import session.UsuarioLogadoSession;
 import util.StringUtils;
@@ -69,11 +70,11 @@ public class SalvarUsuarioServlet extends HttpServlet {
 		Usuario usuario = new Usuario();
 		usuario.setId(id);
 		usuario.setNome(nome);
-		usuario.setSexo(Sexo.fromValor(sexo));
+		usuario.setSexo(Sexo.fromSigla(sexo));
 		usuario.setEmail(email);
 		usuario.setLogin(login);
 		usuario.setSenha(senha);
-		usuario.setPerfil(Integer.valueOf(perfil));
+		usuario.setPerfil(Perfil.fromId(Integer.valueOf(perfil)));
 
 		String acao;
 

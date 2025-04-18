@@ -3,6 +3,7 @@ package model;
 import java.io.Serializable;
 import java.util.Objects;
 
+import model.enums.Perfil;
 import model.enums.Sexo;
 
 public class Usuario implements Serializable {
@@ -14,7 +15,7 @@ public class Usuario implements Serializable {
 	private Sexo sexo;
 	private String email;
 	private String login;
-	private Integer perfil;
+	private Perfil perfil;
 	private String senha;
 	private boolean admin;
 
@@ -58,11 +59,11 @@ public class Usuario implements Serializable {
 		this.login = login;
 	}
 
-	public Integer getPerfil() {
+	public Perfil getPerfil() {
 		return perfil;
 	}
 
-	public void setPerfil(Integer perfil) {
+	public void setPerfil(Perfil perfil) {
 		this.perfil = perfil;
 	}
 

@@ -19,7 +19,7 @@ public enum Sexo {
 		return descricao;
 	}
 
-	public static Sexo fromValor(String sigla) {
+	public static Sexo fromSigla(String sigla) {
 		for (Sexo sexo : Sexo.values()) {
 			if (sexo.sigla.equals(sigla)) {
 				return sexo;
