@@ -47,9 +47,20 @@
 														<h4 class="sub-title">Formulário</h4>
 
 
+														<%
+														/* O atributo enctype especifica como os dados do formulário devem ser codificados ao serem enviados para o servidor.
+														    Quando se trata de upload de arquivos, é necessário definir enctype="multipart/form-data" no elemento <form>
+
+														Isso é crucial porque:
+															# Permite que o navegador envie arquivos binários (como imagens ou documentos) juntamente com os dados do formulário.
+															# Garante que os dados sejam divididos em múltiplas partes, facilitando a separação entre arquivos e outros campos do formulário
+														*/
+														%>
+
 														<form
 															action="<%=request.getContextPath()%>/SalvarUsuarioServlet"
-															method="post" id="usuarioForm">
+															method="post" id="usuarioForm"
+															enctype="multipart/form-data">
 															<div class="form-group row">
 																<label class="col-sm-1 col-form-label">ID:</label>
 																<div class="col-sm-1">
@@ -58,6 +69,19 @@
 																		value="${empty id ? usuarioSalvo.id : id}">
 																</div>
 															</div>
+
+															<div class="form-group row">
+																<div class="col-sm-1">
+																	<img alt="Imagem Perfil"
+																		src="https://storage.googleapis.com/dpw/app/uploads/2019/04/lazy-loading-nativo-imagens-iframes_.jpg"
+																		width="120px">
+																</div>
+																<div class="col-sm-8">
+																	<input type="file" class="form-control">
+																</div>
+															</div>
+
+
 															<div class="form-group row">
 																<label class="col-sm-1 col-form-label">Nome:</label>
 																<div class="col-sm-8">

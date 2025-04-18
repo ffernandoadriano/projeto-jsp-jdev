@@ -7,6 +7,7 @@ import java.util.List;
 import dao.DaoException;
 import dao.UsuarioDao;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,6 +18,13 @@ import model.enums.Sexo;
 import session.UsuarioLogadoSession;
 import util.StringUtils;
 
+/**
+ * No lado do servidor, o servlet responsável por processar o upload deve ser
+ * anotado com @MultipartConfig. Essa anotação informa ao contêiner que o
+ * servlet está preparado para lidar com requisições do tipo
+ * multipart/form-data.
+ **/
+@MultipartConfig
 @WebServlet("/SalvarUsuarioServlet")
 public class SalvarUsuarioServlet extends HttpServlet {
 
