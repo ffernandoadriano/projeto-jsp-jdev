@@ -20,6 +20,7 @@ public class Imagem implements Serializable {
 	private String extensao;
 	private String tipo;
 	private LocalDateTime dataUpload;
+	private String imageBase64; // não vai para o banco de dados
 
 	public Long getId() {
 		return id;
@@ -37,12 +38,12 @@ public class Imagem implements Serializable {
 		this.usuario = usuario;
 	}
 
-	public byte[] getImagem() {
+	public byte[] getImage() {
 		return image;
 	}
 
-	public void setImagem(byte[] imagem) {
-		this.image = imagem;
+	public void setImage(byte[] image) {
+		this.image = image;
 	}
 
 	public String getExtensao() {
@@ -69,6 +70,14 @@ public class Imagem implements Serializable {
 		this.dataUpload = dataUpload;
 	}
 
+	public String getImageBase64() {
+		return imageBase64;
+	}
+
+	public void setImageBase64(String imageBase64) {
+		this.imageBase64 = imageBase64;
+	}
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);
@@ -88,8 +97,8 @@ public class Imagem implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Imagem [id=" + id + ", usuario=" + usuario + ", imagem=" + Arrays.toString(image) + ", extensao="
-				+ extensao + ", tipo=" + tipo + ", dataUpload=" + dataUpload + "]";
+		return "Imagem [id=" + id + ", usuario=" + usuario + ", image=" + Arrays.toString(image) + ", extensao="
+				+ extensao + ", tipo=" + tipo + ", dataUpload=" + dataUpload + ", imageBase64=" + imageBase64 + "]";
 	}
 
 }

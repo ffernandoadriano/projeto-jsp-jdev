@@ -57,55 +57,46 @@
 	href="<%=request.getContextPath()%>/assets/css/animate.css/css/animate.css">
 
 
-<style type="text/css">
-#btn-form-cadastro {
-	margin-left: 10px;
-	width: 110px;
-}
-
-.erro {
-	color: #F80000;
-	font-weight: bold;
-}
-
-.sucessoSalvo {
-	color: #28a745;
-	font-weight: bold;
-}
-
-.modal-xl-custom {
-	max-width: 50%;
-	<!--
-	Estilo
-	personalizado
-	para
-	aumentar
-	o
-	tamanho
-	do
-	modal
-	-->
-}
-
-/*botão de propagando*/
-.fixed-button {
-	display: none !important;
-}
-
-.footerwhatsapp {
-	display: none;
-	position: fixed;
-	bottom: 25px;
-	right: 15px;
-	z-index: 99999999;
-	transition: opacity 0.3s ease;
-}
-
-.footerwhatsapp img {
-	height: 60px;
-	width: 50px;
-}
-</style>
+	<style type="text/css">
+	#btn-form-cadastro {
+		margin-left: 10px;
+		width: 110px;
+	}
+	
+	.erro {
+		color: #F80000;
+		font-weight: bold;
+	}
+	
+	.sucessoSalvo {
+		color: #28a745;
+		font-weight: bold;
+	}
+	
+	.modal-xl-custom {
+		max-width: 50%;
+		<%/* Estilopersonalizado para aumentar	o tamanho do modal */%>
+	}
+	
+	/*botão de propagando*/
+	.fixed-button {
+		display: none !important;
+	}
+	
+	.footerwhatsapp {
+		display: none;
+		position: fixed;
+		bottom: 25px;
+		right: 15px;
+		z-index: 99999999;
+		transition: opacity 0.3s ease;
+	}
+	
+	.footerwhatsapp img {
+		height: 60px;
+		width: 50px;
+	}
+	</style>
 
 <script type="text/javascript">
 

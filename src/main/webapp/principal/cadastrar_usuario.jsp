@@ -61,6 +61,10 @@
 															action="<%=request.getContextPath()%>/SalvarUsuarioServlet"
 															method="post" id="usuarioForm"
 															enctype="multipart/form-data">
+
+															<!-- Diz o local onde a imagem será inserida. -->
+															<input type="hidden" value="perfil" name="tipoImagem" />
+
 															<div class="form-group row">
 																<label class="col-sm-1 col-form-label">ID:</label>
 																<div class="col-sm-1">
@@ -73,8 +77,9 @@
 															<!-- Atributo "SRC" será preenchido com a função visualizarImagemTela -->
 															<div class="form-group row">
 																<div class="col-sm-1">
-																	<img alt="Foto Perfil" src="" id="fotoBase64"
-																		width="60px">
+																	<img alt="Foto Perfil"
+																		src="${imagemBase64.imageBase64}"
+																		id="fotoBase64" width="60px">
 																</div>
 																<div class="col-sm-8">
 																	<input type="file" class="form-control"
@@ -168,6 +173,7 @@
 															/*removendo o usuarioSalvo da sessão com JSTL*/
 															%>
 															<c:remove var="usuarioSalvo" scope="session" />
+															<c:remove var="imagemBase64" scope="session" />
 
 
 															<div class="form-group row">

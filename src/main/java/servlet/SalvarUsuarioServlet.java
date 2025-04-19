@@ -2,10 +2,13 @@ package servlet;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 import dao.DaoException;
+import dao.ImagemDao;
 import dao.UsuarioDao;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -14,9 +17,11 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
+import model.Imagem;
 import model.Usuario;
 import model.enums.Perfil;
 import model.enums.Sexo;
+import session.ImagemBase64Session;
 import session.UsuarioLogadoSession;
 import util.StringUtils;
 
@@ -36,6 +41,8 @@ public class SalvarUsuarioServlet extends HttpServlet {
 
 	private final UsuarioDao usuarioDao = new UsuarioDao();
 
+	private final ImagemDao imagemDao = new ImagemDao();
+
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		doIt(request, response);
@@ -50,29 +57,11 @@ public class SalvarUsuarioServlet extends HttpServlet {
 
 		this.request = request;
 
-		Part filePart = request.getPart("filePerfilFoto"); // Pega a foto da tela do InputFile
-
-		if (filePart != null && filePart.getSize() > 0) {
-
-			String nomeArquivo = Paths.get(filePart.getSubmittedFileName()).getFileName().toString(); 
-
-			if (nomeArquivo != null && !nomeArquivo.trim().isEmpty() && nomeArquivo.contains(".")) {
-
-				String extensao = nomeArquivo.substring(nomeArquivo.lastIndexOf(".") + 1).toLowerCase();
-				// 1. Lê os bytes
-				byte[] foto = filePart.getInputStream().readAllBytes();
-				
-				System.out.println(foto);
-				System.out.println(nomeArquivo);
-				System.out.println(extensao);
-
-			}
-		}
-
 		// Extrai os dados digitados no formulário
 		String idParam = request.getParameter("id");
 		// null não pode ser passado diretamente para Long.valueOf()
 		Long id = (idParam == null || idParam.isEmpty()) ? null : Long.valueOf(idParam.trim());
+		Part filePart = request.getPart("filePerfilFoto"); // Pega a foto da tela do InputFile
 		String nome = request.getParameter("nome").trim();
 		String sexo = request.getParameter("sexo").trim();
 		String email = request.getParameter("email").trim();
@@ -91,7 +80,7 @@ public class SalvarUsuarioServlet extends HttpServlet {
 		// na request (para permitir que o formulário
 		// exiba os campos preenchidos) e volta para a mesma tela.
 		if (existemErros()) {
-			definirValores(idParam, nome, sexo, email, perfil, login, senha);
+			definirValores(idParam, filePart, nome, sexo, email, perfil, login, senha);
 			request.getRequestDispatcher("/principal/cadastrar_usuario.jsp").forward(request, response);
 			return;
 		}
@@ -111,10 +100,12 @@ public class SalvarUsuarioServlet extends HttpServlet {
 
 			if (usuario.getId() == null) {
 				usuarioDao.salvar(usuario, UsuarioLogadoSession.getUsuarioLogado(request).getId());
+				salvarFotoPerfil(filePart, usuario);
 				acao = "salvar";
 
 			} else {
 				usuarioDao.atualizar(usuario);
+				salvarFotoPerfil(filePart, usuario);
 				acao = "atualizar";
 			}
 
@@ -138,9 +129,11 @@ public class SalvarUsuarioServlet extends HttpServlet {
 	/**
 	 * Coloca os valores submetidos pelo formulário novamente na request, para que
 	 * possam ser exibidos novamente após o carregamento da página
+	 * 
+	 * @throws IOException
 	 */
-	private void definirValores(String id, String nome, String sexo, String email, String perfil, String login,
-			String senha) {
+	private void definirValores(String id, Part imagem, String nome, String sexo, String email, String perfil,
+			String login, String senha) throws IOException {
 		request.setAttribute("id", id);
 		request.setAttribute("nome", nome);
 		request.setAttribute("sexo", sexo);
@@ -310,4 +303,68 @@ public class SalvarUsuarioServlet extends HttpServlet {
 		}
 		return true;
 	}
+
+	private void salvarFotoPerfil(Part filePart, Usuario usuario) throws DaoException {
+
+		if (filePart != null && filePart.getSize() > 0) {
+
+			String nomeArquivo = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+
+			try {
+				if (nomeArquivo != null && !nomeArquivo.trim().isEmpty() && nomeArquivo.contains(".")) {
+					// Local do tipo da imagem
+					String tipo = request.getParameter("tipoImagem");
+					String extensao = filePart.getContentType().split("/")[1];
+					// 1. Lê os bytes
+					byte[] foto = filePart.getInputStream().readAllBytes();
+					String fotoBase64 = convertImageByteToBase64(foto, filePart);
+
+					Imagem imagem = new Imagem();
+					imagem.setUsuario(usuario);
+					imagem.setImage(foto);
+					imagem.setExtensao(extensao);
+					imagem.setTipo(tipo);
+					imagem.setDataUpload(LocalDateTime.now());
+					imagem.setImageBase64(fotoBase64);
+
+					if (imagemDao.existeFotoPerfil(usuario.getId())) {
+						imagemDao.atualizar(imagem);
+					} else {
+						imagemDao.salvar(imagem);
+					}
+
+					// cria a sessão da imagem
+					ImagemBase64Session.create(request, imagem);
+				}
+
+			} catch (Exception e) {
+				throw new DaoException(e);
+			}
+		}
+	}
+
+	private String convertImageByteToBase64(byte[] image, Part part) {
+		/*Formato para visulizar a imagem no jsp*/
+		return String.format("data:%s;base64,%s", part.getContentType(), Base64.getEncoder().encodeToString(image));
+	}
+
+	private String convertImageByteToBase64(Part part) throws IOException {
+
+		if (part != null && part.getSize() > 0) {
+			// 1. Lê os bytes
+			byte[] foto = part.getInputStream().readAllBytes();
+			return String.format("data:%s;base64,%s", part.getContentType(), Base64.getEncoder().encodeToString(foto));
+		} else {
+			return null;
+		}
+	}
+
+	private String getNomeArquivo(Part part) {
+		if (part != null && part.getSize() > 0) {
+			return Paths.get(part.getSubmittedFileName()).getFileName().toString();
+		} else {
+			return null;
+		}
+	}
+
 }
