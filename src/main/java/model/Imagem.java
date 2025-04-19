@@ -2,6 +2,7 @@ package model;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Objects;
 
 public class Imagem implements Serializable {
@@ -10,7 +11,12 @@ public class Imagem implements Serializable {
 
 	private Long id;
 	private Usuario usuario;
-	private String caminho;
+	/*
+	 * A imagem será armazenada em bytes, porque em base64 ocupa 33% a mais do que o
+	 * tamanho real.
+	 * 
+	 */
+	private byte[] image;
 	private String extensao;
 	private String tipo;
 	private LocalDateTime dataUpload;
@@ -31,12 +37,12 @@ public class Imagem implements Serializable {
 		this.usuario = usuario;
 	}
 
-	public String getCaminho() {
-		return caminho;
+	public byte[] getImagem() {
+		return image;
 	}
 
-	public void setCaminho(String caminho) {
-		this.caminho = caminho;
+	public void setImagem(byte[] imagem) {
+		this.image = imagem;
 	}
 
 	public String getExtensao() {
@@ -82,8 +88,8 @@ public class Imagem implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Imagem [id=" + id + ", usuario=" + usuario + ", caminho=" + caminho + ", extensao=" + extensao
-				+ ", tipo=" + tipo + ", dataUpload=" + dataUpload + "]";
+		return "Imagem [id=" + id + ", usuario=" + usuario + ", imagem=" + Arrays.toString(image) + ", extensao="
+				+ extensao + ", tipo=" + tipo + ", dataUpload=" + dataUpload + "]";
 	}
 
 }

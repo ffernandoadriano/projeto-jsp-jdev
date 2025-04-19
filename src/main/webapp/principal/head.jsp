@@ -1,87 +1,113 @@
 <head>
-    <title>Projeto JSP</title>
-      <!-- Meta -->
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-      <meta name="description" content="Projeto JSP." />
-      <meta name="author" content="Fernando Adriano" />
-      
-      <!-- Favicon icon -->
-      <link rel="icon" href="<%= request.getContextPath() %>/assets/images/favicon.ico" type="image/x-icon">
-      
-      <!-- Google font-->
-      <link href="https://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet">
-      <!-- waves.css -->
-      <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/pages/waves/css/waves.min.css" type="text/css" media="all">
-      <!-- Required Fremwork -->
-      <link rel="stylesheet" type="text/css" href="<%= request.getContextPath() %>/assets/css/bootstrap/css/bootstrap.min.css">
-      <!-- waves.css -->
-      <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/pages/waves/css/waves.min.css" type="text/css" media="all">
-      <!-- themify icon -->
-      <link rel="stylesheet" type="text/css" href="<%= request.getContextPath() %>/assets/icon/themify-icons/themify-icons.css">
-      <!-- Font Awesome -->
-      <link rel="stylesheet" type="text/css" href="<%= request.getContextPath() %>/assets/icon/font-awesome/css/font-awesome.min.css">
-      <!-- scrollbar.css -->
-      <link rel="stylesheet" type="text/css" href="<%= request.getContextPath() %>/assets/css/jquery.mCustomScrollbar.css">
-        <!-- am chart export.css -->
-      <link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
-      <!-- Style.css -->
-      <link rel="stylesheet" type="text/css" href="<%= request.getContextPath() %>/assets/css/style.css">
-      <!-- icone whatsApp -->
-     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-     <!-- ico font -->
-     <link rel="stylesheet" type="text/css" href="<%= request.getContextPath() %>/assets/icon/icofont/css/icofont.css">
-     <!-- Notification.css -->
-     <link rel="stylesheet" type="text/css" href="<%= request.getContextPath() %>/assets/pages/notification/notification.css">
-     <!-- Animate.css -->
-     <link rel="stylesheet" type="text/css" href="<%= request.getContextPath() %>/assets/css/animate.css/css/animate.css">
-     
-      
-      <style type="text/css">
-      
-      		#btn-form-cadastro{
-      			margin-left: 10px;
-      			width: 110px;
-      		}
-      		
-      		.erro {
-				color: #F80000;
-				font-weight: bold;
-			}
-			
-			.sucessoSalvo{
-				color: #28a745;
-				font-weight: bold;
-			}
-			
-			.modal-xl-custom {
-				max-width: 50%; <!-- Estilo personalizado para aumentar o tamanho do modal -->
-			}
-			
-			/*botão de propagando*/
-			.fixed-button {
-		    	display: none !important;
-			}
-			
-			
-			.footerwhatsapp {
-				display: none;
-				position: fixed;
-				bottom: 25px;
-				right: 15px;
-				z-index: 99999999;
-				transition: opacity 0.3s ease;
-			}
+<title>Projeto JSP</title>
+<!-- Meta -->
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="description" content="Projeto JSP." />
+<meta name="author" content="Fernando Adriano" />
 
-			.footerwhatsapp img {
-				height: 60px;
-				width: 50px;
-			}
-				
-      </style>
-      
-      <script type="text/javascript">
+<!-- Favicon icon -->
+<link rel="icon"
+	href="<%=request.getContextPath()%>/assets/images/favicon.ico"
+	type="image/x-icon">
+
+<!-- Google font-->
+<link href="https://fonts.googleapis.com/css?family=Roboto:400,500"
+	rel="stylesheet">
+<!-- waves.css -->
+<link rel="stylesheet"
+	href="<%=request.getContextPath()%>/assets/pages/waves/css/waves.min.css"
+	type="text/css" media="all">
+<!-- Required Fremwork -->
+<link rel="stylesheet" type="text/css"
+	href="<%=request.getContextPath()%>/assets/css/bootstrap/css/bootstrap.min.css">
+<!-- waves.css -->
+<link rel="stylesheet"
+	href="<%=request.getContextPath()%>/assets/pages/waves/css/waves.min.css"
+	type="text/css" media="all">
+<!-- themify icon -->
+<link rel="stylesheet" type="text/css"
+	href="<%=request.getContextPath()%>/assets/icon/themify-icons/themify-icons.css">
+<!-- Font Awesome -->
+<link rel="stylesheet" type="text/css"
+	href="<%=request.getContextPath()%>/assets/icon/font-awesome/css/font-awesome.min.css">
+<!-- scrollbar.css -->
+<link rel="stylesheet" type="text/css"
+	href="<%=request.getContextPath()%>/assets/css/jquery.mCustomScrollbar.css">
+<!-- am chart export.css -->
+<link rel="stylesheet"
+	href="https://www.amcharts.com/lib/3/plugins/export/export.css"
+	type="text/css" media="all" />
+<!-- Style.css -->
+<link rel="stylesheet" type="text/css"
+	href="<%=request.getContextPath()%>/assets/css/style.css">
+<!-- icone whatsApp -->
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<!-- ico font -->
+<link rel="stylesheet" type="text/css"
+	href="<%=request.getContextPath()%>/assets/icon/icofont/css/icofont.css">
+<!-- Notification.css -->
+<link rel="stylesheet" type="text/css"
+	href="<%=request.getContextPath()%>/assets/pages/notification/notification.css">
+<!-- Animate.css -->
+<link rel="stylesheet" type="text/css"
+	href="<%=request.getContextPath()%>/assets/css/animate.css/css/animate.css">
+
+
+<style type="text/css">
+#btn-form-cadastro {
+	margin-left: 10px;
+	width: 110px;
+}
+
+.erro {
+	color: #F80000;
+	font-weight: bold;
+}
+
+.sucessoSalvo {
+	color: #28a745;
+	font-weight: bold;
+}
+
+.modal-xl-custom {
+	max-width: 50%;
+	<!--
+	Estilo
+	personalizado
+	para
+	aumentar
+	o
+	tamanho
+	do
+	modal
+	-->
+}
+
+/*botão de propagando*/
+.fixed-button {
+	display: none !important;
+}
+
+.footerwhatsapp {
+	display: none;
+	position: fixed;
+	bottom: 25px;
+	right: 15px;
+	z-index: 99999999;
+	transition: opacity 0.3s ease;
+}
+
+.footerwhatsapp img {
+	height: 60px;
+	width: 50px;
+}
+</style>
+
+<script type="text/javascript">
 
 	      function limparFormulario() {
 
@@ -269,6 +295,33 @@
 			        }
 			    }
 			}
+
+			
+			function visualizarImagemTela(idImagem, idInputFile) {
+				
+			    const preview = document.getElementById(idImagem); // Campo id da imagem
+			    const inputFile = document.getElementById(idInputFile); // Campo id do upload file  "obs: esse campo pode retornar mais de uma imagem"
+
+			    if (!preview || !inputFile || !inputFile.files.length) {
+			    	 // entra aqui se NÃO tiver arquivo selecionado
+			        preview.src = ""; // limpar a imagem
+			        return;
+			    }
+
+			    const file = inputFile.files[0]; // garante que estamos pegando apenas o primeiro
+			    
+			 	// Cria o leitor de arquivos
+			    const reader = new FileReader();
+
+			    // (leitura bem-sucedida).
+			    reader.onload = () => {
+			    	// reader.result: contém o conteúdo do arquivo lido como uma string Base64 (que pode ser usada direto no src da imagem
+			        preview.src = reader.result;  // Carrega a foto na tela
+			    };
+				// Incia a leitura
+			 	// reader.readAsDataURL(fileInput) vai ler o conteúdo da imagem como Data URL (Base64).
+			    reader.readAsDataURL(file);  // Preview da imagem
+			}
 			
       </script>
-  </head>
+</head>

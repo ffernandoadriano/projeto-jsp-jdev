@@ -1,6 +1,7 @@
 package servlet;
 
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +13,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
 import model.Usuario;
 import model.enums.Perfil;
 import model.enums.Sexo;
@@ -47,6 +49,25 @@ public class SalvarUsuarioServlet extends HttpServlet {
 	private void doIt(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		this.request = request;
+
+		Part filePart = request.getPart("filePerfilFoto"); // Pega a foto da tela do InputFile
+
+		if (filePart != null && filePart.getSize() > 0) {
+
+			String nomeArquivo = Paths.get(filePart.getSubmittedFileName()).getFileName().toString(); 
+
+			if (nomeArquivo != null && !nomeArquivo.trim().isEmpty() && nomeArquivo.contains(".")) {
+
+				String extensao = nomeArquivo.substring(nomeArquivo.lastIndexOf(".") + 1).toLowerCase();
+				// 1. Lê os bytes
+				byte[] foto = filePart.getInputStream().readAllBytes();
+				
+				System.out.println(foto);
+				System.out.println(nomeArquivo);
+				System.out.println(extensao);
+
+			}
+		}
 
 		// Extrai os dados digitados no formulário
 		String idParam = request.getParameter("id");

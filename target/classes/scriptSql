@@ -37,12 +37,12 @@ ALTER TABLE usuario ADD COLUMN sexo CHAR(1) NOT NULL DEFAULT 'F' CHECK (sexo IN 
 ALTER TABLE usuario ALTER COLUMN sexo DROP DEFAULT;
 
 CREATE TABLE imagem (
-  id SERIAL PRIMARY KEY,
+  id BIGSERIAL PRIMARY KEY,
   usuario_id BIGINT NOT NULL,
-  caminho VARCHAR(255) NOT NULL,
+  imagem BYTEA NOT NULL, -- Armazena os dados binários da imagem ou // caminho VARCHAR(255) NOT NULL,
   extensao VARCHAR(10) NOT NULL, -- Exemplo: 'jpg', 'png', 'gif'
   tipo VARCHAR(50) NOT NULL,     -- Exemplo: 'perfil', 'galeria'
   descricao TEXT, -- Opcional
   data_upload TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (usuario_id) REFERENCES usuario(id)
+  FOREIGN KEY (usuario_id) REFERENCES usuario(id) ON DELETE CASCADE
 );
