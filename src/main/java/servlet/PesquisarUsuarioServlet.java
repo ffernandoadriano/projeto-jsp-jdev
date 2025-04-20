@@ -34,23 +34,6 @@ public class PesquisarUsuarioServlet extends HttpServlet {
 
 	private void doIt(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		String acao = request.getParameter("acao");
-
-		if (acao != null && acao.equalsIgnoreCase("editar")) {
-			String id = request.getParameter("id");
-
-			try {
-				Usuario usuario = usuarioDao.encontrarPorId(Long.parseLong(id),  UsuarioLogadoSession.getUsuarioLogado(request).getId());
-
-				request.setAttribute("usuarioSalvo", usuario);
-				request.getRequestDispatcher("/principal/cadastrar_usuario.jsp").forward(request, response);
-				return;
-				
-			} catch (DaoException | NumberFormatException e) {
-				throw new ServletException(e);
-			}
-		}
-
 		String nome = request.getParameter("nome");
 
 		try {

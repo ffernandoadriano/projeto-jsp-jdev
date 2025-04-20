@@ -57,46 +57,46 @@
 	href="<%=request.getContextPath()%>/assets/css/animate.css/css/animate.css">
 
 
-	<style type="text/css">
-	#btn-form-cadastro {
-		margin-left: 10px;
-		width: 110px;
-	}
-	
-	.erro {
-		color: #F80000;
-		font-weight: bold;
-	}
-	
-	.sucessoSalvo {
-		color: #28a745;
-		font-weight: bold;
-	}
-	
-	.modal-xl-custom {
-		max-width: 50%;
-		<%/* Estilopersonalizado para aumentar	o tamanho do modal */%>
-	}
-	
-	/*botão de propagando*/
-	.fixed-button {
-		display: none !important;
-	}
-	
-	.footerwhatsapp {
-		display: none;
-		position: fixed;
-		bottom: 25px;
-		right: 15px;
-		z-index: 99999999;
-		transition: opacity 0.3s ease;
-	}
-	
-	.footerwhatsapp img {
-		height: 60px;
-		width: 50px;
-	}
-	</style>
+<style type="text/css">
+#btn-form-cadastro {
+	margin-left: 10px;
+	width: 110px;
+}
+
+.erro {
+	color: #F80000;
+	font-weight: bold;
+}
+
+.sucessoSalvo {
+	color: #28a745;
+	font-weight: bold;
+}
+
+.modal-xl-custom {
+	max-width: 50%;
+	<%/* Estilopersonalizado para aumentar	o tamanho do modal */%>
+}
+
+/*botão de propagando*/
+.fixed-button {
+	display: none !important;
+}
+
+.footerwhatsapp {
+	display: none;
+	position: fixed;
+	bottom: 25px;
+	right: 15px;
+	z-index: 99999999;
+	transition: opacity 0.3s ease;
+}
+
+.footerwhatsapp img {
+	height: 60px;
+	width: 50px;
+}
+</style>
 
 <script type="text/javascript">
 
@@ -118,6 +118,10 @@
 	    	  // Limpar o radio
 	    	  const radios = document.getElementsByName("sexo");
 	    	  radios.forEach(radio => radio.checked = false);
+
+	    	  // Limpar a imagem anterior para padrão
+	    	  const fotoPerfil = document.getElementById("fotoBase64");
+	    	  fotoPerfil.src = "<%=request.getContextPath()%>/assets/images/perfil.png";
 			}
 
 			function excluirCadastro(){
@@ -272,7 +276,7 @@
 
 			function editarFormularioUsuario(id){
 
-				window.location.href = "<%=request.getContextPath()%>/PesquisarUsuarioServlet?acao=editar&id="+ id;
+				window.location.href = "<%=request.getContextPath()%>/EditarUsuarioServlet?id="+ id;
 			}
 
 			
@@ -292,22 +296,27 @@
 				
 			    const preview = document.getElementById(idImagem); // Campo id da imagem
 			    const inputFile = document.getElementById(idInputFile); // Campo id do upload file  "obs: esse campo pode retornar mais de uma imagem"
+			    const hiddenBase64 = document.getElementById("fotoBase64"); // campo hidden para guardar a imagem em base64
 
 			    if (!preview || !inputFile || !inputFile.files.length) {
 			    	 // entra aqui se NÃO tiver arquivo selecionado
 			        preview.src = ""; // limpar a imagem
+			        if (hiddenBase64) hiddenBase64.value = ""; // limpa o campo hidden também
 			        return;
 			    }
 
-			    const file = inputFile.files[0]; // garante que estamos pegando apenas o primeiro
+			    const file = inputFile.files[0]; // pega o primeiro arquivo (imagem)
 			    
 			 	// Cria o leitor de arquivos
 			    const reader = new FileReader();
 
-			    // (leitura bem-sucedida).
+			    // Quando terminar de ler o arquivo
 			    reader.onload = () => {
 			    	// reader.result: contém o conteúdo do arquivo lido como uma string Base64 (que pode ser usada direto no src da imagem
-			        preview.src = reader.result;  // Carrega a foto na tela
+			        preview.src = reader.result;  // mostra a imagem na tela
+			        if (hiddenBase64) {
+			            hiddenBase64.value = reader.result;    // salva a imagem em base64 no campo hidden
+			        }
 			    };
 				// Incia a leitura
 			 	// reader.readAsDataURL(fileInput) vai ler o conteúdo da imagem como Data URL (Base64).

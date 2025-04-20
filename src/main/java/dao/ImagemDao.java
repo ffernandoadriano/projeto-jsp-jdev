@@ -6,9 +6,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
+import java.util.Base64;
 
 import connection.ConnectionFactory;
 import model.Imagem;
+import model.Usuario;
 
 public class ImagemDao implements Serializable {
 
@@ -63,7 +66,7 @@ public class ImagemDao implements Serializable {
 		}
 	}
 
-	public void atualizar(Imagem obj) throws DaoException {
+	public void atualizar(Imagem obj) throws DaoException, SQLException {
 
 		String sql = "UPDATE imagem SET imagem = ?, extensao = ?, tipo = ? , data_upload = ? WHERE usuario_id = ?";
 
@@ -81,6 +84,7 @@ public class ImagemDao implements Serializable {
 			connection.commit();
 
 		} catch (SQLException e) {
+			connection.rollback();
 			throw new DaoException(e);
 		}
 	}
@@ -99,6 +103,50 @@ public class ImagemDao implements Serializable {
 			}
 		} catch (SQLException e) {
 			throw new DaoException(e);
+		}
+	}
+
+	public Imagem encontrarPorId(Long usuarioId, String tipo) throws DaoException {
+
+		String sql = "SELECT * FROM imagem WHERE usuario_id = ? AND tipo = ?";
+
+		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+			pstmt.setLong(1, usuarioId);
+			pstmt.setString(2, tipo);
+
+			try (ResultSet rs = pstmt.executeQuery()) {
+
+				if (rs.next()) {
+					Imagem imagem = new Imagem();
+
+					byte[] imagemBytes = rs.getBytes("imagem");
+					String extensao = rs.getString("extensao");
+
+					imagem.setId(rs.getLong("id"));
+					imagem.setUsuario(new Usuario(rs.getLong("usuario_id")));
+					imagem.setImage(imagemBytes);
+					imagem.setExtensao(extensao);
+					imagem.setTipo(rs.getString("tipo"));
+					imagem.setDataUpload(rs.getObject("data_upload", LocalDateTime.class));
+					imagem.setImageBase64(convertImageByteToBase64(imagemBytes, extensao));
+
+					return imagem;
+				}
+
+			}
+		} catch (SQLException e) {
+			throw new DaoException(e);
+		}
+
+		return null;
+	}
+
+	private String convertImageByteToBase64(byte[] image, String extensao) {
+		if (image != null) {
+			/* Formato para visulizar a imagem no jsp */
+			return String.format("data:image/%s;base64,%s", extensao, Base64.getEncoder().encodeToString(image));
+		} else {
+			return null;
 		}
 	}
 

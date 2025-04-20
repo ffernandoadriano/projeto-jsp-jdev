@@ -1,7 +1,6 @@
 package servlet;
 
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -61,13 +60,14 @@ public class SalvarUsuarioServlet extends HttpServlet {
 		String idParam = request.getParameter("id");
 		// null não pode ser passado diretamente para Long.valueOf()
 		Long id = (idParam == null || idParam.isEmpty()) ? null : Long.valueOf(idParam.trim());
-		Part filePart = request.getPart("filePerfilFoto"); // Pega a foto da tela do InputFile
 		String nome = request.getParameter("nome").trim();
 		String sexo = request.getParameter("sexo").trim();
 		String email = request.getParameter("email").trim();
 		String perfil = request.getParameter("perfil").trim();
 		String login = request.getParameter("login").trim();
 		String senha = request.getParameter("senha").trim();
+
+		Imagem imagemPerfil = carregarImagemPerfil(request, id);
 
 		// Faz a validação dos dados digitados
 		validarNome(nome);
@@ -80,7 +80,12 @@ public class SalvarUsuarioServlet extends HttpServlet {
 		// na request (para permitir que o formulário
 		// exiba os campos preenchidos) e volta para a mesma tela.
 		if (existemErros()) {
-			definirValores(idParam, filePart, nome, sexo, email, perfil, login, senha);
+			definirValores(idParam, nome, sexo, email, perfil, login, senha);
+
+			if (imagemPerfil != null) {
+				definirValoresFotoPerfil(imagemPerfil);
+			}
+
 			request.getRequestDispatcher("/principal/cadastrar_usuario.jsp").forward(request, response);
 			return;
 		}
@@ -100,12 +105,10 @@ public class SalvarUsuarioServlet extends HttpServlet {
 
 			if (usuario.getId() == null) {
 				usuarioDao.salvar(usuario, UsuarioLogadoSession.getUsuarioLogado(request).getId());
-				salvarFotoPerfil(filePart, usuario);
 				acao = "salvar";
 
 			} else {
 				usuarioDao.atualizar(usuario);
-				salvarFotoPerfil(filePart, usuario);
 				acao = "atualizar";
 			}
 
@@ -116,9 +119,13 @@ public class SalvarUsuarioServlet extends HttpServlet {
 			response.sendRedirect(
 					request.getContextPath() + String.format("/principal/cadastrar_usuario.jsp?acao=%s", acao));
 
-			List<Usuario> usuarios = usuarioDao.encontrarTudo(UsuarioLogadoSession.getUsuarioLogado(request).getId());
+			if (imagemPerfil != null) {
+				salvarFotoPerfil(imagemPerfil, usuario);
+			}
 
+			List<Usuario> usuarios = usuarioDao.encontrarTudo(UsuarioLogadoSession.getUsuarioLogado(request).getId());
 			request.getSession().setAttribute("listarUsuariosSession", usuarios);
+			/* mostra o usuário na tela após o redirecionamento */
 			request.getSession().setAttribute("usuarioSalvo", usuario);
 
 		} catch (DaoException e) {
@@ -132,8 +139,8 @@ public class SalvarUsuarioServlet extends HttpServlet {
 	 * 
 	 * @throws IOException
 	 */
-	private void definirValores(String id, Part imagem, String nome, String sexo, String email, String perfil,
-			String login, String senha) throws IOException {
+	private void definirValores(String id, String nome, String sexo, String email, String perfil, String login,
+			String senha) throws IOException {
 		request.setAttribute("id", id);
 		request.setAttribute("nome", nome);
 		request.setAttribute("sexo", sexo);
@@ -141,6 +148,15 @@ public class SalvarUsuarioServlet extends HttpServlet {
 		request.setAttribute("perfil", perfil);
 		request.setAttribute("login", login);
 		request.setAttribute("senha", senha);
+	}
+
+	private void definirValoresFotoPerfil(Imagem imagem) {
+
+		ImagemBase64Session.create(request, imagem);
+
+		// armazena os dados na sessão para reuso
+		ImagemBase64Session.createTemp(request, imagem);
+
 	}
 
 	/**
@@ -304,67 +320,76 @@ public class SalvarUsuarioServlet extends HttpServlet {
 		return true;
 	}
 
-	private void salvarFotoPerfil(Part filePart, Usuario usuario) throws DaoException {
+	private Imagem carregarImagemPerfil(HttpServletRequest request, Long usuairoId)
+			throws IOException, ServletException {
+		// Imagem Perfil
+		Part filePart = request.getPart("filePerfilFoto"); // Pega a foto da tela do InputFile
+		Imagem tempImagem = ImagemBase64Session.getTemp(request);
+		// Local do tipo da imagem
+		String tipo = request.getParameter("tipoImagem");
 
-		if (filePart != null && filePart.getSize() > 0) {
+		// Faz a verificação se foi adicionado alguma imagem
+		if (filePart.getSize() >= 1 || tempImagem != null) {
+			byte[] imagemBytes = tempImagem == null ? filePart.getInputStream().readAllBytes() : tempImagem.getImage();
+			String contentType = tempImagem == null ? filePart.getContentType() : tempImagem.getContentType();
+			String extensao = tempImagem == null ? contentType.split("/")[1] : tempImagem.getExtensao();
+			String imagemBase64 = tempImagem == null ? convertImageByteToBase64(imagemBytes, contentType)
+					: tempImagem.getImageBase64();
 
-			String nomeArquivo = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
-
-			try {
-				if (nomeArquivo != null && !nomeArquivo.trim().isEmpty() && nomeArquivo.contains(".")) {
-					// Local do tipo da imagem
-					String tipo = request.getParameter("tipoImagem");
-					String extensao = filePart.getContentType().split("/")[1];
-					// 1. Lê os bytes
-					byte[] foto = filePart.getInputStream().readAllBytes();
-					String fotoBase64 = convertImageByteToBase64(foto, filePart);
-
-					Imagem imagem = new Imagem();
-					imagem.setUsuario(usuario);
-					imagem.setImage(foto);
-					imagem.setExtensao(extensao);
-					imagem.setTipo(tipo);
-					imagem.setDataUpload(LocalDateTime.now());
-					imagem.setImageBase64(fotoBase64);
-
-					if (imagemDao.existeFotoPerfil(usuario.getId())) {
-						imagemDao.atualizar(imagem);
-					} else {
-						imagemDao.salvar(imagem);
-					}
-
-					// cria a sessão da imagem
+			return construirImagem(tipo, imagemBytes, extensao, imagemBase64, null);
+		} else {
+			// carrega o preview da imagem no formulário caso seja um usuário já cadastrado
+			if (usuairoId != null) {
+				try {
+					Imagem imagem = imagemDao.encontrarPorId(usuairoId, tipo);
 					ImagemBase64Session.create(request, imagem);
+				} catch (DaoException e) {
+					throw new ServletException(e);
 				}
-
-			} catch (Exception e) {
-				throw new DaoException(e);
 			}
+
+		}
+
+		return null;
+
+	}
+
+	private void salvarFotoPerfil(Imagem imagem, Usuario usuario) throws DaoException {
+
+		try {
+
+			// adiciona o usuário na imagem
+			imagem.setUsuario(usuario);
+
+			if (imagemDao.existeFotoPerfil(usuario.getId())) {
+				imagemDao.atualizar(imagem);
+			} else {
+				imagemDao.salvar(imagem);
+			}
+
+			// cria a sessão da imagem
+			ImagemBase64Session.create(request, imagem);
+			ImagemBase64Session.removerTemp(request);
+
+		} catch (Exception e) {
+			throw new DaoException(e);
 		}
 	}
 
-	private String convertImageByteToBase64(byte[] image, Part part) {
-		/*Formato para visulizar a imagem no jsp*/
-		return String.format("data:%s;base64,%s", part.getContentType(), Base64.getEncoder().encodeToString(image));
+	private Imagem construirImagem(String tipo, byte[] imagemBytes, String extensao, String imagemBase64,
+			Usuario usuario) {
+		Imagem imagem = new Imagem();
+		imagem.setUsuario(usuario);
+		imagem.setImage(imagemBytes);
+		imagem.setExtensao(extensao);
+		imagem.setTipo(tipo);
+		imagem.setDataUpload(LocalDateTime.now());
+		imagem.setImageBase64(imagemBase64);
+		return imagem;
 	}
 
-	private String convertImageByteToBase64(Part part) throws IOException {
-
-		if (part != null && part.getSize() > 0) {
-			// 1. Lê os bytes
-			byte[] foto = part.getInputStream().readAllBytes();
-			return String.format("data:%s;base64,%s", part.getContentType(), Base64.getEncoder().encodeToString(foto));
-		} else {
-			return null;
-		}
+	private String convertImageByteToBase64(byte[] image, String contentType) {
+		/* Formato para visulizar a imagem no jsp */
+		return String.format("data:%s;base64,%s", contentType, Base64.getEncoder().encodeToString(image));
 	}
-
-	private String getNomeArquivo(Part part) {
-		if (part != null && part.getSize() > 0) {
-			return Paths.get(part.getSubmittedFileName()).getFileName().toString();
-		} else {
-			return null;
-		}
-	}
-
 }

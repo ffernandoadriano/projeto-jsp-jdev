@@ -77,9 +77,21 @@
 															<!-- Atributo "SRC" será preenchido com a função visualizarImagemTela -->
 															<div class="form-group row">
 																<div class="col-sm-1">
-																	<img alt="Foto Perfil"
-																		src="${imagemBase64.imageBase64}"
-																		id="fotoBase64" width="60px">
+																	<c:choose>
+																		<c:when
+																			test="${imagemBase64 != null || PerfilFoto != null}">
+																			<img alt="Foto Perfil"
+																				src="${empty PerfilFoto ? imagemBase64.imageBase64 : PerfilFoto.imageBase64}"
+																				id="fotoBase64" width="60px">
+																		</c:when>
+																		<c:otherwise>
+																			<img alt="Foto Perfil"
+																				src="<%=request.getContextPath()%>/assets/images/perfil.png"
+																				id="fotoBase64" width="60px">
+																		</c:otherwise>
+
+																	</c:choose>
+
 																</div>
 																<div class="col-sm-8">
 																	<input type="file" class="form-control"
@@ -170,7 +182,7 @@
 															</div>
 
 															<%
-															/*removendo o usuarioSalvo da sessão com JSTL*/
+															/*removendo o usuarioSalvo e imagemBase64 da sessão com JSTL*/
 															%>
 															<c:remove var="usuarioSalvo" scope="session" />
 															<c:remove var="imagemBase64" scope="session" />
@@ -244,7 +256,7 @@
 																		<td>${usuario.email}</td>
 																		<td><a
 																			class="btn btn-info btn-round waves-effect hor-grd btn-grd-info"
-																			href="<%=request.getContextPath()%>/PesquisarUsuarioServlet?acao=editar&id=${usuario.id}">Editar</a></td>
+																			href="<%=request.getContextPath()%>/EditarUsuarioServlet?id=${usuario.id}">Editar</a></td>
 																		<td><button type="button"
 																				class="btn btn-danger btn-round waves-effect hor-grd btn-grd-danger"
 																				onclick="excluirCadastro(${usuario.id})">Excluir</button></td>

@@ -19,6 +19,14 @@ public class Usuario implements Serializable {
 	private String senha;
 	private boolean admin;
 
+	public Usuario() {
+
+	}
+
+	public Usuario(Long id) {
+		this.id = id;
+	}
+
 	public Long getId() {
 		return id;
 	}
