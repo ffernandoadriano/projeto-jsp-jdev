@@ -122,6 +122,15 @@
 	    	  // Limpar a imagem anterior para padrão
 	    	  const fotoPerfil = document.getElementById("fotoBase64");
 	    	  fotoPerfil.src = "<%=request.getContextPath()%>/assets/images/perfil.png";
+
+	    	  // Limpar a url da foto download
+	    	  const linkDownload = document.getElementById("linkDownloadFotoPerfil");
+	    	 // Cria um objeto URL a partir do href atual, com base na origem do site
+	    	  const url = new URL(linkDownload.href, window.location.origin);
+	    	    // Seta o parâmetro "id" com valor vazio
+	    	  url.searchParams.set("id", "");
+	    	    // Atualiza o href do link
+	    	  linkDownload.href = url.toString();
 			}
 
 			function excluirCadastro(){

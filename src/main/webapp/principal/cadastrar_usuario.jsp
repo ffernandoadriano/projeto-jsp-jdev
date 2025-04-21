@@ -78,12 +78,22 @@
 															<div class="form-group row">
 																<div class="col-sm-1">
 																	<c:choose>
+
 																		<c:when
 																			test="${imagemBase64 != null || PerfilFoto != null}">
-																			<img alt="Foto Perfil"
-																				src="${empty PerfilFoto ? imagemBase64.imageBase64 : PerfilFoto.imageBase64}"
-																				id="fotoBase64" width="60px">
+
+																			<a id="linkDownloadFotoPerfil"
+																				href="<c:url value='/DownloadImagemServlet?id=${empty id ? usuarioSalvo.id : id}&tipoImagem=perfil' />">
+
+																					<img alt="Foto Perfil"
+																					src="${empty PerfilFoto ? imagemBase64.imageBase64 : PerfilFoto.imageBase64}"
+																					id="fotoBase64" width="60px">
+
+																			</a>
+																			
 																		</c:when>
+
+
 																		<c:otherwise>
 																			<img alt="Foto Perfil"
 																				src="<%=request.getContextPath()%>/assets/images/perfil.png"
@@ -91,6 +101,8 @@
 																		</c:otherwise>
 
 																	</c:choose>
+
+
 
 																</div>
 																<div class="col-sm-8">

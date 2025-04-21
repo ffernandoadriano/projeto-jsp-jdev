@@ -37,19 +37,26 @@ public class EditarUsuarioServlet extends HttpServlet {
 
 		String id = request.getParameter("id");
 
-		try {
-			Usuario usuario = usuarioDao.encontrarPorId(Long.parseLong(id),
-					UsuarioLogadoSession.getUsuarioLogado(request).getId());
+		if (id != null) {
 
-			Imagem imagem = imagemDao.encontrarPorId(usuario.getId(), "perfil");
-			
-			request.setAttribute("PerfilFoto", imagem);
-			request.setAttribute("usuarioSalvo", usuario);
-			request.getRequestDispatcher("/principal/cadastrar_usuario.jsp").forward(request, response);
-		} catch (DaoException | NumberFormatException e) {
-			throw new ServletException(e);
+			try {
+				Usuario usuario = usuarioDao.encontrarPorId(Long.parseLong(id),
+						UsuarioLogadoSession.getUsuarioLogado(request).getId());
+
+				if (usuario != null) {
+
+					Imagem imagem = imagemDao.encontrarPorId(usuario.getId(), "perfil");
+
+					request.setAttribute("PerfilFoto", imagem);
+					request.setAttribute("usuarioSalvo", usuario);
+				}
+			} catch (DaoException | NumberFormatException e) {
+				throw new ServletException(e);
+			}
+
 		}
 
+		request.getRequestDispatcher("/principal/cadastrar_usuario.jsp").forward(request, response);
 	}
 
 }
