@@ -18,6 +18,7 @@ public class Usuario implements Serializable {
 	private Perfil perfil;
 	private String senha;
 	private boolean admin;
+	private Endereco endereco;
 
 	public Usuario() {
 
@@ -91,6 +92,14 @@ public class Usuario implements Serializable {
 		this.admin = admin;
 	}
 
+	public Endereco getEndereco() {
+		return endereco;
+	}
+
+	public void setEndereco(Endereco endereco) {
+		this.endereco = endereco;
+	}
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);
@@ -111,7 +120,7 @@ public class Usuario implements Serializable {
 	@Override
 	public String toString() {
 		return "Usuario [id=" + id + ", nome=" + nome + ", sexo=" + sexo + ", email=" + email + ", login=" + login
-				+ ", perfil=" + perfil + ", senha=" + senha + ", admin=" + admin + "]";
+				+ ", perfil=" + perfil + ", senha=" + senha + ", admin=" + admin + ", endereco=" + endereco + "]";
 	}
 
 }

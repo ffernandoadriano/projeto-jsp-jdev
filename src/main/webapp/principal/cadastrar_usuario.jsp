@@ -85,12 +85,12 @@
 																			<a id="linkDownloadFotoPerfil"
 																				href="<c:url value='/DownloadImagemServlet?id=${empty id ? usuarioSalvo.id : id}&tipoImagem=perfil' />">
 
-																					<img alt="Foto Perfil"
-																					src="${empty PerfilFoto ? imagemBase64.imageBase64 : PerfilFoto.imageBase64}"
-																					id="fotoBase64" width="60px">
+																				<img alt="Foto Perfil"
+																				src="${empty PerfilFoto ? imagemBase64.imageBase64 : PerfilFoto.imageBase64}"
+																				id="fotoBase64" width="60px">
 
 																			</a>
-																			
+
 																		</c:when>
 
 
@@ -125,32 +125,103 @@
 																</div>
 															</div>
 
+
+
+
+															<!-- Radio sexo inicio -->
+
+
 															<div class="form-group row">
 																<label class="col-sm-1 col-form-label">Sexo:</label>
 
-																<div class="col-sm-1 col-form-label">
-																	<div
-																		class="custom-control custom-radio custom-control-inline"
-																		id="radioSexo">
+
+																<div class="col-sm-1 col-form-label" id="radioSexo">
+																	<div class="col-sm-8" id="radioSexo">
 																		<input class="form-check-input" type="radio"
-																			name="sexo" id="inlineRadio1" value="M"
-																			required="required"
+																			name="sexo" id="inline" value="M" required="required"
 																			${sexo eq 'M' or usuarioSalvo.sexo.sigla eq 'M' ? 'checked' : ''}>
 																		<label class="form-check-label" for="inlineRadio1">Masculino</label>
 																	</div>
-																	<div
-																		class="custom-control custom-radio custom-control-inline">
-																		<input class="form-check-input" type="radio"
-																			name="sexo" id="inlineRadio2" value="F"
-																			required="required"
-																			${sexo eq 'F' or usuarioSalvo.sexo.sigla eq 'F' ? 'checked' : ''}>
-																		<label class="form-check-label" for="inlineRadio2">Feminino</label>
-																	</div>
+
+																</div>
+
+																<div class="col-sm-1 col-form-label" id="radioSexo"
+																	style="margin-left: 21px">
+																	<input class="form-check-input" type="radio"
+																		name="sexo" id="inline" value="F" required="required"
+																		${sexo eq 'F' or usuarioSalvo.sexo.sigla eq 'F' ? 'checked' : ''}>
+																	<label class="form-check-label" for="inlineRadio2">Feminino</label>
+																</div>
+															</div>
+
+															<!-- sexo fim -->
+
+															<!-- Endereço inicio -->
+
+															<input type="hidden" name="enderecoId" 
+																value="${not empty enderecoId ? enderecoId : usuarioSalvo.endereco.id}">
+																
+															<div class="form-group row">
+																<label class="col-sm-1 col-form-label">Cep:</label>
+																<div class="col-sm-2">
+																	<input type="text" name="cep" id="cep"
+																		onblur="pesquisarCep();" class="form-control"
+																		required="required"
+																		value="${not empty cep ? cep : usuarioSalvo.endereco.cep}"
+																		maxlength="9" placeholder="00000-000" />
+																</div>
+															</div>
+
+															<div class="form-group row">
+																<label class="col-sm-1 col-form-label">Rua:</label>
+																<div class="col-sm-6">
+																	<input type="text" name="rua" id="rua"
+																		class="form-control" required="required"
+																		value="${not empty rua ? rua : usuarioSalvo.endereco.rua}" />
+																</div>
+
+																<label class="col-sm-1 col-form-label">Numero:</label>
+																<div class="col-sm-1">
+																	<input type="text" name="numero" id="numero"
+																		class="form-control" required="required"
+																		value="${not empty numero ? numero : usuarioSalvo.endereco.numero}" />
 																</div>
 
 															</div>
 
+															<div class="form-group row">
+																<label class="col-sm-1 col-form-label">Bairro:</label>
+																<div class="col-sm-8">
+																	<input type="text" name="bairro" id="bairro"
+																		class="form-control" required="required"
+																		value="${not empty bairro ? bairro : usuarioSalvo.endereco.bairro}" />
+																</div>
+															</div>
+															<div class="form-group row">
+																<label class="col-sm-1 col-form-label">Cidade:</label>
+																<div class="col-sm-3">
+																	<input type="text" name="cidade" id="cidade"
+																		class="form-control" required="required"
+																		value="${not empty cidade ? cidade : usuarioSalvo.endereco.cidade}" />
 
+																</div>
+
+																<label class="col-sm-1 col-form-label">Estado:</label>
+																<div class="col-sm-2">
+																	<input type="text" name="estado" id="estado"
+																		class="form-control" required="required"
+																		value="${not empty estado ? estado : usuarioSalvo.endereco.estado}" />
+																</div>
+
+																<label class="col-sm-1 col-form-label">UF:</label>
+																<div class="col-sm-1">
+																	<input type="text" name="uf" id="uf"
+																		class="form-control" required="required"
+																		value="${not empty uf ? uf :usuarioSalvo.endereco.uf}" />
+																</div>
+															</div>
+
+															<!-- Endereço Fim -->
 
 															<div class="form-group row">
 																<label class="col-sm-1 col-form-label">E-mail:</label>
@@ -162,8 +233,8 @@
 															</div>
 															<div class="form-group row">
 																<label class="col-sm-1 col-form-label">Perfil:</label>
-																<div class="col-sm-8">
-																	<select name="perfil" class="form-control"
+																<div class="col-sm-2">
+																	<select name="perfil" class="form-control" id="perfil"
 																		required="required">
 																		<option value="0">Selecione o Perfil</option>
 																		<option value="1"
@@ -382,6 +453,23 @@
 				</c:choose>
 			 });
 		</script>
+
+	<!-- Mascara para Cep -->
+	<script>
+	  document.getElementById('cep').addEventListener('input', function (e) {
+	    let cep = e.target.value;
+	
+	    // Remove tudo que não for número
+	    cep = cep.replace(/\D/g, '');
+	
+	    // Adiciona o hífen depois do quinto dígito
+	    if (cep.length > 5) {
+	      cep = cep.substring(0, 5) + '-' + cep.substring(5, 8);
+	    }
+	
+	    e.target.value = cep;
+	  });
+	</script>
 
 </body>
 

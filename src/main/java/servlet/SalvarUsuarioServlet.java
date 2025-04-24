@@ -16,6 +16,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
+import model.Endereco;
 import model.Imagem;
 import model.Usuario;
 import model.enums.Perfil;
@@ -59,7 +60,7 @@ public class SalvarUsuarioServlet extends HttpServlet {
 		// Extrai os dados digitados no formulário
 		String idParam = request.getParameter("id");
 		// null não pode ser passado diretamente para Long.valueOf()
-		Long id = (idParam == null || idParam.isEmpty()) ? null : Long.valueOf(idParam.trim());
+		Long id = (idParam == null || idParam.isEmpty()) ? null : Long.valueOf(idParam);
 		String nome = request.getParameter("nome").trim();
 		String sexo = request.getParameter("sexo").trim();
 		String email = request.getParameter("email").trim();
@@ -67,6 +68,19 @@ public class SalvarUsuarioServlet extends HttpServlet {
 		String login = request.getParameter("login").trim();
 		String senha = request.getParameter("senha").trim();
 
+		// Endereco
+		String idParamEnd = request.getParameter("enderecoId");
+		// null não pode ser passado diretamente para Long.valueOf()
+		Long enderecoId = (idParamEnd == null || idParamEnd.isEmpty()) ? null : Long.valueOf(idParamEnd);
+		String cep = request.getParameter("cep").trim();
+		String rua = request.getParameter("rua").trim();
+		String numero = request.getParameter("numero").trim();
+		String bairro = request.getParameter("bairro").trim();
+		String cidade = request.getParameter("cidade").trim();
+		String estado = request.getParameter("estado").trim();
+		String uf = request.getParameter("uf").trim();
+
+		// Foto Perfil
 		Imagem imagemPerfil = carregarImagemPerfil(request, id);
 
 		// Faz a validação dos dados digitados
@@ -81,6 +95,7 @@ public class SalvarUsuarioServlet extends HttpServlet {
 		// exiba os campos preenchidos) e volta para a mesma tela.
 		if (existemErros()) {
 			definirValores(idParam, nome, sexo, email, perfil, login, senha);
+			definirValoresEndereco(cep, rua, numero, bairro, cidade, estado, uf);
 
 			if (imagemPerfil != null) {
 				definirValoresFotoPerfil(imagemPerfil);
@@ -90,6 +105,16 @@ public class SalvarUsuarioServlet extends HttpServlet {
 			return;
 		}
 
+		Endereco endereco = new Endereco();
+		endereco.setId(enderecoId);
+		endereco.setCep(cep);
+		endereco.setRua(rua);
+		endereco.setNumero(numero);
+		endereco.setBairro(bairro);
+		endereco.setCidade(cidade);
+		endereco.setEstado(estado);
+		endereco.setUf(uf);
+
 		Usuario usuario = new Usuario();
 		usuario.setId(id);
 		usuario.setNome(nome);
@@ -98,17 +123,18 @@ public class SalvarUsuarioServlet extends HttpServlet {
 		usuario.setLogin(login);
 		usuario.setSenha(senha);
 		usuario.setPerfil(Perfil.fromId(Integer.valueOf(perfil)));
+		usuario.setEndereco(endereco);
 
 		String acao;
 
 		try {
 
 			if (usuario.getId() == null) {
-				usuarioDao.salvar(usuario, UsuarioLogadoSession.getUsuarioLogado(request).getId());
+				usuarioDao.salvarComEndereco(usuario, UsuarioLogadoSession.getUsuarioLogado(request).getId());
 				acao = "salvar";
 
 			} else {
-				usuarioDao.atualizar(usuario);
+				usuarioDao.atualizarComEndereco(usuario);
 				acao = "atualizar";
 			}
 
@@ -156,6 +182,18 @@ public class SalvarUsuarioServlet extends HttpServlet {
 
 		// armazena os dados na sessão para reuso
 		ImagemBase64Session.createTemp(request, imagem);
+
+	}
+
+	private void definirValoresEndereco(String cep, String rua, String numero, String bairro, String cidade,
+			String estado, String uf) {
+		request.setAttribute("cep", cep);
+		request.setAttribute("rua", rua);
+		request.setAttribute("numero", numero);
+		request.setAttribute("bairro", bairro);
+		request.setAttribute("cidade", cidade);
+		request.setAttribute("estado", estado);
+		request.setAttribute("uf", uf);
 
 	}
 

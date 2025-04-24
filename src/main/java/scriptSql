@@ -46,3 +46,27 @@ CREATE TABLE imagem (
   data_upload TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (usuario_id) REFERENCES usuario(id) ON DELETE CASCADE
 );
+
+
+CREATE TABLE endereco (
+  id SERIAL PRIMARY KEY,
+  cep VARCHAR(9),         -- Apenas números, 9 dígitos
+  rua VARCHAR(100),
+  numero VARCHAR(10),     -- Pode ter "S/N", letras e poucos dígitos
+  bairro VARCHAR(60),
+  cidade VARCHAR(60),
+  estado VARCHAR(60),     -- Nome completo do estado (ex: "São Paulo")
+  uf CHAR(2)              -- Sigla do estado (ex: "SP", "RJ")
+);
+
+ALTER TABLE usuario ADD COLUMN endereco_id BIGINT NOT NULL DEFAULT 1;
+
+ALTER TABLE usuario ALTER COLUMN endereco_id DROP DEFAULT;
+
+ALTER TABLE usuario
+ADD CONSTRAINT fk_endereco FOREIGN KEY (endereco_id)
+REFERENCES endereco(id)
+ON DELETE RESTRICT;
+
+ALTER TABLE usuario
+ADD CONSTRAINT uq_usuario_endereco UNIQUE (endereco_id);

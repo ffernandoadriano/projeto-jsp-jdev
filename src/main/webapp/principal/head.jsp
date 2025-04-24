@@ -60,6 +60,7 @@
 <style type="text/css">
 #btn-form-cadastro {
 	margin-left: 10px;
+	margin-bottom: 10px;
 	width: 110px;
 }
 
@@ -76,6 +77,10 @@
 .modal-xl-custom {
 	max-width: 50%;
 	<%/* Estilopersonalizado para aumentar	o tamanho do modal */%>
+}
+
+#radioSexo {
+	margin-left: 3px;
 }
 
 /*botão de propagando*/
@@ -106,9 +111,11 @@
 	
 	    	  for(let i = 0; i < elementos.length; i ++){
 		    	  	elementos[i].value = ''; // Limpa o campo existante no formulário
-		    	  }
+		      }
+	    	  // Seleciona o perfil para 0 "padrão"
+	    	  document.getElementById("perfil").selectedIndex = 0;
 
-	    	// Oculta mensagens de sucesso e erro (definido no atributo 'class') 
+	    	  // Oculta mensagens de sucesso e erro (definido no atributo 'class') 
 	    	  const mensagens = document.querySelectorAll(".sucessoSalvo, .erro");
 	    	  mensagens.forEach(msg => msg.style.display = "none");
 
@@ -131,6 +138,7 @@
 	    	  url.searchParams.set("id", "");
 	    	    // Atualiza o href do link
 	    	  linkDownload.href = url.toString();
+
 			}
 
 			function excluirCadastro(){
@@ -331,6 +339,77 @@
 			 	// reader.readAsDataURL(fileInput) vai ler o conteúdo da imagem como Data URL (Base64).
 			    reader.readAsDataURL(file);  // Preview da imagem
 			}
+
+			function pesquisarCep(){
+				
+				const valor = document.getElementById("cep").value; 
+
+				//Nova variável "cep" somente com dígitos.
+		        const cep = valor.replace(/\D/g, '');
+
+		      //Verifica se campo cep possui valor informado.
+		        if (cep != "") {
+
+		            //Expressão regular para validar o CEP.
+		            var validacep = /^[0-9]{8}$/;
+
+		            //Valida o formato do CEP.
+		            if(validacep.test(cep)) {
+
+		                //Preenche os campos com "..." enquanto consulta webservice.
+		                 document.getElementById('rua').value = "...";
+			            document.getElementById('bairro').value = "...";
+			            document.getElementById('cidade').value = "...";
+			            document.getElementById('estado').value = "...";
+			            document.getElementById('uf').value = "...";
+		            
+		                //Cria um elemento javascript.
+		                var script = document.createElement('script');
+
+		                //Sincroniza com o callback.
+		                script.src = 'https://viacep.com.br/ws/'+ cep + '/json/?callback=pesquisarCallback';
+
+		                //Insere script no documento e carrega o conteúdo.
+		                document.body.appendChild(script);
+
+		            } 
+		            else {
+		                //cep é inválido.
+		                limpaFormularioCep();
+		                alert("Formato de CEP inválido.");
+		            }
+		        } 
+		        else {
+		            //cep sem valor, limpa formulário.
+		            limpaFormularioCep();
+		        }
+			}
+
+			 function limpaFormularioCep() {
+	            //Limpa valores do formulário de cep.
+	            document.getElementById('rua').value=("");
+	            document.getElementById('numero').value=("");
+	            document.getElementById('bairro').value=("");
+	            document.getElementById('cidade').value=("");
+	            document.getElementById('estado').value=("");
+	            document.getElementById('uf').value=("");
+		    }
+
+			 function pesquisarCallback(conteudo) {
+		        if (!("erro" in conteudo)) {
+		            //Atualiza os campos com os valores.
+		            document.getElementById('rua').value=(conteudo.logradouro);
+		            document.getElementById('bairro').value=(conteudo.bairro);
+		            document.getElementById('cidade').value=(conteudo.localidade);
+		            document.getElementById('estado').value=(conteudo.estado);
+		            document.getElementById('uf').value=(conteudo.uf);
+		        } 
+		        else {
+		            //CEP não Encontrado.
+		            limpaFormularioCep();
+		            alert("CEP não encontrado.");
+		        }
+			 }
 			
       </script>
 </head>
