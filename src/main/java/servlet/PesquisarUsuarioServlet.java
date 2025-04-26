@@ -37,7 +37,8 @@ public class PesquisarUsuarioServlet extends HttpServlet {
 		String nome = request.getParameter("nome");
 
 		try {
-			List<Usuario> usuarios = usuarioDao.encontrarPorNome(nome, UsuarioLogadoSession.getUsuarioLogado(request).getId());
+			List<Usuario> usuarios = usuarioDao.encontrarPorNome(nome,
+					UsuarioLogadoSession.getUsuarioLogado(request).getId(), 0);
 
 			ObjectMapper mapper = new ObjectMapper();
 			String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(usuarios);

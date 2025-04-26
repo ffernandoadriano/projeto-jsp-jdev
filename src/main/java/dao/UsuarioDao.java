@@ -275,15 +275,16 @@ public class UsuarioDao implements Serializable {
 		return Optional.empty();
 	}
 
-	public List<Usuario> encontrarPorNome(String nome, Long idUsuarioLogado) throws DaoException {
+	public List<Usuario> encontrarPorNome(String nome, Long idUsuarioLogado, int offset) throws DaoException {
 
-		String sql = "SELECT id, nome, email, login, senha, perfil_id, sexo FROM usuario WHERE UPPER(nome) LIKE CONCAT('%',UPPER(?),'%') AND admin is false AND usuario_id = ?";
+		String sql = "SELECT id, nome, email, login, senha, perfil_id, sexo FROM usuario WHERE UPPER(nome) LIKE CONCAT('%',UPPER(?),'%') AND admin is false AND usuario_id = ?  BY id OFFSET ? LIMIT 5";
 
 		List<Usuario> usuarios = new ArrayList<>();
 
 		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
 			pstmt.setString(1, nome);
 			pstmt.setLong(2, idUsuarioLogado);
+			pstmt.setInt(3, offset);
 
 			try (ResultSet rs = pstmt.executeQuery()) {
 
@@ -307,14 +308,15 @@ public class UsuarioDao implements Serializable {
 		return usuarios;
 	}
 
-	public List<Usuario> encontrarTudo(Long idUsuarioLogado) throws DaoException {
+	public List<Usuario> encontrarTudo(Long idUsuarioLogado, int offset) throws DaoException {
 
-		String sql = "SELECT id, nome, email, login FROM usuario WHERE admin is false AND usuario_id = ? ORDER BY id";
+		String sql = "SELECT id, nome, email, login FROM usuario WHERE admin is false AND usuario_id = ? ORDER BY id OFFSET ? LIMIT 5";
 
 		List<Usuario> usuarios = new ArrayList<>();
 
 		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
 			pstmt.setLong(1, idUsuarioLogado);
+			pstmt.setInt(2, offset);
 
 			try (ResultSet rs = pstmt.executeQuery()) {
 
@@ -405,7 +407,7 @@ public class UsuarioDao implements Serializable {
 			EnderecoDao enderecoDao = new EnderecoDao(connection);
 			enderecoDao.atualizar(obj.getEndereco());
 
-			 // Atualiza o usuário
+			// Atualiza o usuário
 			try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
 				pstmt.setString(1, obj.getNome());
 				pstmt.setString(2, obj.getEmail());

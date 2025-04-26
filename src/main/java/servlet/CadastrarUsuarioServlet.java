@@ -35,7 +35,7 @@ public class CadastrarUsuarioServlet extends HttpServlet {
 		try {
 			HttpSession session = request.getSession();
 
-			List<Usuario> usuarios = usuarioDao.encontrarTudo(UsuarioLogadoSession.getUsuarioLogado(request).getId());
+			List<Usuario> usuarios = usuarioDao.encontrarTudo(UsuarioLogadoSession.getUsuarioLogado(request).getId(), 0);
 			session.setAttribute("listarUsuariosSession", usuarios);
 			response.sendRedirect(request.getContextPath() + "/principal/cadastrar_usuario.jsp");
 

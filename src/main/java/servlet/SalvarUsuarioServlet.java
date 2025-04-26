@@ -149,7 +149,8 @@ public class SalvarUsuarioServlet extends HttpServlet {
 				salvarFotoPerfil(imagemPerfil, usuario);
 			}
 
-			List<Usuario> usuarios = usuarioDao.encontrarTudo(UsuarioLogadoSession.getUsuarioLogado(request).getId());
+			List<Usuario> usuarios = usuarioDao.encontrarTudo(UsuarioLogadoSession.getUsuarioLogado(request).getId(),
+					0);
 			request.getSession().setAttribute("listarUsuariosSession", usuarios);
 			/* mostra o usuário na tela após o redirecionamento */
 			request.getSession().setAttribute("usuarioSalvo", usuario);
