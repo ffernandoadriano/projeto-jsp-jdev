@@ -138,22 +138,26 @@ public class SalvarUsuarioServlet extends HttpServlet {
 				acao = "atualizar";
 			}
 
-			/*
-			 * coloco na sessão o objeto criado e removo assim que ele é redirecionado no
-			 * jsp. Obs: somente para exibir o objeto criado
-			 */
-			response.sendRedirect(
-					request.getContextPath() + String.format("/principal/cadastrar_usuario.jsp?acao=%s", acao));
-
 			if (imagemPerfil != null) {
 				salvarFotoPerfil(imagemPerfil, usuario);
 			}
 
 			List<Usuario> usuarios = usuarioDao.encontrarTudo(UsuarioLogadoSession.getUsuarioLogado(request).getId(),
 					0);
+			int totalPaginas = usuarioDao.totalPaginas(UsuarioLogadoSession.getUsuarioLogado(request).getId());
+
+			request.getSession().setAttribute("totalPaginas", totalPaginas);
+
 			request.getSession().setAttribute("listarUsuariosSession", usuarios);
 			/* mostra o usuário na tela após o redirecionamento */
 			request.getSession().setAttribute("usuarioSalvo", usuario);
+
+			/*
+			 * coloco na sessão o objeto criado e removo assim que ele é redirecionado no
+			 * jsp. Obs: somente para exibir o objeto criado
+			 */
+			response.sendRedirect(
+					request.getContextPath() + String.format("/principal/cadastrar_usuario.jsp?acao=%s", acao));
 
 		} catch (DaoException e) {
 			throw new ServletException(e);

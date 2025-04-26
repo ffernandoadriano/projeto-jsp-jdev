@@ -15,10 +15,13 @@ import model.Endereco;
 import model.Usuario;
 import model.enums.Perfil;
 import model.enums.Sexo;
+import util.PaginacaoUtil;
 
 public class UsuarioDao implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+
+	private static final int LIMITE_DE_PAGINA = 5;
 
 	/*
 	 * transient - impede que o atributo seja serializado (salvo em arquivos,
@@ -277,7 +280,7 @@ public class UsuarioDao implements Serializable {
 
 	public List<Usuario> encontrarPorNome(String nome, Long idUsuarioLogado, int offset) throws DaoException {
 
-		String sql = "SELECT id, nome, email, login, senha, perfil_id, sexo FROM usuario WHERE UPPER(nome) LIKE CONCAT('%',UPPER(?),'%') AND admin is false AND usuario_id = ?  BY id OFFSET ? LIMIT 5";
+		String sql = "SELECT id, nome, email, login, senha, perfil_id, sexo FROM usuario WHERE UPPER(nome) LIKE CONCAT('%',UPPER(?),'%') AND admin is false AND usuario_id = ?  BY id OFFSET ? LIMIT ?";
 
 		List<Usuario> usuarios = new ArrayList<>();
 
@@ -285,6 +288,7 @@ public class UsuarioDao implements Serializable {
 			pstmt.setString(1, nome);
 			pstmt.setLong(2, idUsuarioLogado);
 			pstmt.setInt(3, offset);
+			pstmt.setInt(4, LIMITE_DE_PAGINA);
 
 			try (ResultSet rs = pstmt.executeQuery()) {
 
@@ -310,13 +314,14 @@ public class UsuarioDao implements Serializable {
 
 	public List<Usuario> encontrarTudo(Long idUsuarioLogado, int offset) throws DaoException {
 
-		String sql = "SELECT id, nome, email, login FROM usuario WHERE admin is false AND usuario_id = ? ORDER BY id OFFSET ? LIMIT 5";
+		String sql = "SELECT id, nome, email, login FROM usuario WHERE admin is false AND usuario_id = ? ORDER BY id OFFSET ? LIMIT ?";
 
 		List<Usuario> usuarios = new ArrayList<>();
 
 		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
 			pstmt.setLong(1, idUsuarioLogado);
 			pstmt.setInt(2, offset);
+			pstmt.setInt(3, LIMITE_DE_PAGINA);
 
 			try (ResultSet rs = pstmt.executeQuery()) {
 
@@ -445,6 +450,32 @@ public class UsuarioDao implements Serializable {
 
 		} catch (SQLException e) {
 			throw new DaoException("Erro ao remover um registro");
+		}
+	}
+
+	public int totalPaginas(Long idUsuarioLogado) throws DaoException {
+		int totalRegistro = totalRegistros(idUsuarioLogado);
+		return PaginacaoUtil.calcularTotalPaginas(totalRegistro, LIMITE_DE_PAGINA);
+	}
+
+	private int totalRegistros(Long idUsuarioLogado) throws DaoException {
+		String sql = "SELECT COUNT(1) FROM usuario WHERE usuario_id = ?";
+
+		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+			pstmt.setLong(1, idUsuarioLogado);
+
+			try (ResultSet rs = pstmt.executeQuery()) {
+
+				if (rs.next()) {
+					return rs.getInt(1);
+				} else {
+
+					return 0; // Se não tiver resultado, retorna 0
+				}
+			}
+
+		} catch (SQLException e) {
+			throw new DaoException("Erro ao consultar total de registros " + e.getMessage(), e);
 		}
 	}
 
