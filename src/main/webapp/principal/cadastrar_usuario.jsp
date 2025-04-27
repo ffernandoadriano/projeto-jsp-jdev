@@ -359,15 +359,17 @@
 															<li class="page-item"><a class="page-link" href="#"
 																aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
 															</a></li>
-															
-															<c:forEach var="i" begin="1"  end="${totalPaginas}" step="1">
-															
-															<li class="page-item <c:if test="${paginacao == i}">active</c:if>" aria-current="page"><span
-																class="page-link">${i}</span></li>
-															
+
+															<c:forEach var="i" begin="1" end="${totalPaginas}"
+																step="1">
+
+																<li
+																	class="page-item <c:if test="${paginacao == i}">active</c:if>"
+																	aria-current="page"><span class="page-link">${i}</span>
+																</li>
+
 															</c:forEach>
-															
-																					
+
 															<li class="page-item"><a class="page-link" href="#"
 																aria-label="Next"> <span aria-hidden="true">&raquo;</span>
 															</a></li>
