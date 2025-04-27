@@ -362,7 +362,7 @@
 															
 															<c:forEach var="i" begin="1"  end="${totalPaginas}" step="1">
 															
-															<li class="page-item  ${paginacao == i ? 'active' : ''}" aria-current="page"><span
+															<li class="page-item <c:if test="${paginacao == i}">active</c:if>" aria-current="page"><span
 																class="page-link">${i}</span></li>
 															
 															</c:forEach>
