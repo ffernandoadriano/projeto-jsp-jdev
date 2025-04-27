@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import model.Usuario;
 import session.UsuarioLogadoSession;
+import util.PaginacaoUtil;
 
 @WebServlet("/CadastrarUsuarioServlet")
 public class CadastrarUsuarioServlet extends HttpServlet {
@@ -35,10 +36,22 @@ public class CadastrarUsuarioServlet extends HttpServlet {
 		try {
 			HttpSession session = request.getSession();
 
-			List<Usuario> usuarios = usuarioDao.encontrarTudo(UsuarioLogadoSession.getUsuarioLogado(request).getId(),
-					0);
-			int totalPaginas = usuarioDao.totalPaginas(UsuarioLogadoSession.getUsuarioLogado(request).getId());
+			final String paginaParam = request.getParameter("pagina");
+			String paginaAtual = (String) session.getAttribute("paginacao");
 
+			if (paginaAtual == null) {
+				paginaAtual = "1";
+			} else if (paginaParam != null) {
+				paginaAtual = paginaParam;
+			}
+
+			int totalPaginas = usuarioDao.totalPaginas(UsuarioLogadoSession.getUsuarioLogado(request).getId());
+			int offset = PaginacaoUtil.calcularOffset(Integer.parseInt(paginaAtual), usuarioDao.getLimitePagina());
+
+			List<Usuario> usuarios = usuarioDao.encontrarTudo(UsuarioLogadoSession.getUsuarioLogado(request).getId(),
+					offset);
+
+			session.setAttribute("paginacao", paginaAtual);
 			request.getSession().setAttribute("totalPaginas", totalPaginas);
 			session.setAttribute("listarUsuariosSession", usuarios);
 			response.sendRedirect(request.getContextPath() + "/principal/cadastrar_usuario.jsp");

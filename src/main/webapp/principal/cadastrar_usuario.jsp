@@ -158,9 +158,9 @@
 
 															<!-- Endereço inicio -->
 
-															<input type="hidden" name="enderecoId" 
+															<input type="hidden" name="enderecoId"
 																value="${not empty enderecoId ? enderecoId : usuarioSalvo.endereco.id}">
-																
+
 															<div class="form-group row">
 																<label class="col-sm-1 col-form-label">Cep:</label>
 																<div class="col-sm-2">
@@ -350,86 +350,110 @@
 															</tbody>
 														</table>
 													</div>
+
+
+													<!-- Menu Páginação- Inicio -->
+													<nav aria-label="Page navigation example"
+														class="pagination justify-content-center">
+														<ul class="pagination">
+															<li class="page-item"><a class="page-link" href="#"
+																aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
+															</a></li>
+															
+															<c:forEach var="i" begin="1"  end="${totalPaginas}" step="1">
+															
+															<li class="page-item  ${paginacao == i ? 'active' : ''}" aria-current="page"><span
+																class="page-link">${i}</span></li>
+															
+															</c:forEach>
+															
+																					
+															<li class="page-item"><a class="page-link" href="#"
+																aria-label="Next"> <span aria-hidden="true">&raquo;</span>
+															</a></li>
+														</ul>
+													</nav>
+													<!-- Menu Páginação - fim -->
+
 												</div>
 
 											</div>
 										</div>
+
+
+										<!-- Page-body end -->
 									</div>
-
-
-									<!-- Page-body end -->
+									<div id="styleSelector"></div>
 								</div>
-								<div id="styleSelector"></div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
 
-	<jsp:include page="javascript.jsp"></jsp:include>
+		<jsp:include page="javascript.jsp"></jsp:include>
 
-	<!-- Large modal -->
-	<div class="modal fade" id="modalCadastro" tabindex="-1" role="dialog"
-		aria-labelledby="myLargeModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-xl-custom">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="exampleModalLabel">Pesquisa de
-						Usuário</h5>
-				</div>
-				<!-- AQUI FOI ADICIONADO O SCROLL -->
-				<div class="modal-body" style="max-height: 60vh; overflow-y: auto;">
-					<!-- inicio do body -->
-
-					<div class="input-group mb-3">
-						<input type="text" class="form-control"
-							placeholder="Digite o nome" aria-label="nome"
-							aria-describedby="basic-addon2" name="pesquisarNome"
-							id="pesquisarNome" autocomplete="off"
-							onkeydown="if (event.key === 'Enter') { event.preventDefault(); document.getElementById('btnPesquisar').click(); }">
-						<div class="input-group-append">
-							<button type="button"
-								class="btn btn-success btn-round waves-effect hor-grd btn-grd-success"
-								type="button" onclick="buscarUsuarioPorNome();"
-								id="btnPesquisar" style="margin-left: 5px">Pesquisar</button>
-						</div>
+		<!-- Large modal -->
+		<div class="modal fade" id="modalCadastro" tabindex="-1" role="dialog"
+			aria-labelledby="myLargeModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-xl-custom">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">Pesquisa de
+							Usuário</h5>
 					</div>
+					<!-- AQUI FOI ADICIONADO O SCROLL -->
+					<div class="modal-body" style="max-height: 60vh; overflow-y: auto;">
+						<!-- inicio do body -->
 
-					<div class="card-block table-border-style">
-						<div class="table-responsive">
-							<table class="table" id="tbPesquisarUsuario">
-								<thead>
-									<tr>
-										<th>ID</th>
-										<th>Nome</th>
-										<th>Email</th>
-										<th></th>
-									</tr>
-								</thead>
-								<tbody>
-
-								</tbody>
-							</table>
+						<div class="input-group mb-3">
+							<input type="text" class="form-control"
+								placeholder="Digite o nome" aria-label="nome"
+								aria-describedby="basic-addon2" name="pesquisarNome"
+								id="pesquisarNome" autocomplete="off"
+								onkeydown="if (event.key === 'Enter') { event.preventDefault(); document.getElementById('btnPesquisar').click(); }">
+							<div class="input-group-append">
+								<button type="button"
+									class="btn btn-success btn-round waves-effect hor-grd btn-grd-success"
+									type="button" onclick="buscarUsuarioPorNome();"
+									id="btnPesquisar" style="margin-left: 5px">Pesquisar</button>
+							</div>
 						</div>
+
+						<div class="card-block table-border-style">
+							<div class="table-responsive">
+								<table class="table" id="tbPesquisarUsuario">
+									<thead>
+										<tr>
+											<th>ID</th>
+											<th>Nome</th>
+											<th>Email</th>
+											<th></th>
+										</tr>
+									</thead>
+									<tbody>
+
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<!-- fim do body -->
 					</div>
-					<!-- fim do body -->
-				</div>
-				<div class="modal-footer d-flex justify-content-between w-100">
-					<span class="align-self-center" id="qtdRegistros"></span>
-					<button type="button"
-						class="btn btn-inverse btn-round waves-effect hor-grd btn-grd-inverse"
-						data-dismiss="modal">Fechar</button>
+					<div class="modal-footer d-flex justify-content-between w-100">
+						<span class="align-self-center" id="qtdRegistros"></span>
+						<button type="button"
+							class="btn btn-inverse btn-round waves-effect hor-grd btn-grd-inverse"
+							data-dismiss="modal">Fechar</button>
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-	<jsp:include page="jsWhatsAppIcone.jsp"></jsp:include>
+		<jsp:include page="jsWhatsAppIcone.jsp"></jsp:include>
 
 
-	<!-- Notificações -->
-	<script>
+		<!-- Notificações -->
+		<script>
 			 $(document).ready(function () {
 				<c:choose>
 					<c:when test="${erros != null}">
@@ -454,8 +478,8 @@
 			 });
 		</script>
 
-	<!-- Mascara para Cep -->
-	<script>
+		<!-- Mascara para Cep -->
+		<script>
 	  document.getElementById('cep').addEventListener('input', function (e) {
 	    let cep = e.target.value;
 	
@@ -471,6 +495,68 @@
 	  });
 	</script>
 
+
+		<!-- Paginação -->
+		<script>
+			 const pageItems = document.querySelectorAll('.pagination .page-item'); // item da lista
+			 const pageLinks = document.querySelectorAll('.pagination .page-link'); // link da lista
+			
+			 function setActive(index) {
+			   // Remove o active de todos
+			   pageItems.forEach(item => item.classList.remove('active'));
+			
+			   // Adiciona active no índice atual
+			   if (pageItems[index] && !pageItems[index].querySelector('span[aria-hidden]')) {
+			    	 pageItems[index].classList.add('active');
+			    	 
+			     	// chamar o href para redirecionar aqui
+			    	window.location.href ='<%=request.getContextPath()%>/CadastrarUsuarioServlet?pagina='+ index;
+			   }
+			 }
+
+				// verifica na lista o index
+			 function getCurrentIndex() {
+			   let currentIndex = -1;
+			   
+			   pageItems.forEach((item, index) => {
+			     if (item.classList.contains('active')) {
+			       currentIndex = index;
+			     }
+			   });
+			   
+			   return currentIndex;
+			 }
+			
+			 pageLinks.forEach(link => {
+				 
+			   link.addEventListener('click', function(event) {
+				   
+				 event.preventDefault(); // impede que a ação padrão associada a um evento específico seja executada.
+			
+			     const parentLi = this.parentElement; // acessa o elemento pai imediato "<li> é o pai"
+			
+			     if (this.getAttribute('aria-label') === 'Previous') {
+			       // Clicou no Previous
+			       const currentIndex = getCurrentIndex();
+			       
+			       if (currentIndex > 1) { // Índice 0 é o Previous, índice 1 é o 1
+			         setActive(currentIndex - 1);
+			       }
+			       
+			     } else if (this.getAttribute('aria-label') === 'Next') {
+			       // Clicou no Next
+			       const currentIndex = getCurrentIndex();
+			       
+			       if (currentIndex < pageItems.length - 2) { // penúltimo é 3, último é Next
+			         setActive(currentIndex + 1);
+			       }
+			     } else {
+			       // Clicou em um número direto
+			       setActive([...pageLinks].indexOf(this)); // retorna a posição atual do clique
+			     }
+			   });
+			 });
+		</script>
 </body>
 
 </html>

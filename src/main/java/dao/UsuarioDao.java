@@ -21,7 +21,7 @@ public class UsuarioDao implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final int LIMITE_DE_PAGINA = 5;
+	private static final int LIMITE_DE_PAGINA = 10;
 
 	/*
 	 * transient - impede que o atributo seja serializado (salvo em arquivos,
@@ -456,6 +456,10 @@ public class UsuarioDao implements Serializable {
 	public int totalPaginas(Long idUsuarioLogado) throws DaoException {
 		int totalRegistro = totalRegistros(idUsuarioLogado);
 		return PaginacaoUtil.calcularTotalPaginas(totalRegistro, LIMITE_DE_PAGINA);
+	}
+
+	public int getLimitePagina() {
+		return LIMITE_DE_PAGINA;
 	}
 
 	private int totalRegistros(Long idUsuarioLogado) throws DaoException {

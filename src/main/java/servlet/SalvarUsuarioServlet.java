@@ -23,6 +23,7 @@ import model.enums.Perfil;
 import model.enums.Sexo;
 import session.ImagemBase64Session;
 import session.UsuarioLogadoSession;
+import util.PaginacaoUtil;
 import util.StringUtils;
 
 /**
@@ -142,9 +143,11 @@ public class SalvarUsuarioServlet extends HttpServlet {
 				salvarFotoPerfil(imagemPerfil, usuario);
 			}
 
-			List<Usuario> usuarios = usuarioDao.encontrarTudo(UsuarioLogadoSession.getUsuarioLogado(request).getId(),
-					0);
 			int totalPaginas = usuarioDao.totalPaginas(UsuarioLogadoSession.getUsuarioLogado(request).getId());
+			int offset = PaginacaoUtil.calcularOffset(paginaAtual(), usuarioDao.getLimitePagina());
+
+			List<Usuario> usuarios = usuarioDao.encontrarTudo(UsuarioLogadoSession.getUsuarioLogado(request).getId(),
+					offset);
 
 			request.getSession().setAttribute("totalPaginas", totalPaginas);
 
@@ -434,5 +437,17 @@ public class SalvarUsuarioServlet extends HttpServlet {
 	private String convertImageByteToBase64(byte[] image, String contentType) {
 		/* Formato para visulizar a imagem no jsp */
 		return String.format("data:%s;base64,%s", contentType, Base64.getEncoder().encodeToString(image));
+	}
+
+	private int paginaAtual() {
+		final String paginaParam = request.getParameter("pagina");
+		String paginaAtual = (String) request.getSession().getAttribute("paginacao");
+
+		if (paginaAtual == null) {
+			paginaAtual = "1";
+		} else if (paginaParam != null) {
+			paginaAtual = paginaParam;
+		}
+		return Integer.parseInt(paginaAtual);
 	}
 }
