@@ -37,14 +37,14 @@
 	       
 	      <div class="pcoded-navigation-label" data-i18n="nav.category.navigation">Menu</div>
 	      <ul class="pcoded-item pcoded-left-item">
-	          <li class="active">
+	          <li class="" id="home">
 	              <a href="<%= request.getContextPath() %>/principal/principal.jsp" class="waves-effect waves-dark">
 	                  <span class="pcoded-micon"><i class="ti-home"></i><b>D</b></span>
 	                  <span class="pcoded-mtext" data-i18n="nav.dash.main">Página inicial</span>
 	                  <span class="pcoded-mcaret"></span>
 	              </a>
 	          </li>
-	          <li class="pcoded-hasmenu">
+	          <li class="pcoded-hasmenu" id="Cadastros">
 	              <a href="javascript:void(0)" class="waves-effect waves-dark">
 	                  <span class="pcoded-micon"><i class="ti-layout-grid2-alt"></i></span>
 	                  <span class="pcoded-mtext"  data-i18n="nav.basic-components.main">Cadastros</span>

@@ -12,14 +12,17 @@
 						<c:when test="${caminho  eq '/principal/principal.jsp' }">
 							<h5 class="m-b-10">Página inicial</h5>
 							<p class="m-b-0">Bem vindo</p>
+							<c:set var="id" value="home" />
 						</c:when>
 						<c:when test="${caminho  eq '/principal/cadastrar_usuario.jsp' }">
 							<h5 class="m-b-10">Cadastrar Usuário</h5>
 							<p class="m-b-0">Formulário / Lista de Usuários</p>
+							<c:set var="id" value="Cadastros" />
 						</c:when>
 						<c:otherwise>
 							<h5 class="m-b-10">Dashboard</h5>
 							<p class="m-b-0">Welcome to Mega Able</p>
+							<c:set var="id" value="home" />
 						</c:otherwise>
 					</c:choose>
 				</div>
@@ -53,3 +56,13 @@
 		</div>
 	</div>
 </div>
+
+<!-- Marca o menu selecionado -->
+<script>
+	menuLateralAction("${id}");
+
+	function menuLateralAction(id) {
+		const nomeClass = document.getElementById(id).classList;
+		nomeClass.add('active');
+	}
+</script>
