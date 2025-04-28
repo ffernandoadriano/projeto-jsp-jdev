@@ -4,6 +4,7 @@
                       <a class="mobile-menu waves-effect waves-light" id="mobile-collapse" href="#!">
                           <i class="ti-menu"></i>
                       </a>
+                    
                       <div class="mobile-search waves-effect waves-light">
                           <div class="header-search">
                               <div class="main-search morphsearch-search">
@@ -15,8 +16,9 @@
                               </div>
                           </div>
                       </div>
-                      <a href="index.html">
-                          <img class="img-fluid" src="<%= request.getContextPath() %>/assets/images/logo.png" alt="Theme-Logo" />
+                      
+                      <a href="#">
+                          <img class="img-fluid" style="margin-left: 10px; width: 150px;" src="<%= request.getContextPath() %>/assets/images/logo3.png" alt="Theme-Logo" />
                       </a>
                       <a class="mobile-options waves-effect waves-light">
                           <i class="ti-more"></i>
@@ -28,15 +30,17 @@
                           <li>
                               <div class="sidebar_toggle"><a href="javascript:void(0)"><i class="ti-menu"></i></a></div>
                           </li>
-                          <li class="header-search">
-                              <div class="main-search morphsearch-search">
-                                  <div class="input-group">
-                                      <span class="input-group-addon search-close"><i class="ti-close"></i></span>
-                                      <input type="text" class="form-control">
-                                      <span class="input-group-addon search-btn"><i class="ti-search"></i></span>
-                                  </div>
-                              </div>
-                          </li>
+                          <!-- 
+	                          <li class="header-search">
+	                              <div class="main-search morphsearch-search">
+	                                  <div class="input-group">
+	                                      <span class="input-group-addon search-close"><i class="ti-close"></i></span>
+	                                      <input type="text" class="form-control">
+	                                      <span class="input-group-addon search-btn"><i class="ti-search"></i></span>
+	                                  </div>
+	                              </div>
+	                          </li>
+                           -->
                           <li>
                               <a href="#!" onclick="javascript:toggleFullScreen()" class="waves-effect waves-light">
                         <i class="ti-fullscreen"></i>
@@ -51,8 +55,8 @@
                     </a>
                     <ul class="show-notification">
                         <li>
-                            <h6>Notifications</h6>
-                            <label class="label label-danger">New</label>
+                            <h6>Novidades</h6>
+                            <label class="label label-danger">Novo</label>
                         </li>
                         <li class="waves-effect waves-light">
                             <div class="media">
@@ -100,7 +104,7 @@
                         </li>
                         <li class="waves-effect waves-light">
                             <a href="user-profile.html">
-                                <i class="ti-user"></i> Profile
+                                <i class="ti-user"></i> Ver perfil
                             </a>
                         </li>
                         <li class="waves-effect waves-light">
@@ -115,7 +119,7 @@
                         </li>
                         <li class="waves-effect waves-light">
                             <a href="<%= request.getContextPath() %>/LogoutServlet?acao=Logout">
-                                <i class="ti-layout-sidebar-left"></i> Logout
+                                <i class="ti-layout-sidebar-left"></i> Sair
                             </a>
                         </li>
                     </ul>
