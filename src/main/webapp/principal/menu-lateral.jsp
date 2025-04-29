@@ -5,10 +5,10 @@
 	    <div class="pcoded-inner-navbar main-menu">
 	            <div class="">
 	                <div class="main-menu-header">
-		                <c:if test="${not empty fotoPerfil}">
-		                	<img class="img-80 img-radius" style="min-height: 61px; max-height: 100px;" src="${fotoPerfil.imageBase64}" alt="User-Profile">
+		                <c:if test="${not empty imagemPerfil}">
+		                	<img class="img-80 img-radius" style="min-height: 61px; max-height: 100px;" src="${imagemPerfil}" alt="User-Profile">
 		                </c:if>
-		                <c:if test="${empty fotoPerfil}">
+		                <c:if test="${empty imagemPerfil}">
 		                    <img class="img-80 img-radius" style="min-height: 61px" src="<%= request.getContextPath() %>/assets/images/avatar-blank2.jpg" alt="User-Profile">	                
 		                </c:if>
 		                    <div class="user-details">

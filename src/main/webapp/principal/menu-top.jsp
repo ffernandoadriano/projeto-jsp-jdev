@@ -104,10 +104,10 @@
 				<!-- Foto Perfil -->
 				<li class="user-profile header-notification"><a href="#!"
 					class="waves-effect waves-light"> <c:if
-							test="${not empty fotoPerfil}">
-							<img style="height: 40px;" src="${fotoPerfil.imageBase64}"
+							test="${not empty imagemPerfil}">
+							<img style="height: 40px;" src="${imagemPerfil}"
 								class="img-radius" alt="User-Profile">
-						</c:if> <c:if test="${empty fotoPerfil}">
+						</c:if> <c:if test="${empty imagemPerfil}">
 							<img
 								src="<%=request.getContextPath()%>/assets/images/avatar-blank2.jpg"
 								class="img-radius" alt="User-Profile">

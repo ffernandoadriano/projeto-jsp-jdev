@@ -8,7 +8,7 @@ import model.Usuario;
 public class UsuarioLogadoSession {
 
 	private static final String USUARIO_LOGADO = "usuarioLogado";
-	private static final String FOTO_PERFIL = "fotoPerfil";
+	private static final String FOTO_PERFIL = "imagemPerfil";
 
 	private UsuarioLogadoSession() {
 	}
@@ -36,8 +36,10 @@ public class UsuarioLogadoSession {
 	}
 
 	public static void createFotoPerfil(HttpServletRequest request, Imagem fotoPerfil) {
-		HttpSession session = request.getSession(); // cria uma nova session automaticamente.
-		session.setAttribute(FOTO_PERFIL, fotoPerfil);
+		if (fotoPerfil != null) {
+			HttpSession session = request.getSession(); // cria uma nova session automaticamente.
+			session.setAttribute(FOTO_PERFIL, fotoPerfil.getImageBase64());
+		}
 	}
 
 }
