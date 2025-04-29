@@ -108,7 +108,7 @@ public class ImagemDao implements Serializable {
 
 	public Imagem encontrarPorId(Long usuarioId, String tipo) throws DaoException {
 
-		String sql = "SELECT * FROM imagem WHERE usuario_id = ? AND tipo = ?";
+		String sql = "SELECT id, usuario_id, imagem, extensao, tipo, data_upload FROM imagem WHERE usuario_id = ? AND tipo = ?";
 
 		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
 			pstmt.setLong(1, usuarioId);

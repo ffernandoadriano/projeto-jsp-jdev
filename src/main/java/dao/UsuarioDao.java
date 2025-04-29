@@ -27,13 +27,17 @@ public class UsuarioDao implements Serializable {
 	 * transient - impede que o atributo seja serializado (salvo em arquivos,
 	 * sessão, etc.).
 	 */
-	private transient Connection connection;
+	private final transient Connection connection;
+
+	private final transient EnderecoDao enderecoDao;
 
 	/**
 	 * Construtor que inicializa a conexão com o banco de dados.
 	 */
 	public UsuarioDao() {
 		this.connection = ConnectionFactory.getConnection();
+		// a conexão precisa ser a mesma para o rollback funcionar
+		this.enderecoDao = new EnderecoDao(connection);
 	}
 
 	public boolean validarAutenticacao(Usuario usuario) throws DaoException {
@@ -100,8 +104,6 @@ public class UsuarioDao implements Serializable {
 		String insertSql = "INSERT INTO usuario (nome, email, login, senha, usuario_id, perfil_id, sexo, endereco_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
 		try {
-			// a conexão precisa ser a mesma para o rollback funcionar
-			EnderecoDao enderecoDao = new EnderecoDao(connection);
 			enderecoDao.salvar(obj.getEndereco());
 
 			try (PreparedStatement pstmt = connection.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS)) {
@@ -139,7 +141,7 @@ public class UsuarioDao implements Serializable {
 
 	public Usuario encontrarPorId(Long id, Long idUsuarioLogado) throws DaoException {
 
-		String sql = "SELECT id, nome, email, login, senha, perfil_id, sexo, endereco_id FROM usuario WHERE id = ? AND admin is false AND usuario_id = ?";
+		String sql = "SELECT id, nome, email, login, senha, perfil_id, sexo FROM usuario WHERE id = ? AND admin is false AND usuario_id = ?";
 
 		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
 			pstmt.setLong(1, id);
@@ -152,11 +154,11 @@ public class UsuarioDao implements Serializable {
 
 					usuario.setId(rs.getLong("id"));
 					usuario.setNome(rs.getString("nome"));
-					usuario.setSexo(Sexo.fromSigla(rs.getString("sexo")));
 					usuario.setEmail(rs.getString("email"));
 					usuario.setLogin(rs.getString("login"));
 					usuario.setSenha(rs.getString("senha"));
 					usuario.setPerfil(Perfil.fromId(rs.getInt("perfil_id")));
+					usuario.setSexo(Sexo.fromSigla(rs.getString("sexo")));
 
 					return usuario;
 				}
@@ -193,7 +195,6 @@ public class UsuarioDao implements Serializable {
 					Long enderecoId = rs.getLong("endereco_id");
 
 					if (enderecoId != null && enderecoId > 0) {
-						EnderecoDao enderecoDao = new EnderecoDao(connection);
 						Endereco endereco = enderecoDao.encontrarPorId(enderecoId);
 						usuario.setEndereco(endereco);
 					}
@@ -216,7 +217,7 @@ public class UsuarioDao implements Serializable {
 	/* Query sem restrição por causa dos admins */
 	public Optional<Usuario> encontrarPorLogin(String login) throws DaoException {
 
-		String sql = "SELECT id, nome, email, login, senha, admin, perfil_id, sexo FROM usuario WHERE UPPER(login) = UPPER(?)";
+		String sql = "SELECT id, nome, email, login, senha, admin, perfil_id, sexo, endereco_id FROM usuario WHERE UPPER(login) = UPPER(?)";
 
 		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
 			pstmt.setString(1, login);
@@ -228,12 +229,20 @@ public class UsuarioDao implements Serializable {
 
 					usuario.setId(rs.getLong("id"));
 					usuario.setNome(rs.getString("nome"));
-					usuario.setSexo(Sexo.fromSigla(rs.getString("sexo")));
 					usuario.setEmail(rs.getString("email"));
 					usuario.setLogin(rs.getString("login"));
 					usuario.setSenha(rs.getString("senha"));
 					usuario.setAdmin(rs.getBoolean("admin"));
 					usuario.setPerfil(Perfil.fromId(rs.getInt("perfil_id")));
+					usuario.setSexo(Sexo.fromSigla(rs.getString("sexo")));
+					
+					Long enderecoId = rs.getLong("endereco_id");
+
+					if (enderecoId != null && enderecoId > 0) {
+						Endereco endereco = enderecoDao.encontrarPorId(enderecoId);
+						usuario.setEndereco(endereco);
+					}
+					
 
 					return Optional.of(usuario);
 				}
@@ -409,7 +418,6 @@ public class UsuarioDao implements Serializable {
 
 		try {
 			// Atualiza o endereço
-			EnderecoDao enderecoDao = new EnderecoDao(connection);
 			enderecoDao.atualizar(obj.getEndereco());
 
 			// Atualiza o usuário
