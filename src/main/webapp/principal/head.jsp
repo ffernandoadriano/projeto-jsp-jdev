@@ -335,7 +335,7 @@
 			            hiddenBase64.value = reader.result;    // salva a imagem em base64 no campo hidden
 			        }
 			    };
-				// Incia a leitura
+				// Inicia a leitura
 			 	// reader.readAsDataURL(fileInput) vai ler o conteúdo da imagem como Data URL (Base64).
 			    reader.readAsDataURL(file);  // Preview da imagem
 			}

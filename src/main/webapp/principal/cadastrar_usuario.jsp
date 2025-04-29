@@ -351,7 +351,7 @@
 														</table>
 													</div>
 
-
+												<c:if test="${totalPaginas > 0}">
 													<!-- Menu Páginação- Inicio -->
 													<nav aria-label="Page navigation example"
 														class="pagination justify-content-center">
@@ -376,6 +376,7 @@
 														</ul>
 													</nav>
 													<!-- Menu Páginação - fim -->
+												</c:if>
 
 												</div>
 

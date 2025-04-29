@@ -6,12 +6,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import dao.DaoException;
+import dao.ImagemDao;
 import dao.UsuarioDao;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import model.Imagem;
 import model.Usuario;
 import session.UsuarioLogadoSession;
 
@@ -22,6 +24,8 @@ public class LoginServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	private final UsuarioDao usuarioDao = new UsuarioDao();
+
+	private final ImagemDao imagemDao = new ImagemDao();
 
 	private static final Logger LOGGER = Logger.getLogger(LoginServlet.class.getName());
 
@@ -62,6 +66,7 @@ public class LoginServlet extends HttpServlet {
 					if (usuarioDao.validarAutenticacao(usuario)) {
 
 						Optional<Usuario> optionalUser = usuarioDao.encontrarPorLogin(login);
+						Imagem fotoPerfil = null;
 
 						/*
 						 * muda referencia do obj para ter mais informações na sessão (obs: quando o
@@ -69,10 +74,12 @@ public class LoginServlet extends HttpServlet {
 						 */
 						if (optionalUser.isPresent()) {
 							usuario = optionalUser.get();
+							fotoPerfil = imagemDao.encontrarPorId(usuario.getId(), "perfil");
 						}
 
 						// coloca o obj na sessão
 						UsuarioLogadoSession.logar(request, usuario);
+						UsuarioLogadoSession.createFotoPerfil(request, fotoPerfil);
 						request.getRequestDispatcher(url).forward(request, response);
 
 					} else {

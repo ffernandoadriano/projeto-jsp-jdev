@@ -62,7 +62,6 @@
 	menuLateralAction("${id}");
 
 	function menuLateralAction(id) {
-		const nomeClass = document.getElementById(id).classList;
-		nomeClass.add('active');
+		 document.getElementById(id).classList.add('active');
 	}
 </script>
