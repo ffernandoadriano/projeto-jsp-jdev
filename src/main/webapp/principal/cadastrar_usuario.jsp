@@ -351,32 +351,32 @@
 														</table>
 													</div>
 
-												<c:if test="${totalPaginas > 0}">
-													<!-- Menu Páginação- Inicio -->
-													<nav aria-label="Page navigation example"
-														class="pagination justify-content-center">
-														<ul class="pagination">
-															<li class="page-item"><a class="page-link" href="#"
-																aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
-															</a></li>
+													<c:if test="${totalPaginas > 0}">
+														<!-- Menu Páginação- Inicio -->
+														<nav aria-label="Page navigation example"
+															class="pagination justify-content-center">
+															<ul class="pagination">
+																<li class="page-item"><a class="page-link" href="#"
+																	aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
+																</a></li>
 
-															<c:forEach var="i" begin="1" end="${totalPaginas}"
-																step="1">
+																<c:forEach var="i" begin="1" end="${totalPaginas}"
+																	step="1">
 
-																<li
-																	class="page-item <c:if test="${paginacao == i}">active</c:if>"
-																	aria-current="page"><span class="page-link">${i}</span>
-																</li>
+																	<li
+																		class="page-item <c:if test="${paginacao == i}">active</c:if>"
+																		aria-current="page"><span class="page-link">${i}</span>
+																	</li>
 
-															</c:forEach>
+																</c:forEach>
 
-															<li class="page-item"><a class="page-link" href="#"
-																aria-label="Next"> <span aria-hidden="true">&raquo;</span>
-															</a></li>
-														</ul>
-													</nav>
-													<!-- Menu Páginação - fim -->
-												</c:if>
+																<li class="page-item"><a class="page-link" href="#"
+																	aria-label="Next"> <span aria-hidden="true">&raquo;</span>
+																</a></li>
+															</ul>
+														</nav>
+														<!-- Menu Páginação - fim -->
+													</c:if>
 
 												</div>
 
@@ -443,6 +443,17 @@
 						</div>
 						<!-- fim do body -->
 					</div>
+
+					<!-- Paginação Inicio -->
+					<span style="margin-bottom: 0px" class="sub-title"></span>
+					<nav sty aria-label="Page navigation example"
+						class="pagination justify-content-center">
+						<ul class="pagination" id="ulPaginacaoAjax">
+							<!-- será preenchido pelo ajax -->
+						</ul>
+					</nav>
+					<!-- Paginação Final -->
+
 					<div class="modal-footer d-flex justify-content-between w-100">
 						<span class="align-self-center" id="qtdRegistros"></span>
 						<button type="button"

@@ -105,187 +105,297 @@
 
 <script type="text/javascript">
 
-	      function limparFormulario() {
-
-		      let elementos = document.getElementById("usuarioForm").elements; // retorna os elementos html dentro do formulário
+	function limparFormulario() {
 	
-	    	  for(let i = 0; i < elementos.length; i ++){
-		    	  	elementos[i].value = ''; // Limpa o campo existante no formulário
-		      }
-	    	  // Seleciona o perfil para 0 "padrão"
-	    	  document.getElementById("perfil").selectedIndex = 0;
+	    let elementos = document.getElementById("usuarioForm").elements; // retorna os elementos html dentro do formulário
+	
+		  for(let i = 0; i < elementos.length; i ++){
+	  	  	elementos[i].value = ''; // Limpa o campo existante no formulário
+	    }
+		  // Seleciona o perfil para 0 "padrão"
+		  document.getElementById("perfil").selectedIndex = 0;
+	
+		  // Oculta mensagens de sucesso e erro (definido no atributo 'class') 
+		  const mensagens = document.querySelectorAll(".sucessoSalvo, .erro");
+		  mensagens.forEach(msg => msg.style.display = "none");
+	
+		  // Limpa os parâmetros da URL
+		  history.replaceState(null, '', window.location.pathname);
+	
+		  // Limpar o radio
+		  const radios = document.getElementsByName("sexo");
+		  radios.forEach(radio => radio.checked = false);
+	
+		  // Limpar a imagem anterior para padrão
+		  const fotoPerfil = document.getElementById("fotoBase64");
+		  fotoPerfil.src = "<%=request.getContextPath()%>/assets/images/perfil.png";
+	
+		  // Limpar a url da foto download
+		  const linkDownload = document.getElementById("linkDownloadFotoPerfil");
+		 // Cria um objeto URL a partir do href atual, com base na origem do site
+		  const url = new URL(linkDownload.href, window.location.origin);
+		    // Seta o parâmetro "id" com valor vazio
+		  url.searchParams.set("id", "");
+		    // Atualiza o href do link
+		  linkDownload.href = url.toString();
+	
+		}
 
-	    	  // Oculta mensagens de sucesso e erro (definido no atributo 'class') 
-	    	  const mensagens = document.querySelectorAll(".sucessoSalvo, .erro");
-	    	  mensagens.forEach(msg => msg.style.display = "none");
+	function excluirCadastro(){
+		let id = document.forms["usuarioForm"].id.value; // captura o nome do campo do formulário
 
-	    	  // Limpa os parâmetros da URL
-	    	  history.replaceState(null, '', window.location.pathname);
+		// se diferente de vazio, significa que estou tentando excluir um usuario já cadastro no banco
+		if(id != ""){
+			
+			let resposta = confirm("Deseja realmente excluir o registro?");
 
-	    	  // Limpar o radio
-	    	  const radios = document.getElementsByName("sexo");
-	    	  radios.forEach(radio => radio.checked = false);
-
-	    	  // Limpar a imagem anterior para padrão
-	    	  const fotoPerfil = document.getElementById("fotoBase64");
-	    	  fotoPerfil.src = "<%=request.getContextPath()%>/assets/images/perfil.png";
-
-	    	  // Limpar a url da foto download
-	    	  const linkDownload = document.getElementById("linkDownloadFotoPerfil");
-	    	 // Cria um objeto URL a partir do href atual, com base na origem do site
-	    	  const url = new URL(linkDownload.href, window.location.origin);
-	    	    // Seta o parâmetro "id" com valor vazio
-	    	  url.searchParams.set("id", "");
-	    	    // Atualiza o href do link
-	    	  linkDownload.href = url.toString();
-
+			if(resposta){
+				// redireciona a página
+				window.location = "<%=request.getContextPath()%>/ExcluirUsuarioServlet?id=" + id; 
 			}
+			
+		}
+	}
 
-			function excluirCadastro(){
-					let id = document.forms["usuarioForm"].id.value; // captura o nome do campo do formulário
+	function excluirCadastroComAjax(){
+		let id = document.forms["usuarioForm"].id.value; // captura o nome do campo do formulário
+		
+		// se diferente de vazio, significa que estou tentando excluir um usuario já cadastro no banco
+		if(id != ""){
+			
+			let resposta = confirm("Deseja realmente excluir o registro?");
 
-					// se diferente de vazio, significa que estou tentando excluir um usuario já cadastro no banco
-					if(id != ""){
-						
-						let resposta = confirm("Deseja realmente excluir o registro?");
+			if(resposta){
 
-						if(resposta){
-							window.location = "<%=request.getContextPath()%>/ExcluirUsuarioServlet?id=" + id; 
-							// redireciona a página
+				// URL para onde vai ser redirecionada
+				let urlDirecionamento = "<%=request.getContextPath()%>/ExcluirUsuarioServlet";
 
-						}
-						
-					}
-				}
-
-			function excluirCadastroComAjax(){
-				let id = document.forms["usuarioForm"].id.value; // captura o nome do campo do formulário
-				
-				// se diferente de vazio, significa que estou tentando excluir um usuario já cadastro no banco
-				if(id != ""){
+				$.ajax({
 					
-					let resposta = confirm("Deseja realmente excluir o registro?");
-
-					if(resposta){
-
-						// URL para onde vai ser redirecionada
-						let urlDirecionamento = "<%=request.getContextPath()%>/ExcluirUsuarioServlet";
-
-						$.ajax({
+					method: "GET",
+					url: urlDirecionamento,
+					data: "id="+ id + "&acao=excluirComAjax",  // uma forma de passar os parâmetros
+					success: function(response){
+		
+							limparFormulario(); // chamando função
 							
-							method: "GET",
-							url: urlDirecionamento,
-							data: "id="+ id + "&acao=excluirComAjax",  // uma forma de passar os parâmetros
-							success: function(response){
-				
-									limparFormulario(); // chamando função
-									
-									// document.getElementById("msg").textContent = response; // Um exemplo caso precise enviar a resposta do servidor para alguma id especifico
-								} 
-
-						}).fail(function(xhr, status, errorThrown){
-								alert("Erro ao tentar deletar por id: "+ xhr.responseText);
-							} ); // xhr- detalhes do erro // status - status do erro // errorThrown - exceção de erro
-					}		
-				}
-			}
-
-			function excluirCadastroComAjax2() {
-			    let id = document.forms["usuarioForm"].id.value;
-
-			    if (id !== "") {
-			        let resposta = confirm("Deseja realmente excluir o registro?");
-			        
-			        if (resposta) {
-			            let url = "<%=request.getContextPath()%>/ExcluirUsuarioServlet?id=" + id + "&acao=excluirComAjax";
-			            let request;
-
-			            if (window.XMLHttpRequest) {
-			                request = new XMLHttpRequest();
-			            } else {
-			                request = new ActiveXObject("Microsoft.XMLHTTP");
-			            }
-			            request.onreadystatechange = () => ajaxProcessarRecebimento(request); // (lambda) => Função de tratamento de retorno
-			            request.open("GET", url, true); // true = assíncrono
-			            request.send();
-			        }
-			    }
-			}
-
-
-			function ajaxProcessarRecebimento(request) {
-				if (request.readyState === 4) {
-                    if (request.status === 200) {
-                    	limparFormulario(); // chamando função
-                        // document.getElementById("msg").textContent = request.responseText;
-                    } else {
-                        alert("Erro ao tentar deletar por id: " + request.status + " - " + request.responseText);
-                    }
-                }
-			}
-
-			function buscarUsuarioPorNome(){
-
-				const pesquisarNome = document.getElementById("pesquisarNome").value; // Validando para ter valor p/ buscar no banco de dados
-
-				if(pesquisarNome != "" && pesquisarNome.trim() != ""){
-
-					// URL para onde vai ser redirecionada
-					let urlDirecionamento = "<%=request.getContextPath()%>/PesquisarUsuarioServlet";
-					
-					// ajax do Bootstrap
-					$.ajax({
-						
-						method: "GET",
-						url: urlDirecionamento,
-						data: "nome="+ pesquisarNome,   // uma forma de passar os parâmetros
-						success: function(response){
-
-							const json = JSON.parse(response); // convertendo uma String json para JSON em javaScript
-
-							// Remove linhas antigas
-							$("#tbPesquisarUsuario > tbody > tr").remove(); // jQuery, esse código remove todas as linhas da <tbody> da tabela com ID tbPesquisarUsuario.
-
-							
-							for(let i = 0; i < json.length; i++){
-
-								//  A melhor forma de simular um StringBuilder é usar um array de strings + join() em JS.
-								const sb = [];
-
-								sb.push("<tr>");
-								sb.push("<td>" + json[i].id + "</td>");
-								sb.push("<td>" + json[i].nome + "</td>");
-								sb.push("<td>" + json[i].email + "</td>");
-								sb.push("<td>");
-								sb.push("<button type=\"button\" class=\"btn btn-info btn-round waves-effect hor-grd btn-grd-info\" " +
-								         "onclick=\"editarFormularioUsuario(" + json[i].id + ");\">Editar</button>");
-								sb.push("</td>");
-								sb.push("</tr>");
-
-								const linha = sb.join("");
-								
-								$("#tbPesquisarUsuario > tbody").append(linha); // adicionando no body da tabela
-								document.getElementById("qtdRegistros").textContent = "Total de Registros: "+ json.length; // Apresentará a quantidade de registros encontrados.
-							}
-
-							// Apresentará 0 quando não encontrar nenhum registro.
-							if(json.length == 0){
-								document.getElementById("qtdRegistros").textContent = "Total de Registros: "+ json.length;
-							}
-							
+							// document.getElementById("msg").textContent = response; // Um exemplo caso precise enviar a resposta do servidor para alguma id especifico
 						} 
 
-					}).fail(function(xhr, status, errorThrown){
-							alert("Erro ao tentar pesquisar por nome: "+ xhr.responseText);
-						} ); // xhr- detalhes do erro // status - status do erro // errorThrown - exceção de erro
+				}).fail(function(xhr, status, errorThrown){
+						alert("Erro ao tentar deletar por id: "+ xhr.responseText);
+					} ); // xhr- detalhes do erro // status - status do erro // errorThrown - exceção de erro
+			}		
+		}
+	}
 
-				}
+	function excluirCadastroComAjax2() {
+	    let id = document.forms["usuarioForm"].id.value;
 
+	    if (id !== "") {
+	        let resposta = confirm("Deseja realmente excluir o registro?");
+	        
+	        if (resposta) {
+	            let url = "<%=request.getContextPath()%>/ExcluirUsuarioServlet?id=" + id + "&acao=excluirComAjax";
+	            let request;
+
+	            if (window.XMLHttpRequest) {
+	                request = new XMLHttpRequest();
+	            } else {
+	                request = new ActiveXObject("Microsoft.XMLHTTP");
+	            }
+	            request.onreadystatechange = () => ajaxProcessarRecebimento(request); // (lambda) => Função de tratamento de retorno
+	            request.open("GET", url, true); // true = assíncrono
+	            request.send();
+	        }
+	    }
+	}
+
+	function ajaxProcessarRecebimento(request) {
+		if (request.readyState === 4) {
+            if (request.status === 200) {
+            	limparFormulario(); // chamando função
+                // document.getElementById("msg").textContent = request.responseText;
+            } else {
+                alert("Erro ao tentar deletar por id: " + request.status + " - " + request.responseText);
+            }
+        }
+	}
+
+	/* buscarUsuarioPorNome(pagina = 1): significa que o parâmetro pagina é opcional, e se nenhum valor for passado, ele assume o valor 1 por padrão.
+		- buscarUsuarioPorNome();         // Vai usar pagina = 1
+		- buscarUsuarioPorNome(3);        // Vai usar pagina = 3
+	*/
+	function buscarUsuarioPorNome(pagina = 1){
+	
+		const pesquisarNome = document.getElementById("pesquisarNome").value; // Validando para ter valor p/ buscar no banco de dados
+	
+	
+		if(pesquisarNome != "" && pesquisarNome.trim() != ""){
+	
+			// URL para onde vai ser redirecionada
+			let urlDirecionamento = "<%=request.getContextPath()%>/PesquisarUsuarioServlet";
+			
+			// ajax do Bootstrap
+			$.ajax({
+				
+				method: "GET",
+				url: urlDirecionamento,
+				data: {
+			        nome: pesquisarNome,  // uma forma de passar os parâmetros
+			        pagina: pagina // 1 se for a primeira vez
+			      },
+				dataType: "json", // Especifica que a resposta esperada é JSON
+				success: function(json, textStatus, jqXHR){
+					/*
+					1 - data: Os dados retornados pelo servidor.
+					2 - textStatus: Uma string que descreve o status da requisição (por exemplo, "success").
+					3 - jqXHR: O objeto jQuery XMLHttpRequest, que contém informações detalhadas sobre a requisição, incluindo os headers da resposta.
+					*/
+					
+					//const json = JSON.parse(data); // convertendo uma String json para JSON em javaScript
+	
+					// Remove linhas antigas
+					$("#tbPesquisarUsuario > tbody > tr").remove(); // jQuery, esse código remove todas as linhas da <tbody> da tabela com ID tbPesquisarUsuario.
+	
+					
+					for(let i = 0; i < json.length; i++){
+	
+						//  A melhor forma de simular um StringBuilder é usar um array de strings + join() em JS.
+						const sb = [];
+	
+						sb.push("<tr>");
+						sb.push("<td>" + json[i].id + "</td>");
+						sb.push("<td>" + json[i].nome + "</td>");
+						sb.push("<td>" + json[i].email + "</td>");
+						sb.push("<td>");
+						sb.push("<button type=\"button\" class=\"btn btn-info btn-round waves-effect hor-grd btn-grd-info\" " +
+						         "onclick=\"editarFormularioUsuario(" + json[i].id + ");\">Editar</button>");
+						sb.push("</td>");
+						sb.push("</tr>");
+	
+						const linha = sb.join("");
+						
+						$("#tbPesquisarUsuario > tbody").append(linha); // adicionando no body da tabela
+						document.getElementById("qtdRegistros").textContent = "Total de Registros: "+ json.length; // Apresentará a quantidade de registros encontrados.
+					}
+	
+					// Apresentará 0 quando não encontrar nenhum registro.
+					if(json.length == 0){
+						document.getElementById("qtdRegistros").textContent = "Total de Registros: "+ json.length;
+					}
+	
+					
+					// criação da estrutura da paginação
+					const totalPaginas = jqXHR.getResponseHeader("X-Total-Paginas"); //Este método retorna o valor do cabeçalho especificado.
+					
+					montarPaginacaoAjax(totalPaginas, pagina); // chama a função para montar a paginação
+					
+				} 
+	
+			}).fail(function(xhr, status, errorThrown){
+					alert("Erro ao tentar pesquisar por nome: "+ xhr.responseText);
+				} ); // xhr- detalhes do erro // status - status do erro // errorThrown - exceção de erro
+	
+		}
+	
+	}
+
+		function montarPaginacaoAjax(totalPaginas, numPagina){
+			
+			// Remove linhas antigas
+			$("#ulPaginacaoAjax > li").remove(); // jQuery, esse código remove todas as linhas <li> da tabela com ID ulPaginacaoAjax.
+		
+			// Array para acumular os trechos de HTML (faz o papel do StringBuilder do java)
+			const sb = [];
+		
+			// Adiciona o botão de navegação para a página anterior
+			sb.push('<li class="page-item"><a class="page-link" href="#" aria-label="Anterior"><span aria-hidden="true">&laquo;</span></a></li>');
+		
+			const paginaAtual = parseInt(numPagina, 10); // garante que seja número
+			
+			// Loop para criar os botões de número de página
+			for (let i = 1; i <= totalPaginas; i++) {
+			  sb.push('<li class="page-item' + (i === paginaAtual ? ' active' : '') + '" aria-current="page">');
+			  sb.push('<a class="page-link" href="#">' + i + '</a>');
+			  sb.push('</li>');
 			}
-
-			function limparTabelaPesquisarUsuario(){
+		
+			// Adiciona o botão de navegação para a próxima página
+			sb.push('<li class="page-item"><a class="page-link" href="#" aria-label="Proximo"><span aria-hidden="true">&raquo;</span></a></li>');
+		
+			// Insere todo o HTML acumulado no elemento de paginação
+			$("#ulPaginacaoAjax").html(sb.join(""));
+		
+			const paginationContainer = document.getElementById('ulPaginacaoAjax');
+		
+			// Verifica se o listener já foi adicionado
+			if (!paginationContainer.dataset.listenerAdded) {
+		
+			  paginationContainer.addEventListener('click', function(event) {
+			    let target = event.target;
+		
+			    // Garante que target seja sempre o <a> (pode ser um <span> que foi clicado)
+			    if (!target.classList.contains('page-link')) {
+			      target = target.closest('.page-link');
+			    }
+		
+			    if (!target) return;
+		
+			    event.preventDefault();
+		
+			    const parentLi = target.closest('.page-item');
+			    const activeItem = paginationContainer.querySelector('.page-item.active');
+			    let currentPageNumber = activeItem ? activeItem.textContent.trim() : null;
+		
+			    // Se for número, converte para inteiro
+			    if (currentPageNumber && /^\d+$/.test(currentPageNumber)) {
+			      currentPageNumber = parseInt(currentPageNumber, 10);
+			    } else {
+			      return; // Não continuar se não houver página ativa válida
+			    }
+		
+			    function setActive(index) {
+			      const pageItems = paginationContainer.querySelectorAll('.page-item');
+			      pageItems.forEach(item => item.classList.remove('active'));
+		
+			      const targetItem = Array.from(pageItems).find(item => item.textContent.trim() == index);
+			      if (targetItem) {
+			        targetItem.classList.add('active');
+				    // chamar aqui ajax para a paginação clicada
+			        buscarUsuarioPorNome(index); // passando o número da página clicada
+			      }
+			    }
+		
+			    const ariaLabel = target.getAttribute('aria-label');
+		
+			    if (ariaLabel === 'Anterior') {
+			      if (currentPageNumber > 1) {
+			        setActive(currentPageNumber - 1);
+			      }
+			    } else if (ariaLabel === 'Proximo') {
+			      if (currentPageNumber < totalPaginas) {
+			        setActive(currentPageNumber + 1);
+			      }
+			    } else {
+			      const pageNumber = target.textContent.trim();
+			      if (/^\d+$/.test(pageNumber)) {
+			        setActive(pageNumber);
+			      }
+			    }
+			  });
+		
+			  // Marca como já adicionado
+			  paginationContainer.dataset.listenerAdded = 'true';
+			}
+	}
+	
+	function limparTabelaPesquisarUsuario(){
 				// Remove linhas antigas
 				$("#tbPesquisarUsuario > tbody > tr").remove(); // jQuery, esse código remove todas as linhas da <tbody> da tabela com ID tbPesquisarUsuario.
+
+				// Remove linhas antigas
+				$("#ulPaginacaoAjax > li").remove(); // jQuery, esse código remove todas as linhas <li> da tabela com ID ulPaginacaoAjax.
 				
 				document.getElementById("qtdRegistros").textContent = ""; // limpa a quantidade de registros
 				document.getElementById("pesquisarNome").value = ""; // limpa o campo pesquisar nome
@@ -410,6 +520,6 @@
 		            alert("CEP não encontrado.");
 		        }
 			 }
-			
-      </script>
+
+</script>
 </head>
