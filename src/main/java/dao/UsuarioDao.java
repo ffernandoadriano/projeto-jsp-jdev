@@ -214,6 +214,49 @@ public class UsuarioDao implements Serializable {
 		return null;
 	}
 
+	public Usuario buscarPorId(Long id) throws DaoException {
+
+		String sql = "SELECT id, nome, email, login, senha, admin, perfil_id, sexo, endereco_id FROM usuario WHERE id = ?";
+
+		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+			pstmt.setLong(1, id);
+
+			try (ResultSet rs = pstmt.executeQuery()) {
+
+				if (rs.next()) {
+					Usuario usuario = new Usuario();
+
+					usuario.setId(rs.getLong("id"));
+					usuario.setNome(rs.getString("nome"));
+					usuario.setEmail(rs.getString("email"));
+					usuario.setLogin(rs.getString("login"));
+					usuario.setSenha(rs.getString("senha"));
+					usuario.setAdmin(rs.getBoolean("admin"));
+					usuario.setPerfil(Perfil.fromId(rs.getInt("perfil_id")));
+					usuario.setSexo(Sexo.fromSigla(rs.getString("sexo")));
+
+					Long enderecoId = rs.getLong("endereco_id");
+
+					if (enderecoId != null && enderecoId > 0) {
+						Endereco endereco = enderecoDao.encontrarPorId(enderecoId);
+						usuario.setEndereco(endereco);
+					}
+
+					return usuario;
+				}
+
+			}
+
+			// Confirma a transação no banco
+			connection.commit();
+
+		} catch (SQLException e) {
+			throw new DaoException("Erro ao buscar usuário: " + e.getMessage(), e);
+		}
+
+		return null;
+	}
+
 	/* Query sem restrição por causa dos admins */
 	public Optional<Usuario> encontrarPorLogin(String login) throws DaoException {
 

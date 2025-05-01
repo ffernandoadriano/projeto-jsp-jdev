@@ -9,8 +9,8 @@ public class Telefone implements Serializable {
 
 	private Long id;
 	private String numero;
-	private Usuario usuario_id;
-	private Usuario usuario_inclusao_id;
+	private Usuario usuario;
+	private Usuario usuarioInclusao;
 
 	public Telefone() {
 	}
@@ -31,20 +31,20 @@ public class Telefone implements Serializable {
 		this.numero = numero;
 	}
 
-	public Usuario getUsuario_id() {
-		return usuario_id;
+	public Usuario getUsuario() {
+		return usuario;
 	}
 
-	public void setUsuario_id(Usuario usuario_id) {
-		this.usuario_id = usuario_id;
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
 	}
 
-	public Usuario getUsuario_inclusao_id() {
-		return usuario_inclusao_id;
+	public Usuario getUsuarioInclusao() {
+		return usuarioInclusao;
 	}
 
-	public void setUsuario_inclusao_id(Usuario usuario_inclusao_id) {
-		this.usuario_inclusao_id = usuario_inclusao_id;
+	public void setUsuarioInclusao(Usuario usuarioInclusao) {
+		this.usuarioInclusao = usuarioInclusao;
 	}
 
 	@Override
@@ -66,8 +66,8 @@ public class Telefone implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Telefone [id=" + id + ", numero=" + numero + ", usuario_id=" + usuario_id + ", usuario_inclusao_id="
-				+ usuario_inclusao_id + "]";
+		return "Telefone [id=" + id + ", numero=" + numero + ", usuario=" + usuario + ", usuarioInclusao="
+				+ usuarioInclusao + "]";
 	}
 
 }
