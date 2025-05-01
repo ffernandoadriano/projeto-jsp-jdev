@@ -387,7 +387,7 @@ public class SalvarUsuarioServlet extends HttpServlet {
 			// carrega o preview da imagem no formulário caso seja um usuário já cadastrado
 			if (usuairoId != null) {
 				try {
-					Imagem imagem = imagemDao.encontrarPorId(usuairoId, tipo);
+					Imagem imagem = imagemDao.buscarPorUsuarioIdETipo(usuairoId, tipo);
 					ImagemBase64Session.create(request, imagem);
 				} catch (DaoException e) {
 					throw new ServletException(e);
@@ -410,7 +410,7 @@ public class SalvarUsuarioServlet extends HttpServlet {
 			if (imagemDao.existeFotoPerfil(usuario.getId())) {
 				imagemDao.atualizar(imagem);
 			} else {
-				imagemDao.salvar(imagem);
+				imagemDao.inserir(imagem);
 			}
 
 			// cria a sessão da imagem

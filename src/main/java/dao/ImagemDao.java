@@ -30,22 +30,29 @@ public class ImagemDao implements Serializable {
 		this.connection = ConnectionFactory.getConnection();
 	}
 
-	public void salvar(Imagem obj) throws DaoException {
+	/**
+	 * Insere uma nova imagem no banco de dados e define o ID gerado no objeto.
+	 *
+	 * @param imagem Objeto {@link Imagem} contendo os dados a serem persistidos.
+	 * @throws DaoException Se ocorrer algum erro ao executar a operação de
+	 *                      inserção.
+	 */
+	public void inserir(Imagem imagem) throws DaoException {
 
 		String insertSql = "INSERT INTO imagem (usuario_id, imagem, extensao, tipo, data_upload) VALUES (?, ?, ?, ?, ?)";
 
 		try (PreparedStatement pstmt = connection.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS)) {
-			pstmt.setLong(1, obj.getUsuario().getId());
-			pstmt.setBytes(2, obj.getImage());
-			pstmt.setString(3, obj.getExtensao());
-			pstmt.setString(4, obj.getTipo());
-			pstmt.setObject(5, obj.getDataUpload());
+			pstmt.setLong(1, imagem.getUsuario().getId());
+			pstmt.setBytes(2, imagem.getImage());
+			pstmt.setString(3, imagem.getExtensao());
+			pstmt.setString(4, imagem.getTipo());
+			pstmt.setObject(5, imagem.getDataUpload());
 
 			// Executa a query
-			int linhasAfetas = pstmt.executeUpdate();
+			int linhas = pstmt.executeUpdate();
 
 			// Verifica se inseriu alguma linha
-			if (linhasAfetas > 0) {
+			if (linhas > 0) {
 
 				// Recupera as chaves geradas (o ID gerado)
 				try (ResultSet rs = pstmt.getGeneratedKeys()) {
@@ -53,7 +60,7 @@ public class ImagemDao implements Serializable {
 					if (rs.next()) {
 						Long idGerado = rs.getLong("id");
 						// Insere o ID na referência do objeto.
-						obj.setId(idGerado);
+						imagem.setId(idGerado);
 					}
 				}
 			}
@@ -66,16 +73,23 @@ public class ImagemDao implements Serializable {
 		}
 	}
 
-	public void atualizar(Imagem obj) throws DaoException, SQLException {
+	/**
+	 * Atualiza os dados da imagem associada ao usuário no banco de dados.
+	 *
+	 * @param imagem Objeto {@link Imagem} com os dados atualizados.
+	 * @throws DaoException Se ocorrer erro durante a atualização.
+	 * @throws SQLException Se houver falha ao aplicar ou desfazer a transação.
+	 */
+	public void atualizar(Imagem imagem) throws DaoException, SQLException {
 
 		String sql = "UPDATE imagem SET imagem = ?, extensao = ?, tipo = ? , data_upload = ? WHERE usuario_id = ?";
 
 		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-			pstmt.setBytes(1, obj.getImage());
-			pstmt.setString(2, obj.getExtensao());
-			pstmt.setString(3, obj.getTipo());
-			pstmt.setObject(4, obj.getDataUpload());
-			pstmt.setLong(5, obj.getUsuario().getId());
+			pstmt.setBytes(1, imagem.getImage());
+			pstmt.setString(2, imagem.getExtensao());
+			pstmt.setString(3, imagem.getTipo());
+			pstmt.setObject(4, imagem.getDataUpload());
+			pstmt.setLong(5, imagem.getUsuario().getId());
 
 			// Executa a query
 			pstmt.executeUpdate();
@@ -89,6 +103,14 @@ public class ImagemDao implements Serializable {
 		}
 	}
 
+	/**
+	 * Verifica se o usuário possui uma imagem do tipo "perfil" cadastrada.
+	 *
+	 * @param usuarioId ID do usuário a ser verificado.
+	 * @return {@code true} se existir uma imagem do tipo "perfil", {@code false}
+	 *         caso contrário.
+	 * @throws DaoException Se ocorrer erro ao acessar o banco de dados.
+	 */
 	public boolean existeFotoPerfil(Long usuarioId) throws DaoException {
 
 		// Mais leve e rápido ⚡ Só quer saber se existe ou não
@@ -106,7 +128,16 @@ public class ImagemDao implements Serializable {
 		}
 	}
 
-	public Imagem encontrarPorId(Long usuarioId, String tipo) throws DaoException {
+	/**
+	 * Busca a imagem de um usuário com base no ID do usuário e no tipo da imagem.
+	 *
+	 * @param usuarioId ID do usuário.
+	 * @param tipo      Tipo da imagem (ex: "perfil", "capa", etc.).
+	 * @return Objeto {@link Imagem} correspondente, ou {@code null} se não
+	 *         encontrado.
+	 * @throws DaoException Se ocorrer erro ao executar a consulta.
+	 */
+	public Imagem buscarPorUsuarioIdETipo(Long usuarioId, String tipo) throws DaoException {
 
 		String sql = "SELECT id, usuario_id, imagem, extensao, tipo, data_upload FROM imagem WHERE usuario_id = ? AND tipo = ?";
 
@@ -141,6 +172,15 @@ public class ImagemDao implements Serializable {
 		return null;
 	}
 
+	/**
+	 * Converte um array de bytes da imagem para uma string codificada em Base64, no
+	 * formato apropriado para exibição em HTML.
+	 *
+	 * @param image    Array de bytes da imagem.
+	 * @param extensao Extensão da imagem (ex: "png", "jpg").
+	 * @return String em formato Base64 para uso em <img src="..."> ou {@code null}
+	 *         se a imagem for {@code null}.
+	 */
 	private String convertImageByteToBase64(byte[] image, String extensao) {
 		if (image != null) {
 			/* Formato para visulizar a imagem no jsp */

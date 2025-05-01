@@ -45,7 +45,7 @@ public class DownloadImagemServlet extends HttpServlet {
 			Long id = (idParam.isEmpty()) ? null : Long.valueOf(idParam.trim());
 
 			try {
-				Imagem imagem = imagemDao.encontrarPorId(id, tipo);
+				Imagem imagem = imagemDao.buscarPorUsuarioIdETipo(id, tipo);
 
 				if (imagem != null) {
 

@@ -70,3 +70,12 @@ ON DELETE RESTRICT;
 
 ALTER TABLE usuario
 ADD CONSTRAINT uq_usuario_endereco UNIQUE (endereco_id);
+
+CREATE TABLE telefone (
+  id BIGSERIAL PRIMARY KEY,
+  numero VARCHAR(30) NOT NULL,
+  usuario_id BIGINT NOT NULL,
+  usuario_inclusao_id BIGINT NOT NULL,
+  CONSTRAINT fk_telefone_usuario FOREIGN KEY (usuario_id) REFERENCES usuario(id) ON DELETE CASCADE,
+  CONSTRAINT fk_telefone_usuario_inclusao FOREIGN KEY (usuario_inclusao_id) REFERENCES usuario(id) ON DELETE CASCADE
+);

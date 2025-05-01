@@ -45,7 +45,7 @@ public class EditarUsuarioServlet extends HttpServlet {
 
 				if (usuario != null) {
 
-					Imagem imagem = imagemDao.encontrarPorId(usuario.getId(), "perfil");
+					Imagem imagem = imagemDao.buscarPorUsuarioIdETipo(usuario.getId(), "perfil");
 
 					request.setAttribute("PerfilFoto", imagem);
 					request.setAttribute("usuarioSalvo", usuario);

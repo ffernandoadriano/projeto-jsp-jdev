@@ -74,7 +74,7 @@ public class LoginServlet extends HttpServlet {
 						 */
 						if (optionalUser.isPresent()) {
 							usuario = optionalUser.get();
-							fotoPerfil = imagemDao.encontrarPorId(usuario.getId(), "perfil");
+							fotoPerfil = imagemDao.buscarPorUsuarioIdETipo(usuario.getId(), "perfil");
 						}
 
 						// coloca o obj na sessão
