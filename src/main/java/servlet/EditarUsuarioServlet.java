@@ -40,7 +40,7 @@ public class EditarUsuarioServlet extends HttpServlet {
 		if (id != null) {
 
 			try {
-				Usuario usuario = usuarioDao.encontrarPorIdComEndereco(Long.parseLong(id),
+				Usuario usuario = usuarioDao.buscarPorIdSePertencerComEndereco(Long.parseLong(id),
 						UsuarioLogadoSession.getUsuarioLogado(request).getId());
 
 				if (usuario != null) {

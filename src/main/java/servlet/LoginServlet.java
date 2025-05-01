@@ -65,7 +65,7 @@ public class LoginServlet extends HttpServlet {
 
 					if (usuarioDao.validarAutenticacao(usuario)) {
 
-						Optional<Usuario> optionalUser = usuarioDao.encontrarPorLogin(login);
+						Optional<Usuario> optionalUser = usuarioDao.buscarPorLogin(login);
 						Imagem fotoPerfil = null;
 
 						/*

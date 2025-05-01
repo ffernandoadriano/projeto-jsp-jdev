@@ -45,10 +45,10 @@ public class CadastrarUsuarioServlet extends HttpServlet {
 				paginaAtual = paginaParam;
 			}
 
-			int totalPaginas = usuarioDao.totalPaginas(UsuarioLogadoSession.getUsuarioLogado(request).getId());
+			int totalPaginas = usuarioDao.calcularTotalPaginas(UsuarioLogadoSession.getUsuarioLogado(request).getId());
 			int offset = PaginacaoUtil.calcularOffset(Integer.parseInt(paginaAtual), usuarioDao.getLimitePagina());
 
-			List<Usuario> usuarios = usuarioDao.encontrarTudo(UsuarioLogadoSession.getUsuarioLogado(request).getId(),
+			List<Usuario> usuarios = usuarioDao.listarPorUsuarioLogado(UsuarioLogadoSession.getUsuarioLogado(request).getId(),
 					offset);
 
 			session.setAttribute("paginacao", paginaAtual);

@@ -131,7 +131,7 @@ public class SalvarUsuarioServlet extends HttpServlet {
 		try {
 
 			if (usuario.getId() == null) {
-				usuarioDao.salvarComEndereco(usuario, UsuarioLogadoSession.getUsuarioLogado(request).getId());
+				usuarioDao.inserir(usuario, UsuarioLogadoSession.getUsuarioLogado(request).getId());
 				acao = "salvar";
 
 			} else {
@@ -143,11 +143,11 @@ public class SalvarUsuarioServlet extends HttpServlet {
 				salvarFotoPerfil(imagemPerfil, usuario);
 			}
 
-			int totalPaginas = usuarioDao.totalPaginas(UsuarioLogadoSession.getUsuarioLogado(request).getId());
+			int totalPaginas = usuarioDao.calcularTotalPaginas(UsuarioLogadoSession.getUsuarioLogado(request).getId());
 			int offset = PaginacaoUtil.calcularOffset(paginaAtual(), usuarioDao.getLimitePagina());
 
-			List<Usuario> usuarios = usuarioDao.encontrarTudo(UsuarioLogadoSession.getUsuarioLogado(request).getId(),
-					offset);
+			List<Usuario> usuarios = usuarioDao
+					.listarPorUsuarioLogado(UsuarioLogadoSession.getUsuarioLogado(request).getId(), offset);
 
 			request.getSession().setAttribute("totalPaginas", totalPaginas);
 
@@ -245,7 +245,7 @@ public class SalvarUsuarioServlet extends HttpServlet {
 
 			// Verifica UPDATE de formulário
 			if (id != null) {
-				Usuario usuarioBanco = usuarioDao.encontrarPorId(id,
+				Usuario usuarioBanco = usuarioDao.buscarPorIdSePertencerComEndereco(id,
 						UsuarioLogadoSession.getUsuarioLogado(request).getId());
 				String emailBanco = usuarioBanco.getEmail();
 
@@ -299,7 +299,7 @@ public class SalvarUsuarioServlet extends HttpServlet {
 
 			// Verifica UPDATE de formulário
 			if (id != null) {
-				Usuario usuarioBanco = usuarioDao.encontrarPorId(id,
+				Usuario usuarioBanco = usuarioDao.buscarPorIdSePertencerComEndereco(id,
 						UsuarioLogadoSession.getUsuarioLogado(request).getId());
 				String loginBanco = usuarioBanco.getLogin();
 

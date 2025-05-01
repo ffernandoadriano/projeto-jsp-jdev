@@ -40,6 +40,13 @@ public class UsuarioDao implements Serializable {
 		this.enderecoDao = new EnderecoDao(connection);
 	}
 
+	/**
+	 * Valida as credenciais de autenticação do usuário.
+	 *
+	 * @param usuario o usuário com login e senha informados
+	 * @return true se o usuário existir com essas credenciais, false caso contrário
+	 * @throws DaoException em caso de erro ao acessar o banco de dados
+	 */
 	public boolean validarAutenticacao(Usuario usuario) throws DaoException {
 
 		// Mais leve e rápido ⚡ Só quer saber se existe ou não
@@ -59,62 +66,29 @@ public class UsuarioDao implements Serializable {
 		}
 	}
 
-	/* É necessário apenas saber quem cadastrou identificando pelo usuário logado */
-	public void salvar(Usuario obj, Long idUsuarioLogado) throws DaoException {
-
-		String insertSql = "INSERT INTO usuario (nome, email, login, senha, usuario_id, perfil_id, sexo) VALUES (?, ?, ?, ?, ?, ?, ?)";
-
-		try (PreparedStatement pstmt = connection.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS)) {
-			pstmt.setString(1, obj.getNome());
-			pstmt.setString(2, obj.getEmail());
-			pstmt.setString(3, obj.getLogin());
-			pstmt.setString(4, obj.getSenha());
-			pstmt.setLong(5, idUsuarioLogado);
-			pstmt.setInt(6, obj.getPerfil().getId());
-			pstmt.setString(7, String.valueOf(obj.getSexo().getSigla()));
-
-			// Executa a query
-			int linhasAfetas = pstmt.executeUpdate();
-
-			// Verifica se inseriu alguma linha
-			if (linhasAfetas > 0) {
-
-				// Recupera as chaves geradas (o ID gerado)
-				try (ResultSet rs = pstmt.getGeneratedKeys()) {
-
-					if (rs.next()) {
-						Long idGerado = rs.getLong("id");
-						// Insere o ID na referência do objeto.
-						obj.setId(idGerado);
-					}
-				}
-			}
-
-			// Confirma a transação no banco
-			connection.commit();
-
-		} catch (SQLException e) {
-			throw new DaoException(e);
-		}
-	}
-
-	/* É necessário apenas saber quem cadastrou identificando pelo usuário logado */
-	public void salvarComEndereco(Usuario obj, Long idUsuarioLogado) throws DaoException {
+	/**
+	 * Insere um novo usuário com endereço associado.
+	 *
+	 * @param usuario         o usuário a ser inserido
+	 * @param idUsuarioLogado o ID do usuário logado que está realizando a inserção
+	 * @throws DaoException em caso de falha durante a inserção
+	 */
+	public void inserir(Usuario usuario, Long idUsuarioLogado) throws DaoException {
 
 		String insertSql = "INSERT INTO usuario (nome, email, login, senha, usuario_id, perfil_id, sexo, endereco_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
 		try {
-			enderecoDao.inserir(obj.getEndereco());
+			enderecoDao.inserir(usuario.getEndereco());
 
 			try (PreparedStatement pstmt = connection.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS)) {
-				pstmt.setString(1, obj.getNome());
-				pstmt.setString(2, obj.getEmail());
-				pstmt.setString(3, obj.getLogin());
-				pstmt.setString(4, obj.getSenha());
+				pstmt.setString(1, usuario.getNome());
+				pstmt.setString(2, usuario.getEmail());
+				pstmt.setString(3, usuario.getLogin());
+				pstmt.setString(4, usuario.getSenha());
 				pstmt.setLong(5, idUsuarioLogado);
-				pstmt.setInt(6, obj.getPerfil().getId());
-				pstmt.setString(7, String.valueOf(obj.getSexo().getSigla()));
-				pstmt.setLong(8, obj.getEndereco().getId());
+				pstmt.setInt(6, usuario.getPerfil().getId());
+				pstmt.setString(7, String.valueOf(usuario.getSexo().getSigla()));
+				pstmt.setLong(8, usuario.getEndereco().getId());
 
 				// Executa a query
 				int linhas = pstmt.executeUpdate();
@@ -124,7 +98,7 @@ public class UsuarioDao implements Serializable {
 					try (ResultSet rs = pstmt.getGeneratedKeys()) {
 						if (rs.next()) {
 							// Insere o ID na referência do objeto.
-							obj.setId(rs.getLong(1));
+							usuario.setId(rs.getLong(1));
 						}
 					}
 				}
@@ -139,39 +113,16 @@ public class UsuarioDao implements Serializable {
 		}
 	}
 
-	public Usuario encontrarPorId(Long id, Long idUsuarioLogado) throws DaoException {
-
-		String sql = "SELECT id, nome, email, login, senha, perfil_id, sexo FROM usuario WHERE id = ? AND admin is false AND usuario_id = ?";
-
-		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-			pstmt.setLong(1, id);
-			pstmt.setLong(2, idUsuarioLogado);
-
-			try (ResultSet rs = pstmt.executeQuery()) {
-
-				if (rs.next()) {
-					Usuario usuario = new Usuario();
-
-					usuario.setId(rs.getLong("id"));
-					usuario.setNome(rs.getString("nome"));
-					usuario.setEmail(rs.getString("email"));
-					usuario.setLogin(rs.getString("login"));
-					usuario.setSenha(rs.getString("senha"));
-					usuario.setPerfil(Perfil.fromId(rs.getInt("perfil_id")));
-					usuario.setSexo(Sexo.fromSigla(rs.getString("sexo")));
-
-					return usuario;
-				}
-
-			}
-		} catch (SQLException e) {
-			throw new DaoException(e);
-		}
-
-		return null;
-	}
-
-	public Usuario encontrarPorIdComEndereco(Long id, Long idUsuarioLogado) throws DaoException {
+	/**
+	 * Busca um usuário por ID, incluindo seu endereço, desde que pertença ao
+	 * usuário logado.
+	 *
+	 * @param id              ID do usuário a ser buscado
+	 * @param idUsuarioLogado ID do usuário logado
+	 * @return o usuário encontrado ou null se não existir ou não pertencer
+	 * @throws DaoException em caso de erro de acesso ao banco
+	 */
+	public Usuario buscarPorIdSePertencerComEndereco(Long id, Long idUsuarioLogado) throws DaoException {
 
 		String sql = "SELECT id, nome, email, login, senha, perfil_id, sexo, endereco_id FROM usuario WHERE id = ? AND admin is false AND usuario_id = ?";
 
@@ -214,7 +165,14 @@ public class UsuarioDao implements Serializable {
 		return null;
 	}
 
-	public Usuario buscarPorId(Long id) throws DaoException {
+	/**
+	 * Busca um usuário por ID, sem restrição de usuário logado, incluindo endereço.
+	 *
+	 * @param id ID do usuário
+	 * @return o usuário encontrado ou null
+	 * @throws DaoException em caso de falha na busca
+	 */
+	public Usuario buscarPorIdComEndereco(Long id) throws DaoException {
 
 		String sql = "SELECT id, nome, email, login, senha, admin, perfil_id, sexo, endereco_id FROM usuario WHERE id = ?";
 
@@ -257,8 +215,14 @@ public class UsuarioDao implements Serializable {
 		return null;
 	}
 
-	/* Query sem restrição por causa dos admins */
-	public Optional<Usuario> encontrarPorLogin(String login) throws DaoException {
+	/**
+	 * Busca um usuário pelo login (sem restrições de administrador).
+	 *
+	 * @param login o login do usuário
+	 * @return um Optional contendo o usuário, se encontrado
+	 * @throws DaoException em caso de erro
+	 */
+	public Optional<Usuario> buscarPorLogin(String login) throws DaoException {
 
 		String sql = "SELECT id, nome, email, login, senha, admin, perfil_id, sexo, endereco_id FROM usuario WHERE UPPER(login) = UPPER(?)";
 
@@ -297,10 +261,17 @@ public class UsuarioDao implements Serializable {
 		return Optional.empty();
 	}
 
-	/* Com restrições de ADM */
-	public Optional<Usuario> encontrarPorLogin(String login, Long idUsuarioLogado) throws DaoException {
+	/**
+	 * Busca um usuário pelo login com restrição de vínculo ao usuário logado.
+	 *
+	 * @param login           login a ser buscado
+	 * @param idUsuarioLogado ID do usuário logado
+	 * @return Optional com o usuário encontrado, se existir
+	 * @throws DaoException em caso de erro
+	 */
+	public Optional<Usuario> buscarPorLogin(String login, Long idUsuarioLogado) throws DaoException {
 
-		String sql = "SELECT id, nome, email, login, senha FROM usuario, perfil_id, sexo WHERE UPPER(login) = UPPER(?) AND admin is false AND usuario_id = ?";
+		String sql = "SELECT id, nome, email, login, senha, perfil_id, sexo FROM usuario WHERE UPPER(login) = UPPER(?) AND admin is false AND usuario_id = ?";
 
 		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
 			pstmt.setString(1, login);
@@ -313,11 +284,11 @@ public class UsuarioDao implements Serializable {
 
 					usuario.setId(rs.getLong("id"));
 					usuario.setNome(rs.getString("nome"));
-					usuario.setSexo(Sexo.fromSigla(rs.getString("sexo")));
 					usuario.setEmail(rs.getString("email"));
 					usuario.setLogin(rs.getString("login"));
 					usuario.setSenha(rs.getString("senha"));
 					usuario.setPerfil(Perfil.fromId(rs.getInt("perfil_id")));
+					usuario.setSexo(Sexo.fromSigla(rs.getString("sexo")));
 
 					return Optional.of(usuario);
 				}
@@ -330,7 +301,16 @@ public class UsuarioDao implements Serializable {
 		return Optional.empty();
 	}
 
-	public List<Usuario> encontrarPorNome(String nome, Long idUsuarioLogado, int offset) throws DaoException {
+	/**
+	 * Lista os usuários por nome com paginação, vinculados ao usuário logado.
+	 *
+	 * @param nome            nome parcial a ser buscado
+	 * @param idUsuarioLogado ID do usuário logado
+	 * @param offset          posição inicial para paginação
+	 * @return lista de usuários encontrados
+	 * @throws DaoException em caso de erro
+	 */
+	public List<Usuario> listarTodosPorNome(String nome, Long idUsuarioLogado, int offset) throws DaoException {
 
 		String sql = "SELECT id, nome, email, login, senha, perfil_id, sexo FROM usuario WHERE UPPER(nome) LIKE CONCAT('%',UPPER(?),'%') AND admin is false AND usuario_id = ? ORDER BY id OFFSET ? LIMIT ?";
 
@@ -364,7 +344,15 @@ public class UsuarioDao implements Serializable {
 		return usuarios;
 	}
 
-	public List<Usuario> encontrarTudo(Long idUsuarioLogado, int offset) throws DaoException {
+	/**
+	 * Lista todos os usuários vinculados ao usuário logado com paginação.
+	 *
+	 * @param idUsuarioLogado ID do usuário logado
+	 * @param offset          posição inicial para paginação
+	 * @return lista de usuários
+	 * @throws DaoException em caso de falha
+	 */
+	public List<Usuario> listarPorUsuarioLogado(Long idUsuarioLogado, int offset) throws DaoException {
 
 		String sql = "SELECT id, nome, email, login FROM usuario WHERE admin is false AND usuario_id = ? ORDER BY id OFFSET ? LIMIT ?";
 
@@ -395,6 +383,13 @@ public class UsuarioDao implements Serializable {
 		return usuarios;
 	}
 
+	/**
+	 * Verifica se existe um usuário com o email informado.
+	 *
+	 * @param email o email a verificar
+	 * @return true se existir, false caso contrário
+	 * @throws DaoException em caso de erro
+	 */
 	public boolean existeEmail(String email) throws DaoException {
 
 		// Mais leve e rápido ⚡ Só quer saber se existe ou não
@@ -413,6 +408,13 @@ public class UsuarioDao implements Serializable {
 		}
 	}
 
+	/**
+	 * Verifica se existe um usuário com o login informado.
+	 *
+	 * @param login o login a verificar
+	 * @return true se existir, false caso contrário
+	 * @throws DaoException em caso de erro
+	 */
 	public boolean existeLogin(String login) throws DaoException {
 
 		// Mais leve e rápido ⚡ Só quer saber se existe ou não
@@ -431,47 +433,29 @@ public class UsuarioDao implements Serializable {
 		}
 	}
 
-	public void atualizar(Usuario obj) throws DaoException {
-
-		String sql = "UPDATE usuario SET nome = ?, email = ?, login = ?, senha = ?, perfil_id = ?, sexo = ? WHERE id = ?";
-
-		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-			pstmt.setString(1, obj.getNome());
-			pstmt.setString(2, obj.getEmail());
-			pstmt.setString(3, obj.getLogin());
-			pstmt.setString(4, obj.getSenha());
-			pstmt.setInt(5, obj.getPerfil().getId());
-			pstmt.setString(6, String.valueOf(obj.getSexo().getSigla()));
-			pstmt.setLong(7, obj.getId());
-
-			// Executa a query
-			pstmt.executeUpdate();
-
-			// Confirma a transação no banco
-			connection.commit();
-
-		} catch (SQLException e) {
-			throw new DaoException(e);
-		}
-	}
-
-	public void atualizarComEndereco(Usuario obj) throws DaoException {
+	/**
+	 * Atualiza os dados do usuário e do seu endereço.
+	 *
+	 * @param usuario o usuário com dados atualizados
+	 * @throws DaoException em caso de falha na atualização
+	 */
+	public void atualizarComEndereco(Usuario usuario) throws DaoException {
 
 		String sql = "UPDATE usuario SET nome = ?, email = ?, login = ?, senha = ?, perfil_id = ?, sexo = ? WHERE id = ?";
 
 		try {
 			// Atualiza o endereço
-			enderecoDao.atualizar(obj.getEndereco());
+			enderecoDao.atualizar(usuario.getEndereco());
 
 			// Atualiza o usuário
 			try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-				pstmt.setString(1, obj.getNome());
-				pstmt.setString(2, obj.getEmail());
-				pstmt.setString(3, obj.getLogin());
-				pstmt.setString(4, obj.getSenha());
-				pstmt.setInt(5, obj.getPerfil().getId());
-				pstmt.setString(6, String.valueOf(obj.getSexo().getSigla()));
-				pstmt.setLong(7, obj.getId());
+				pstmt.setString(1, usuario.getNome());
+				pstmt.setString(2, usuario.getEmail());
+				pstmt.setString(3, usuario.getLogin());
+				pstmt.setString(4, usuario.getSenha());
+				pstmt.setInt(5, usuario.getPerfil().getId());
+				pstmt.setString(6, String.valueOf(usuario.getSexo().getSigla()));
+				pstmt.setLong(7, usuario.getId());
 
 				// Executa a query
 				pstmt.executeUpdate();
@@ -486,6 +470,12 @@ public class UsuarioDao implements Serializable {
 		}
 	}
 
+	/**
+	 * Remove um usuário pelo ID, desde que não seja um administrador.
+	 *
+	 * @param id o ID do usuário
+	 * @throws DaoException em caso de erro ao deletar
+	 */
 	public void deletarPorId(Long id) throws DaoException {
 
 		String deleteSql = "DELETE FROM usuario WHERE id = ? AND admin is false";
@@ -500,16 +490,24 @@ public class UsuarioDao implements Serializable {
 			connection.commit();
 
 		} catch (SQLException e) {
-			throw new DaoException("Erro ao remover um registro");
+			throw new DaoException("Erro ao remover um registro " + e.getMessage(), e);
 		}
 	}
 
-	public int totalPaginas(Long idUsuarioLogado) throws DaoException {
-		int totalRegistro = totalRegistros(idUsuarioLogado);
+	/**
+	 * Calcula o número total de páginas de usuários cadastrados pelo usuário
+	 * logado.
+	 *
+	 * @param idUsuarioLogado ID do usuário logado
+	 * @return total de páginas
+	 * @throws DaoException em caso de erro na contagem
+	 */
+	public int calcularTotalPaginas(Long idUsuarioLogado) throws DaoException {
+		int totalRegistro = contarRegistros(idUsuarioLogado);
 		return PaginacaoUtil.calcularTotalPaginas(totalRegistro, LIMITE_DE_PAGINA);
 	}
 
-	private int totalRegistros(Long idUsuarioLogado) throws DaoException {
+	private int contarRegistros(Long idUsuarioLogado) throws DaoException {
 		String sql = "SELECT COUNT(1) FROM usuario WHERE usuario_id = ? AND admin is false";
 
 		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
@@ -530,12 +528,21 @@ public class UsuarioDao implements Serializable {
 		}
 	}
 
-	public int totalPaginasPorNome(String nome, Long idUsuarioLogado) throws DaoException {
-		int totalPaginas = totalRegistrosPorNome(nome, idUsuarioLogado);
+	/**
+	 * Calcula o total de páginas filtrando pelo nome, considerando o usuário
+	 * logado.
+	 *
+	 * @param nome            nome parcial
+	 * @param idUsuarioLogado ID do usuário logado
+	 * @return total de páginas
+	 * @throws DaoException em caso de erro
+	 */
+	public int calcularTotalPaginasPorNome(String nome, Long idUsuarioLogado) throws DaoException {
+		int totalPaginas = contarRegistrosPorNome(nome, idUsuarioLogado);
 		return PaginacaoUtil.calcularTotalPaginas(totalPaginas, LIMITE_DE_PAGINA);
 	}
 
-	private int totalRegistrosPorNome(String nome, Long idUsuarioLogado) throws DaoException {
+	private int contarRegistrosPorNome(String nome, Long idUsuarioLogado) throws DaoException {
 		String sql = "SELECT COUNT(1) FROM usuario WHERE UPPER(nome) LIKE CONCAT('%',UPPER(?),'%') AND admin is false AND usuario_id = ?";
 
 		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
@@ -557,10 +564,20 @@ public class UsuarioDao implements Serializable {
 		}
 	}
 
+	/**
+	 * Retorna o limite fixo de registros por página.
+	 *
+	 * @return o limite de paginação
+	 */
 	public int getLimitePagina() {
 		return LIMITE_DE_PAGINA;
 	}
 
+	/**
+	 * Realiza rollback na conexão atual.
+	 *
+	 * @throws DaoException se ocorrer erro ao desfazer transações
+	 */
 	private void rollback() throws DaoException {
 		try {
 			connection.rollback();

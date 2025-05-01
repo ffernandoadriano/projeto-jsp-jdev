@@ -40,11 +40,11 @@ public class PesquisarUsuarioServlet extends HttpServlet {
 		int numPagina = pagina != null ? Integer.parseInt(pagina) : 0;
 
 		try {
-			int totalPaginasPorNome = usuarioDao.totalPaginasPorNome(nome,
+			int totalPaginasPorNome = usuarioDao.calcularTotalPaginasPorNome(nome,
 					UsuarioLogadoSession.getUsuarioLogado(request).getId());
 			int offset = PaginacaoUtil.calcularOffset(numPagina, usuarioDao.getLimitePagina());
 
-			List<Usuario> usuarios = usuarioDao.encontrarPorNome(nome,
+			List<Usuario> usuarios = usuarioDao.listarTodosPorNome(nome,
 					UsuarioLogadoSession.getUsuarioLogado(request).getId(), offset);
 
 			ObjectMapper mapper = new ObjectMapper();
