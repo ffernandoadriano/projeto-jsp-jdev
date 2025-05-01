@@ -23,7 +23,11 @@ public class EnderecoDao implements Serializable {
 		this.connection = connection;
 	}
 
-	public void salvar(Endereco endereco) throws DaoException {
+	/**
+	 * Inserir novo endereço
+	 */
+
+	public void inserir(Endereco endereco) throws DaoException {
 
 		String sql = "INSERT INTO endereco (cep, rua, numero, bairro, cidade, estado, uf) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
@@ -55,6 +59,10 @@ public class EnderecoDao implements Serializable {
 		}
 	}
 
+	/**
+	 * Atualiza um endereço existente
+	 * 
+	 */
 	public void atualizar(Endereco endereco) throws DaoException {
 
 		String updateSql = "UPDATE endereco SET cep=?, rua=?, numero=?, bairro=?, cidade=?, estado=?, uf=? WHERE  id=?";
@@ -71,16 +79,19 @@ public class EnderecoDao implements Serializable {
 
 			// Executa a query
 			pstmt.executeUpdate();
-			
+
 		} catch (SQLException e) {
 			throw new DaoException("Erro ao atualizar endereço: " + e.getMessage(), e);
 		}
 
 	}
 
-	public Endereco encontrarPorId(Long id) throws DaoException {
+	/**
+	 * Busca um endereço por ID
+	 */
+	public Endereco buscarPorId(Long id) throws DaoException {
 
-		String sql = "SELECT * FROM endereco WHERE id = ?";
+		String sql = "SELECT id, cep, rua, numero, bairro, cidade, estado, uf FROM endereco WHERE id = ?";
 
 		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
 			pstmt.setLong(1, id);

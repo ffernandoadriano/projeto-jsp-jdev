@@ -104,7 +104,7 @@ public class UsuarioDao implements Serializable {
 		String insertSql = "INSERT INTO usuario (nome, email, login, senha, usuario_id, perfil_id, sexo, endereco_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
 		try {
-			enderecoDao.salvar(obj.getEndereco());
+			enderecoDao.inserir(obj.getEndereco());
 
 			try (PreparedStatement pstmt = connection.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS)) {
 				pstmt.setString(1, obj.getNome());
@@ -195,7 +195,7 @@ public class UsuarioDao implements Serializable {
 					Long enderecoId = rs.getLong("endereco_id");
 
 					if (enderecoId != null && enderecoId > 0) {
-						Endereco endereco = enderecoDao.encontrarPorId(enderecoId);
+						Endereco endereco = enderecoDao.buscarPorId(enderecoId);
 						usuario.setEndereco(endereco);
 					}
 
@@ -238,7 +238,7 @@ public class UsuarioDao implements Serializable {
 					Long enderecoId = rs.getLong("endereco_id");
 
 					if (enderecoId != null && enderecoId > 0) {
-						Endereco endereco = enderecoDao.encontrarPorId(enderecoId);
+						Endereco endereco = enderecoDao.buscarPorId(enderecoId);
 						usuario.setEndereco(endereco);
 					}
 
@@ -282,7 +282,7 @@ public class UsuarioDao implements Serializable {
 					Long enderecoId = rs.getLong("endereco_id");
 
 					if (enderecoId != null && enderecoId > 0) {
-						Endereco endereco = enderecoDao.encontrarPorId(enderecoId);
+						Endereco endereco = enderecoDao.buscarPorId(enderecoId);
 						usuario.setEndereco(endereco);
 					}
 
