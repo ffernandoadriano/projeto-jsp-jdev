@@ -58,7 +58,8 @@
 
 
 <style type="text/css">
-#btn-form-cadastro {
+#btn-form-cadastro, #btn-form-cadastro-novo, #btn-form-cadastro-telefone
+	{
 	margin-left: 10px;
 	margin-bottom: 10px;
 	width: 110px;
@@ -106,14 +107,21 @@
 <script type="text/javascript">
 
 	function limparFormulario() {
+		/*A ordem é essencial, pois, se os itens forem posicionados incorretamente, a funcionalidade pode não atingir sua eficácia total.*/
 	
 	    let elementos = document.getElementById("usuarioForm").elements; // retorna os elementos html dentro do formulário
 	
 		  for(let i = 0; i < elementos.length; i ++){
 	  	  	elementos[i].value = ''; // Limpa o campo existante no formulário
-	    }
+	      }
 		  // Seleciona o perfil para 0 "padrão"
 		  document.getElementById("perfil").selectedIndex = 0;
+
+		  // esconde o botão telefone, se ele existir
+		  const telefoneBtn = document.getElementById("btn-form-cadastro-telefone");
+		  	if (telefoneBtn) {
+			  telefoneBtn.style.display = 'none';
+			}
 	
 		  // Oculta mensagens de sucesso e erro (definido no atributo 'class') 
 		  const mensagens = document.querySelectorAll(".sucessoSalvo, .erro");
@@ -142,6 +150,7 @@
 		}
 
 	function excluirCadastro(){
+		
 		let id = document.forms["usuarioForm"].id.value; // captura o nome do campo do formulário
 
 		// se diferente de vazio, significa que estou tentando excluir um usuario já cadastro no banco
@@ -157,6 +166,7 @@
 		}
 	}
 
+	// Jquery
 	function excluirCadastroComAjax(){
 		let id = document.forms["usuarioForm"].id.value; // captura o nome do campo do formulário
 		
@@ -406,17 +416,6 @@
 				window.location.href = "<%=request.getContextPath()%>/EditarUsuarioServlet?id="+ id;
 			}
 
-			
-			function excluirCadastro(id) {
-
-			    if (id !== "") {
-			        let resposta = confirm("Deseja realmente excluir o registro?");
-			        
-			        if (resposta) {
-			        	window.location.href = "<%=request.getContextPath()%>/ExcluirUsuarioServlet?id=" + id +"&acao=excluir";
-			        }
-			    }
-			}
 
 			
 			function visualizarImagemTela(idImagem, idInputFile) {

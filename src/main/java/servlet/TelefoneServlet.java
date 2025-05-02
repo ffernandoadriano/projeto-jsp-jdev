@@ -9,11 +9,13 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import model.Usuario;
 
-@WebServlet("/ExcluirUsuarioServlet")
-public class ExcluirUsuarioServlet extends HttpServlet {
-
+@WebServlet("/TelefoneServlet")
+public class TelefoneServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+
+	private UsuarioDao usuarioDao = new UsuarioDao();
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -28,30 +30,22 @@ public class ExcluirUsuarioServlet extends HttpServlet {
 	}
 
 	private void doIt(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String id = request.getParameter("id");
 
-		String acao = request.getParameter("acao");
-		Long id = Long.parseLong(request.getParameter("id"));
-
-		if (acao != null && acao.equalsIgnoreCase("excluirComAjax")) {
-			deletarRegistro(id);
-			response.getWriter().append("Operação realizada com sucesso!");
-
-		} else {
-			deletarRegistro(id);
-			response.sendRedirect(request.getContextPath() + "/CadastrarUsuarioServlet");
-		}
-
-	}
-
-	private void deletarRegistro(Long id) throws ServletException {
 		try {
+			if (id != null) {
 
-			UsuarioDao usuarioDao = new UsuarioDao();
-			usuarioDao.deletarPorId(id);
+				Usuario usuario = usuarioDao.buscarPorIdComEndereco(Long.parseLong(id));
+				request.setAttribute("usuario", usuario);
+				
+				request.getRequestDispatcher("/principal/telefone.jsp").forward(request, response);
 
-		} catch (DaoException | NumberFormatException e) {
+			} else {
+				response.sendRedirect(request.getContextPath() + "/principal/cadastrar_usuario.jsp");
+			}
+		} catch (DaoException e) {
 			throw new ServletException(e);
 		}
-	}
 
+	}
 }

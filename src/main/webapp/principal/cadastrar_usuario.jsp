@@ -280,7 +280,8 @@
 																%>
 																<button type="button"
 																	class="btn btn-success btn-round waves-effect hor-grd btn-grd-success"
-																	id="btn-form-cadastro" onclick="limparFormulario();">Novo</button>
+																	id="btn-form-cadastro-novo"
+																	onclick="limparFormulario();">Novo</button>
 																<%
 																/*
 																Ao não definir nenhum 'type' para o botão. exemplo: <button>Salvar</button>
@@ -294,6 +295,12 @@
 																	class="btn btn-danger btn-round waves-effect hor-grd btn-grd-danger"
 																	id="btn-form-cadastro"
 																	onclick="excluirCadastroComAjax2();">Excluir</button>
+																<c:if
+																	test="${not empty id || not empty usuarioSalvo.id}">
+																	<a href="${pageContext.request.contextPath}/TelefoneServlet?id=${empty id ? usuarioSalvo.id : id}" 
+																		class="btn btn-info btn-round  waves-effect hor-grd btn-grd-info"
+																		id="btn-form-cadastro-telefone">Telefone</a>
+																</c:if>
 																<button type="button"
 																	class="btn btn-inverse btn-round waves-effect hor-grd btn-grd-inverse"
 																	id="btn-form-cadastro" data-toggle="modal"
@@ -342,7 +349,7 @@
 																			href="<%=request.getContextPath()%>/EditarUsuarioServlet?id=${usuario.id}">Editar</a></td>
 																		<td><button type="button"
 																				class="btn btn-danger btn-round waves-effect hor-grd btn-grd-danger"
-																				onclick="excluirCadastro(${usuario.id})">Excluir</button></td>
+																				onclick="excluirCadastro();">Excluir</button></td>
 																	</tr>
 
 																</c:forEach>
