@@ -1,6 +1,5 @@
 package dao;
 
-import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,19 +16,13 @@ import model.enums.Perfil;
 import model.enums.Sexo;
 import util.PaginacaoUtil;
 
-public class UsuarioDao implements Serializable {
-
-	private static final long serialVersionUID = 1L;
+public class UsuarioDao {
 
 	private static final int LIMITE_DE_PAGINA = 10;
 
-	/*
-	 * transient - impede que o atributo seja serializado (salvo em arquivos,
-	 * sessão, etc.).
-	 */
-	private final transient Connection connection;
+	private Connection connection;
 
-	private final transient EnderecoDao enderecoDao;
+	private EnderecoDao enderecoDao;
 
 	/**
 	 * Construtor que inicializa a conexão com o banco de dados.

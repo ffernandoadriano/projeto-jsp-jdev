@@ -1,6 +1,5 @@
 package dao;
 
-import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,15 +12,9 @@ import connection.ConnectionFactory;
 import model.Imagem;
 import model.Usuario;
 
-public class ImagemDao implements Serializable {
+public class ImagemDao {
 
-	private static final long serialVersionUID = 1L;
-
-	/*
-	 * transient - impede que o atributo seja serializado (salvo em arquivos,
-	 * sessão, etc.).
-	 */
-	private transient Connection connection;
+	private Connection connection;
 
 	/**
 	 * Construtor que inicializa a conexão com o banco de dados.

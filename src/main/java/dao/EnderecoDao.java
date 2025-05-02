@@ -1,6 +1,5 @@
 package dao;
 
-import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,15 +8,9 @@ import java.sql.Statement;
 
 import model.Endereco;
 
-public class EnderecoDao implements Serializable {
+public class EnderecoDao {
 
-	private static final long serialVersionUID = 1L;
-
-	/*
-	 * transient - impede que o atributo seja serializado (salvo em arquivos,
-	 * sessão, etc.).
-	 */
-	private transient Connection connection;
+	private Connection connection;
 
 	public EnderecoDao(Connection connection) {
 		this.connection = connection;

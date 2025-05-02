@@ -1,6 +1,5 @@
 package dao;
 
-import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,15 +12,9 @@ import connection.ConnectionFactory;
 import model.Telefone;
 import model.Usuario;
 
-public class TelefoneDao implements Serializable {
+public class TelefoneDao {
 
-	private static final long serialVersionUID = 1L;
-
-	/*
-	 * transient - impede que o atributo seja serializado (salvo em arquivos,
-	 * sessão, etc.).
-	 */
-	private transient Connection connection;
+	private Connection connection;
 
 	private TelefoneDao() {
 		this.connection = ConnectionFactory.getConnection();
@@ -96,8 +89,15 @@ public class TelefoneDao implements Serializable {
 
 					telefone.setId(rs.getLong("id"));
 					telefone.setNumero(rs.getString("numero"));
-					telefone.setUsuario(new Usuario(rs.getLong("usuario_id"))); // obs: O objeto Usuario será carregado por completo em outro momento, se necessário.
-					telefone.setUsuarioInclusao(new Usuario(rs.getLong("usuario_inclusao_id"))); // obs: O objeto Usuario será carregado por completo em outro momento, se necessário.
+					telefone.setUsuario(new Usuario(rs.getLong("usuario_id"))); // obs: O objeto Usuario será carregado
+																				// por completo em outro momento, se
+																				// necessário.
+					telefone.setUsuarioInclusao(new Usuario(rs.getLong("usuario_inclusao_id"))); // obs: O objeto
+																									// Usuario será
+																									// carregado por
+																									// completo em outro
+																									// momento, se
+																									// necessário.
 
 					telefones.add(telefone);
 				}
