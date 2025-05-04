@@ -76,6 +76,8 @@ CREATE TABLE telefone (
   numero VARCHAR(30) NOT NULL,
   usuario_id BIGINT NOT NULL,
   usuario_inclusao_id BIGINT NOT NULL,
+  tipo_contato VARCHAR(20) NOT NULL,
+  info_adicional VARCHAR(255) NULL,
   CONSTRAINT fk_telefone_usuario FOREIGN KEY (usuario_id) REFERENCES usuario(id) ON DELETE CASCADE,
   CONSTRAINT fk_telefone_usuario_inclusao FOREIGN KEY (usuario_inclusao_id) REFERENCES usuario(id) ON DELETE CASCADE
 );

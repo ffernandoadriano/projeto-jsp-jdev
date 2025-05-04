@@ -11,12 +11,13 @@ import java.util.List;
 import connection.ConnectionFactory;
 import model.Telefone;
 import model.Usuario;
+import model.enums.TipoContato;
 
 public class TelefoneDao {
 
 	private Connection connection;
 
-	private TelefoneDao() {
+	public TelefoneDao() {
 		this.connection = ConnectionFactory.getConnection();
 	}
 
@@ -25,11 +26,13 @@ public class TelefoneDao {
 	 */
 
 	public void inserir(Telefone telefone) throws DaoException {
-		String sql = "INSERT INTO telefone (numero, usuario_id, usuario_inclusao_id) VALUES (?, ?, ?)";
+		String sql = "INSERT INTO telefone (numero, usuario_id, usuario_inclusao_id, tipo_contato, info_adicional) VALUES (?, ?, ?, ?, ?)";
 		try (PreparedStatement pstmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 			pstmt.setString(1, telefone.getNumero());
 			pstmt.setLong(2, telefone.getUsuario().getId());
-			pstmt.setLong(3, telefone.getUsuario().getId());
+			pstmt.setLong(3, telefone.getUsuarioInclusao().getId());
+			pstmt.setString(4, telefone.getTipoContato().getDescricao());
+			pstmt.setString(5, telefone.getInfoAdicional());
 
 			// Executa a query
 			int linhas = pstmt.executeUpdate();
@@ -72,11 +75,69 @@ public class TelefoneDao {
 	}
 
 	/**
+	 * Atualiza o telefone
+	 */
+	public void atualizar(Telefone telefone) throws DaoException {
+		String sql = "UPDATE telefone SET numero=?, tipo_contato=?, info_adicional=? WHERE id=?";
+
+		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+			pstmt.setString(1, telefone.getNumero());
+			pstmt.setString(2, telefone.getTipoContato().getDescricao());
+			pstmt.setString(3, telefone.getInfoAdicional());
+			pstmt.setLong(4, telefone.getId());
+
+			// Executa a query
+			pstmt.executeUpdate();
+
+			// Confirma a transação no banco
+			connection.commit();
+		} catch (SQLException e) {
+			throw new DaoException("Erro ao atualizar telefone: " + e.getMessage(), e);
+		}
+	}
+
+	/**
+	 * Busca telefone por id
+	 */
+	public Telefone buscarPorId(Long id) throws DaoException {
+		String sql = "SELECT id, numero, usuario_id, usuario_inclusao_id, tipo_contato, info_adicional FROM telefone WHERE id=?";
+
+		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+			 pstmt.setLong(1, id);
+
+			try (ResultSet rs = pstmt.executeQuery()) {
+
+				if (rs.next()) {
+					Telefone telefone = new Telefone();
+
+					telefone.setId(rs.getLong("id"));
+					telefone.setNumero(rs.getString("numero"));
+					// obs: O objeto Usuario será carregado por completo em outro momento, se
+					// necessário.
+					telefone.setUsuario(new Usuario(rs.getLong("usuario_id")));
+					// obs: O objeto Usuario será carregado por completo em outro momento, se
+					// necessário.
+					telefone.setUsuarioInclusao(new Usuario(rs.getLong("usuario_inclusao_id")));
+					telefone.setTipoContato(TipoContato.fromDescricao(rs.getString("tipo_contato")));
+					telefone.setInfoAdicional(rs.getString("info_adicional"));
+
+					return telefone;
+				}
+			}
+
+		} catch (SQLException e) {
+			throw new DaoException("Erro ao buscar telefone por id: " + e.getMessage(), e);
+		}
+
+		return null;
+	}
+
+	/**
 	 * Listar todos os telefones de um usuário
 	 * 
 	 */
 	public List<Telefone> listarTodosPorUsuarioId(Long usuarioId) throws DaoException {
-		String sql = "SELECT id, numero, usuario_id, usuario_inclusao_id FROM telefone WHERE usuario_id = ? ORDER BY id";
+		String sql = "SELECT id, numero, usuario_id, usuario_inclusao_id, tipo_contato, info_adicional FROM telefone WHERE usuario_id = ? ORDER BY id";
 
 		List<Telefone> telefones = new ArrayList<>();
 
@@ -89,15 +150,14 @@ public class TelefoneDao {
 
 					telefone.setId(rs.getLong("id"));
 					telefone.setNumero(rs.getString("numero"));
-					telefone.setUsuario(new Usuario(rs.getLong("usuario_id"))); // obs: O objeto Usuario será carregado
-																				// por completo em outro momento, se
-																				// necessário.
-					telefone.setUsuarioInclusao(new Usuario(rs.getLong("usuario_inclusao_id"))); // obs: O objeto
-																									// Usuario será
-																									// carregado por
-																									// completo em outro
-																									// momento, se
-																									// necessário.
+					// obs: O objeto Usuario será carregado por completo em outro momento, se
+					// necessário.
+					telefone.setUsuario(new Usuario(rs.getLong("usuario_id")));
+					// obs: O objeto Usuario será carregado por completo em outro momento, se
+					// necessário.
+					telefone.setUsuarioInclusao(new Usuario(rs.getLong("usuario_inclusao_id")));
+					telefone.setTipoContato(TipoContato.fromDescricao(rs.getString("tipo_contato")));
+					telefone.setInfoAdicional(rs.getString("info_adicional"));
 
 					telefones.add(telefone);
 				}

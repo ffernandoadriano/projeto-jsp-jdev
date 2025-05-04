@@ -3,6 +3,8 @@ package model;
 import java.io.Serializable;
 import java.util.Objects;
 
+import model.enums.TipoContato;
+
 public class Telefone implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -11,6 +13,8 @@ public class Telefone implements Serializable {
 	private String numero;
 	private Usuario usuario;
 	private Usuario usuarioInclusao;
+	private TipoContato tipoContato;
+	private String infoAdicional;
 
 	public Telefone() {
 	}
@@ -47,6 +51,22 @@ public class Telefone implements Serializable {
 		this.usuarioInclusao = usuarioInclusao;
 	}
 
+	public TipoContato getTipoContato() {
+		return tipoContato;
+	}
+
+	public void setTipoContato(TipoContato tipoContato) {
+		this.tipoContato = tipoContato;
+	}
+
+	public String getInfoAdicional() {
+		return infoAdicional;
+	}
+
+	public void setInfoAdicional(String infoAdicional) {
+		this.infoAdicional = infoAdicional;
+	}
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);
@@ -67,7 +87,7 @@ public class Telefone implements Serializable {
 	@Override
 	public String toString() {
 		return "Telefone [id=" + id + ", numero=" + numero + ", usuario=" + usuario + ", usuarioInclusao="
-				+ usuarioInclusao + "]";
+				+ usuarioInclusao + ", tipoContato=" + tipoContato + ", infoAdicional=" + infoAdicional + "]";
 	}
 
 }

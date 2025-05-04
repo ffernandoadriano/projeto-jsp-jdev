@@ -149,6 +149,26 @@
 	
 		}
 
+	function limparFormTelefone() {
+		/*A ordem é essencial, pois, se os itens forem posicionados incorretamente, a funcionalidade pode não atingir sua eficácia total.*/
+
+		// Seleciona o tipo do contato para 0 "padrão"
+		document.getElementById("tipo").selectedIndex = 0;
+
+		// limpar contato
+		document.getElementById("contato").value = '';
+
+		// limpar informações adicionais
+		document.getElementById("info").value = '';
+
+		// remover campo oculto idTel, se existir
+		var inputIdTel = document.getElementById("idTel");
+		if (inputIdTel) {
+			inputIdTel.remove();
+		}
+	}
+
+
 	function excluirCadastro(){
 		
 		let id = document.forms["usuarioForm"].id.value; // captura o nome do campo do formulário
@@ -161,6 +181,23 @@
 			if(resposta){
 				// redireciona a página
 				window.location = "<%=request.getContextPath()%>/ExcluirUsuarioServlet?id=" + id; 
+			}
+			
+		}
+	}
+
+	function excluirTelefone(id){
+
+		const usuarioId = document.forms["telefoneForm"].id.value; // captura o nome do campo do formulário
+		
+		// se diferente de vazio, significa que estou tentando excluir um usuario já cadastro no banco
+		if(id != ""){
+			
+			let resposta = confirm("Deseja realmente excluir o registro?");
+
+			if(resposta){
+				// redireciona a página
+				window.location = "${pageContext.request.contextPath}/ExcluirTelefoneServlet?idTel=" + id +"&idUser=" + usuarioId; 
 			}
 			
 		}

@@ -19,6 +19,11 @@
 							<p class="m-b-0">Formulário / Lista de Usuários</p>
 							<c:set var="id" value="Cadastros" />
 						</c:when>
+						<c:when test="${caminho  eq '/principal/telefone.jsp' }">
+							<h5 class="m-b-10">Telefone</h5>
+							<p class="m-b-0">Formulário / Lista de Contato</p>
+							<c:set var="id" value="Cadastros" />
+						</c:when>
 						<c:otherwise>
 							<h5 class="m-b-10">Dashboard</h5>
 							<p class="m-b-0">Welcome to Mega Able</p>
@@ -46,6 +51,10 @@
 								Usuário</li>
 						</c:when>
 
+						<c:when test="${caminho eq '/principal/telefone.jsp'}">
+							<li class="breadcrumb-item" aria-current="page"><a href="#!">Cadastros</a></li>
+						</c:when>
+
 						<c:otherwise>
 							<li class="breadcrumb-item" aria-current="page">Dashboard</li>
 						</c:otherwise>
@@ -62,6 +71,6 @@
 	menuLateralAction("${id}");
 
 	function menuLateralAction(id) {
-		 document.getElementById(id).classList.add('active');
+		document.getElementById(id).classList.add('active');
 	}
 </script>
