@@ -86,6 +86,7 @@ public class SalvarUsuarioServlet extends HttpServlet {
 
 		// Faz a validação dos dados digitados
 		validarNome(nome);
+		validarSexo(sexo);
 		validarEmail(email, id);
 		validarPerfil(perfil);
 		validarLogin(login, id);
@@ -217,6 +218,17 @@ public class SalvarUsuarioServlet extends HttpServlet {
 
 		if (nome.length() > 255) {
 			adicionarErro("O nome digitado é muito grande");
+		}
+	}
+
+	/**
+	 * Valida o sexo
+	 * 
+	 * @param sexo
+	 */
+	private void validarSexo(String sexo) {
+		if (StringUtils.isEmpty(sexo)) {
+			adicionarErro("O sexo é obrigatório");
 		}
 	}
 

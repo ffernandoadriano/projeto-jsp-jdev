@@ -80,7 +80,7 @@ public class LoginServlet extends HttpServlet {
 						// coloca o obj na sessão
 						UsuarioLogadoSession.logar(request, usuario);
 						UsuarioLogadoSession.createFotoPerfil(request, fotoPerfil);
-						request.getRequestDispatcher(url).forward(request, response);
+						response.sendRedirect(request.getContextPath() + "/HomeServlet");
 
 					} else {
 

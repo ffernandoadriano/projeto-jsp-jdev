@@ -13,6 +13,11 @@
 							<h5 class="m-b-10">Página inicial</h5>
 							<p class="m-b-0">Bem vindo</p>
 							<c:set var="id" value="home" />
+							<!-- toda vez que acessar o home, reinicie a paginação -->
+							<c:if test="${not empty sessionScope.paginacao}">
+								<c:remove var="paginacao" scope="session" />
+								<c:remove var="totalPaginas" scope="session" />
+							</c:if>
 						</c:when>
 						<c:when test="${caminho  eq '/principal/cadastrar_usuario.jsp' }">
 							<h5 class="m-b-10">Cadastrar Usuário</h5>
@@ -35,8 +40,8 @@
 			<div class="col-md-4">
 				<ul class="breadcrumb-title">
 					<li class="breadcrumb-item"><a
-						href="<%=request.getContextPath()%>/principal/principal.jsp">
-							<i class="fa fa-home"></i>
+						href="<%=request.getContextPath()%>/HomeServlet"> <i
+							class="fa fa-home"></i>
 					</a></li>
 
 					<c:choose>

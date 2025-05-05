@@ -161,7 +161,7 @@
 																					<td>${telefone.infoAdicional}</td>
 																					<td><a
 																						class="btn btn-info btn-round waves-effect hor-grd btn-grd-info"
-																						href="${pageContext.request.contextPath}/EditarTelefoneServlet?id=${telefone.id}">Editar</a></td>
+																						href="${pageContext.request.contextPath}/TelefoneServlet?foneID=${telefone.id}&action=edit">Editar</a></td>
 																					<td><button type="button"
 																							class="btn btn-danger btn-round waves-effect hor-grd btn-grd-danger"
 																							onclick="excluirTelefone(${telefone.id});">Excluir</button></td>

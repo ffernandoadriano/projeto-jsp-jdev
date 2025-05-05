@@ -1,5 +1,7 @@
 package model.enums;
 
+import java.util.Objects;
+
 public enum Sexo {
 	MASCULINO("M", "Masculino"), FEMININO("F", "Feminino");
 
@@ -21,7 +23,7 @@ public enum Sexo {
 
 	public static Sexo fromSigla(String sigla) {
 		for (Sexo sexo : Sexo.values()) {
-			if (sexo.sigla.equals(sigla)) {
+			if (Objects.equals(sexo.sigla, sigla)) {
 				return sexo;
 			}
 		}

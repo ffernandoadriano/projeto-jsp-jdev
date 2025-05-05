@@ -138,7 +138,7 @@
 																<div class="col-sm-1 col-form-label" id="radioSexo">
 																	<div class="col-sm-8" id="radioSexo">
 																		<input class="form-check-input" type="radio"
-																			name="sexo" id="inline" value="M" required="required"
+																			name="sexo" value="M" required="required"
 																			${sexo eq 'M' or usuarioSalvo.sexo.sigla eq 'M' ? 'checked' : ''}>
 																		<label class="form-check-label" for="inlineRadio1">Masculino</label>
 																	</div>
@@ -148,7 +148,7 @@
 																<div class="col-sm-1 col-form-label" id="radioSexo"
 																	style="margin-left: 21px">
 																	<input class="form-check-input" type="radio"
-																		name="sexo" id="inline" value="F" required="required"
+																		name="sexo" value="F" required="required"
 																		${sexo eq 'F' or usuarioSalvo.sexo.sigla eq 'F' ? 'checked' : ''}>
 																	<label class="form-check-label" for="inlineRadio2">Feminino</label>
 																</div>
@@ -294,10 +294,11 @@
 																<button type="button"
 																	class="btn btn-danger btn-round waves-effect hor-grd btn-grd-danger"
 																	id="btn-form-cadastro"
-																	onclick="excluirCadastroComAjax2();">Excluir</button>
+																	onclick="excluirCadastroUsuario();">Excluir</button>
 																<c:if
 																	test="${not empty id || not empty usuarioSalvo.id}">
-																	<a href="${pageContext.request.contextPath}/TelefoneServlet?id=${empty id ? usuarioSalvo.id : id}" 
+																	<a
+																		href="${pageContext.request.contextPath}/TelefoneServlet?id=${empty id ? usuarioSalvo.id : id}"
 																		class="btn btn-info btn-round  waves-effect hor-grd btn-grd-info"
 																		id="btn-form-cadastro-telefone">Telefone</a>
 																</c:if>
@@ -338,18 +339,17 @@
 																</tr>
 															</thead>
 															<tbody>
-																<c:forEach items="${listarUsuariosSession}"
-																	var="usuario">
+																<c:forEach items="${usuarios}" var="usuario">
 																	<tr>
 																		<td>${usuario.id}</td>
 																		<td>${usuario.nome}</td>
 																		<td>${usuario.email}</td>
 																		<td><a
 																			class="btn btn-info btn-round waves-effect hor-grd btn-grd-info"
-																			href="<%=request.getContextPath()%>/EditarUsuarioServlet?id=${usuario.id}">Editar</a></td>
+																			href="<%=request.getContextPath()%>/CadastrarUsuarioServlet?userID=${usuario.id}&action=edit">Editar</a></td>
 																		<td><button type="button"
 																				class="btn btn-danger btn-round waves-effect hor-grd btn-grd-danger"
-																				onclick="excluirCadastro();">Excluir</button></td>
+																				onclick="excluirCadastroUsuario(${usuario.id});">Excluir</button></td>
 																	</tr>
 
 																</c:forEach>
@@ -401,80 +401,82 @@
 				</div>
 			</div>
 		</div>
+	</div>
 
-		<jsp:include page="javascript.jsp"></jsp:include>
 
-		<!-- Large modal -->
-		<div class="modal fade" id="modalCadastro" tabindex="-1" role="dialog"
-			aria-labelledby="myLargeModalLabel" aria-hidden="true">
-			<div class="modal-dialog modal-xl-custom">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title" id="exampleModalLabel">Pesquisa de
-							Usuário</h5>
-					</div>
-					<!-- AQUI FOI ADICIONADO O SCROLL -->
-					<div class="modal-body" style="max-height: 60vh; overflow-y: auto;">
-						<!-- inicio do body -->
+	<jsp:include page="javascript.jsp"></jsp:include>
 
-						<div class="input-group mb-3">
-							<input type="text" class="form-control"
-								placeholder="Digite o nome" aria-label="nome"
-								aria-describedby="basic-addon2" name="pesquisarNome"
-								id="pesquisarNome" autocomplete="off"
-								onkeydown="if (event.key === 'Enter') { event.preventDefault(); document.getElementById('btnPesquisar').click(); }">
-							<div class="input-group-append">
-								<button type="button"
-									class="btn btn-success btn-round waves-effect hor-grd btn-grd-success"
-									type="button" onclick="buscarUsuarioPorNome();"
-									id="btnPesquisar" style="margin-left: 5px">Pesquisar</button>
-							</div>
+	<!-- Large modal -->
+	<div class="modal fade" id="modalCadastro" tabindex="-1" role="dialog"
+		aria-labelledby="myLargeModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-xl-custom">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Pesquisa de
+						Usuário</h5>
+				</div>
+				<!-- AQUI FOI ADICIONADO O SCROLL -->
+				<div class="modal-body" style="max-height: 60vh; overflow-y: auto;">
+					<!-- inicio do body -->
+
+					<div class="input-group mb-3">
+						<input type="text" class="form-control"
+							placeholder="Digite o nome" aria-label="nome"
+							aria-describedby="basic-addon2" name="pesquisarNome"
+							id="pesquisarNome" autocomplete="off"
+							onkeydown="if (event.key === 'Enter') { event.preventDefault(); document.getElementById('btnPesquisar').click(); }">
+						<div class="input-group-append">
+							<button type="button"
+								class="btn btn-success btn-round waves-effect hor-grd btn-grd-success"
+								type="button" onclick="buscarUsuarioPorNome();"
+								id="btnPesquisar" style="margin-left: 5px">Pesquisar</button>
 						</div>
+					</div>
 
-						<div class="card-block table-border-style">
-							<div class="table-responsive">
-								<table class="table" id="tbPesquisarUsuario">
-									<thead>
-										<tr>
-											<th>ID</th>
-											<th>Nome</th>
-											<th>Email</th>
-											<th></th>
-										</tr>
-									</thead>
-									<tbody>
+					<div class="card-block table-border-style">
+						<div class="table-responsive">
+							<table class="table" id="tbPesquisarUsuario">
+								<thead>
+									<tr>
+										<th>ID</th>
+										<th>Nome</th>
+										<th>Email</th>
+										<th></th>
+									</tr>
+								</thead>
+								<tbody>
 
-									</tbody>
-								</table>
-							</div>
+								</tbody>
+							</table>
 						</div>
-						<!-- fim do body -->
 					</div>
+					<!-- fim do body -->
+				</div>
 
-					<!-- Paginação Inicio -->
-					<span style="margin-bottom: 0px" class="sub-title"></span>
-					<nav sty aria-label="Page navigation example"
-						class="pagination justify-content-center">
-						<ul class="pagination" id="ulPaginacaoAjax">
-							<!-- será preenchido pelo ajax -->
-						</ul>
-					</nav>
-					<!-- Paginação Final -->
+				<!-- Paginação Inicio -->
+				<span style="margin-bottom: 0px" class="sub-title"></span>
+				<nav sty aria-label="Page navigation example"
+					class="pagination justify-content-center">
+					<ul class="pagination" id="ulPaginacaoAjax">
+						<!-- será preenchido pelo ajax -->
+					</ul>
+				</nav>
+				<!-- Paginação Final -->
 
-					<div class="modal-footer d-flex justify-content-between w-100">
-						<span class="align-self-center" id="qtdRegistros"></span>
-						<button type="button"
-							class="btn btn-inverse btn-round waves-effect hor-grd btn-grd-inverse"
-							data-dismiss="modal">Fechar</button>
-					</div>
+				<div class="modal-footer d-flex justify-content-between w-100">
+					<span class="align-self-center" id="qtdRegistros"></span>
+					<button type="button"
+						class="btn btn-inverse btn-round waves-effect hor-grd btn-grd-inverse"
+						data-dismiss="modal">Fechar</button>
 				</div>
 			</div>
 		</div>
-		<jsp:include page="jsWhatsAppIcone.jsp"></jsp:include>
+	</div>
+	<jsp:include page="jsWhatsAppIcone.jsp"></jsp:include>
 
 
-		<!-- Notificações -->
-		<script>
+	<!-- Notificações -->
+	<script>
 			 $(document).ready(function () {
 				<c:choose>
 					<c:when test="${erros != null}">
@@ -499,8 +501,8 @@
 			 });
 		</script>
 
-		<!-- Mascara para Cep -->
-		<script>
+	<!-- Mascara para Cep -->
+	<script>
 	  document.getElementById('cep').addEventListener('input', function (e) {
 	    let cep = e.target.value;
 	
@@ -517,8 +519,8 @@
 	</script>
 
 
-		<!-- Paginação -->
-		<script>
+	<!-- Paginação -->
+	<script>
 			 const pageItems = document.querySelectorAll('.pagination .page-item'); // item da lista
 			 const pageLinks = document.querySelectorAll('.pagination .page-link'); // link da lista
 			

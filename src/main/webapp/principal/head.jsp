@@ -110,10 +110,17 @@
 		/*A ordem é essencial, pois, se os itens forem posicionados incorretamente, a funcionalidade pode não atingir sua eficácia total.*/
 	
 	    let elementos = document.getElementById("usuarioForm").elements; // retorna os elementos html dentro do formulário
-	
 		  for(let i = 0; i < elementos.length; i ++){
-	  	  	elementos[i].value = ''; // Limpa o campo existante no formulário
+			  const el = elementos[i];
+
+			    if (el.type === "radio") {
+			        // pula os radios, para não mexer neles, mantendo o value = 'F' e 'M'
+			        continue;
+			    }
+
+			    el.value = '';  // Limpa o campo existante no formulário
 	      }
+	      
 		  // Seleciona o perfil para 0 "padrão"
 		  document.getElementById("perfil").selectedIndex = 0;
 
@@ -131,8 +138,8 @@
 		  history.replaceState(null, '', window.location.pathname);
 	
 		  // Limpar o radio
-		  const radios = document.getElementsByName("sexo");
-		  radios.forEach(radio => radio.checked = false);
+		  const radios = Array.from(document.getElementsByName("sexo"));
+		  radios.forEach(radio => radio.checked = false);	
 	
 		  // Limpar a imagem anterior para padrão
 		  const fotoPerfil = document.getElementById("fotoBase64");
@@ -166,15 +173,31 @@
 		if (inputIdTel) {
 			inputIdTel.remove();
 		}
+
+		// Limpa os parâmetros da URL
+		 history.replaceState(null, '', window.location.pathname);
+	}
+
+	function isIdValido(id) {
+	    return typeof id !== "undefined" && id !== null && id !== "";
 	}
 
 
-	function excluirCadastro(){
-		
-		let id = document.forms["usuarioForm"].id.value; // captura o nome do campo do formulário
+	function excluirCadastroUsuario(idUser = -1){
 
+		let id;
+		
+		if(idUser === -1){
+			// usado no formulario sem parametro
+			id = document.forms["usuarioForm"].id.value; // captura o nome do campo do formulário
+		}else{
+			// Usado na lista com parametro
+			id = idUser; 
+		}
+		
+		
 		// se diferente de vazio, significa que estou tentando excluir um usuario já cadastro no banco
-		if(id != ""){
+		if(isIdValido(id)){
 			
 			let resposta = confirm("Deseja realmente excluir o registro?");
 
@@ -191,7 +214,7 @@
 		const usuarioId = document.forms["telefoneForm"].id.value; // captura o nome do campo do formulário
 		
 		// se diferente de vazio, significa que estou tentando excluir um usuario já cadastro no banco
-		if(id != ""){
+		if(isIdValido(id)){
 			
 			let resposta = confirm("Deseja realmente excluir o registro?");
 
@@ -450,7 +473,7 @@
 
 			function editarFormularioUsuario(id){
 
-				window.location.href = "<%=request.getContextPath()%>/EditarUsuarioServlet?id="+ id;
+				window.location.href = "<%=request.getContextPath()%>/CadastrarUsuarioServlet?userID="+ id +"&action=edit";
 			}
 
 

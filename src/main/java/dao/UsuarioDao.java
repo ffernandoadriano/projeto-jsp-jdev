@@ -80,7 +80,7 @@ public class UsuarioDao {
 				pstmt.setString(4, usuario.getSenha());
 				pstmt.setLong(5, idUsuarioLogado);
 				pstmt.setInt(6, usuario.getPerfil().getId());
-				pstmt.setString(7, String.valueOf(usuario.getSexo().getSigla()));
+				pstmt.setString(7, usuario.getSexo().getSigla());
 				pstmt.setLong(8, usuario.getEndereco().getId());
 
 				// Executa a query
@@ -447,7 +447,7 @@ public class UsuarioDao {
 				pstmt.setString(3, usuario.getLogin());
 				pstmt.setString(4, usuario.getSenha());
 				pstmt.setInt(5, usuario.getPerfil().getId());
-				pstmt.setString(6, String.valueOf(usuario.getSexo().getSigla()));
+				pstmt.setString(6, usuario.getSexo().getSigla());
 				pstmt.setLong(7, usuario.getId());
 
 				// Executa a query
