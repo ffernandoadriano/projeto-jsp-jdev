@@ -531,9 +531,9 @@
 			   // Adiciona active no índice atual
 			   if (pageItems[index] && !pageItems[index].querySelector('span[aria-hidden]')) {
 			    	 pageItems[index].classList.add('active');
-			    	 
+			   
 			     	// chamar o href para redirecionar aqui
-			    	window.location.href ='<%=request.getContextPath()%>/CadastrarUsuarioServlet?pagina='+ index;
+			    	window.location.href ='<%=request.getContextPath()%>/CadastrarUsuarioServlet?page='+ index;
 			   }
 			 }
 

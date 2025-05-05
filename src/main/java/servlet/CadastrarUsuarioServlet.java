@@ -38,7 +38,7 @@ public class CadastrarUsuarioServlet extends HttpServlet {
 
 		try {
 
-			String paginaParam = request.getParameter("pagina");
+			String paginaParam = request.getParameter("page");
 			String paginaAtual = PaginationSession.get(request, "paginacao");
 
 			if (paginaAtual == null) {
