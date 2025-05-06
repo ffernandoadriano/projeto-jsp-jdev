@@ -22,6 +22,8 @@ import model.Usuario;
 import model.enums.Perfil;
 import model.enums.Sexo;
 import session.ImagemBase64Session;
+import session.NotificationSession;
+import session.PaginationSession;
 import session.UsuarioLogadoSession;
 import util.PaginacaoUtil;
 import util.StringUtils;
@@ -61,7 +63,7 @@ public class SalvarUsuarioServlet extends HttpServlet {
 		// Extrai os dados digitados no formulário
 		String idParam = request.getParameter("id");
 		// null não pode ser passado diretamente para Long.valueOf()
-		Long id = (idParam == null || idParam.isEmpty()) ? null : Long.valueOf(idParam);
+		Long id = (StringUtils.isEmpty(idParam)) ? null : Long.valueOf(idParam);
 		String nome = request.getParameter("nome").trim();
 		String sexo = request.getParameter("sexo").trim();
 		String email = request.getParameter("email").trim();
@@ -72,7 +74,7 @@ public class SalvarUsuarioServlet extends HttpServlet {
 		// Endereco
 		String idParamEnd = request.getParameter("enderecoId");
 		// null não pode ser passado diretamente para Long.valueOf()
-		Long enderecoId = (idParamEnd == null || idParamEnd.isEmpty()) ? null : Long.valueOf(idParamEnd);
+		Long enderecoId = (StringUtils.isEmpty(idParamEnd)) ? null : Long.valueOf(idParamEnd);
 		String cep = request.getParameter("cep").trim();
 		String rua = request.getParameter("rua").trim();
 		String numero = request.getParameter("numero").trim();
@@ -102,6 +104,9 @@ public class SalvarUsuarioServlet extends HttpServlet {
 			if (imagemPerfil != null) {
 				definirValoresFotoPerfil(imagemPerfil);
 			}
+
+			// Mostra a lista de usuários
+			request.setAttribute("usuarios", getUsuarios());
 
 			request.getRequestDispatcher("/principal/cadastrar_usuario.jsp").forward(request, response);
 			return;
@@ -133,35 +138,20 @@ public class SalvarUsuarioServlet extends HttpServlet {
 
 			if (usuario.getId() == null) {
 				usuarioDao.inserir(usuario, UsuarioLogadoSession.getUsuarioLogado(request).getId());
-				acao = "salvar";
+				acao = "Salvar";
 
 			} else {
 				usuarioDao.atualizarComEndereco(usuario);
-				acao = "atualizar";
+				acao = "Atualizar";
 			}
 
 			if (imagemPerfil != null) {
 				salvarFotoPerfil(imagemPerfil, usuario);
 			}
 
-			int totalPaginas = usuarioDao.calcularTotalPaginas(UsuarioLogadoSession.getUsuarioLogado(request).getId());
-			int offset = PaginacaoUtil.calcularOffset(paginaAtual(), usuarioDao.getLimitePagina());
-
-			List<Usuario> usuarios = usuarioDao
-					.listarPorUsuarioLogado(UsuarioLogadoSession.getUsuarioLogado(request).getId(), offset);
-
-			request.getSession().setAttribute("totalPaginas", totalPaginas);
-
-			request.getSession().setAttribute("listarUsuariosSession", usuarios);
-			/* mostra o usuário na tela após o redirecionamento */
-			request.getSession().setAttribute("usuarioSalvo", usuario);
-
-			/*
-			 * coloco na sessão o objeto criado e removo assim que ele é redirecionado no
-			 * jsp. Obs: somente para exibir o objeto criado
-			 */
+			NotificationSession.set(request, acao, "ok");
 			response.sendRedirect(
-					request.getContextPath() + String.format("/principal/cadastrar_usuario.jsp?acao=%s", acao));
+					request.getContextPath() + "/CadastrarUsuarioServlet?userID=" + usuario.getId() + "&action=save");
 
 		} catch (DaoException e) {
 			throw new ServletException(e);
@@ -451,15 +441,19 @@ public class SalvarUsuarioServlet extends HttpServlet {
 		return String.format("data:%s;base64,%s", contentType, Base64.getEncoder().encodeToString(image));
 	}
 
-	private int paginaAtual() {
-		final String paginaParam = request.getParameter("pagina");
-		String paginaAtual = (String) request.getSession().getAttribute("paginacao");
-
-		if (paginaAtual == null) {
-			paginaAtual = "1";
-		} else if (paginaParam != null) {
-			paginaAtual = paginaParam;
+	private List<Usuario> getUsuarios() throws ServletException {
+		try {
+			return usuarioDao.listarPorUsuarioLogado(UsuarioLogadoSession.getUsuarioLogado(request).getId(), offset());
+		} catch (DaoException e) {
+			throw new ServletException(e);
 		}
-		return Integer.parseInt(paginaAtual);
+	}
+
+	private int offset() {
+		return PaginacaoUtil.calcularOffset(paginaAtual(), usuarioDao.getLimitePagina());
+	}
+
+	private int paginaAtual() {
+		return Integer.parseInt(PaginationSession.get(request, "paginacao"));
 	}
 }

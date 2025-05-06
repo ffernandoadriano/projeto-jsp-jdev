@@ -49,7 +49,7 @@ public class CadastrarUsuarioServlet extends HttpServlet {
 
 			String action = request.getParameter("action");
 
-			if (action != null && action.equalsIgnoreCase("edit")) {
+			if (action != null && (action.equalsIgnoreCase("edit") || action.equalsIgnoreCase("save"))) {
 				String userId = request.getParameter("userID");
 
 				Usuario usuario = usuarioDao.buscarPorIdSePertencerComEndereco(Long.parseLong(userId),
@@ -59,7 +59,7 @@ public class CadastrarUsuarioServlet extends HttpServlet {
 				Imagem imagem = imagemDao.buscarPorUsuarioIdETipo(usuario.getId(), "perfil");
 
 				request.setAttribute("PerfilFoto", imagem);
-				request.setAttribute("usuarioSalvo", usuario);
+				definirValores(request, usuario);
 			}
 
 			int totalPaginas = usuarioDao.calcularTotalPaginas(UsuarioLogadoSession.getUsuarioLogado(request).getId());
@@ -75,6 +75,34 @@ public class CadastrarUsuarioServlet extends HttpServlet {
 
 		} catch (DaoException e) {
 			throw new ServletException(e);
+		}
+	}
+
+	/**
+	 * Coloca os valores submetidos pelo formulário novamente na request, para que
+	 * possam ser exibidos novamente após o carregamento da página
+	 * 
+	 */
+	private void definirValores(HttpServletRequest request, Usuario usuario) {
+		/* Usuario */
+		request.setAttribute("id", usuario.getId());
+		request.setAttribute("nome", usuario.getNome());
+		request.setAttribute("sexo", usuario.getSexo().getSigla());
+		request.setAttribute("email", usuario.getEmail());
+		request.setAttribute("perfil", usuario.getPerfil().getId());
+		request.setAttribute("login", usuario.getLogin());
+		request.setAttribute("senha", usuario.getSenha());
+
+		/* Endereço */
+		if (usuario.getEndereco() != null) {
+			request.setAttribute("enderecoId", usuario.getEndereco().getId()); // Campo hidden
+			request.setAttribute("cep", usuario.getEndereco().getCep());
+			request.setAttribute("rua", usuario.getEndereco().getRua());
+			request.setAttribute("numero", usuario.getEndereco().getNumero());
+			request.setAttribute("bairro", usuario.getEndereco().getBairro());
+			request.setAttribute("cidade", usuario.getEndereco().getCidade());
+			request.setAttribute("estado", usuario.getEndereco().getEstado());
+			request.setAttribute("uf", usuario.getEndereco().getUf());
 		}
 	}
 }

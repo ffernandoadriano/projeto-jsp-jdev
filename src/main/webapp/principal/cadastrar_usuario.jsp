@@ -69,8 +69,7 @@
 																<label class="col-sm-1 col-form-label">ID:</label>
 																<div class="col-sm-1">
 																	<input type="text" name="id" id="id"
-																		class="form-control" readonly="readonly"
-																		value="${empty id ? usuarioSalvo.id : id}">
+																		class="form-control" readonly="readonly" value="${id}">
 																</div>
 															</div>
 
@@ -83,7 +82,7 @@
 																			test="${imagemBase64 != null || PerfilFoto != null}">
 
 																			<a id="linkDownloadFotoPerfil"
-																				href="<c:url value='/DownloadImagemServlet?id=${empty id ? usuarioSalvo.id : id}&tipoImagem=perfil' />">
+																				href="<c:url value='/DownloadImagemServlet?id=${id}&tipoImagem=perfil' />">
 
 																				<img alt="Foto Perfil"
 																				src="${empty PerfilFoto ? imagemBase64.imageBase64 : PerfilFoto.imageBase64}"
@@ -121,7 +120,7 @@
 																<div class="col-sm-8">
 																	<input type="text" name="nome" id="nome"
 																		class="form-control" required="required"
-																		value="${empty nome ? usuarioSalvo.nome : nome}" />
+																		value="${nome}" />
 																</div>
 															</div>
 
@@ -139,8 +138,8 @@
 																	<div class="col-sm-8" id="radioSexo">
 																		<input class="form-check-input" type="radio"
 																			name="sexo" value="M" required="required"
-																			${sexo eq 'M' or usuarioSalvo.sexo.sigla eq 'M' ? 'checked' : ''}>
-																		<label class="form-check-label" for="inlineRadio1">Masculino</label>
+																			${sexo eq 'M' ? 'checked' : ''}> <label
+																			class="form-check-label" for="inlineRadio1">Masculino</label>
 																	</div>
 
 																</div>
@@ -149,8 +148,8 @@
 																	style="margin-left: 21px">
 																	<input class="form-check-input" type="radio"
 																		name="sexo" value="F" required="required"
-																		${sexo eq 'F' or usuarioSalvo.sexo.sigla eq 'F' ? 'checked' : ''}>
-																	<label class="form-check-label" for="inlineRadio2">Feminino</label>
+																		${sexo eq 'F' ? 'checked' : ''}> <label
+																		class="form-check-label" for="inlineRadio2">Feminino</label>
 																</div>
 															</div>
 
@@ -159,16 +158,15 @@
 															<!-- Endereço inicio -->
 
 															<input type="hidden" name="enderecoId"
-																value="${not empty enderecoId ? enderecoId : usuarioSalvo.endereco.id}">
+																value="${enderecoId}">
 
 															<div class="form-group row">
 																<label class="col-sm-1 col-form-label">Cep:</label>
 																<div class="col-sm-2">
 																	<input type="text" name="cep" id="cep"
 																		onblur="pesquisarCep();" class="form-control"
-																		required="required"
-																		value="${not empty cep ? cep : usuarioSalvo.endereco.cep}"
-																		maxlength="9" placeholder="00000-000" />
+																		required="required" value="${cep}" maxlength="9"
+																		placeholder="00000-000" />
 																</div>
 															</div>
 
@@ -177,14 +175,14 @@
 																<div class="col-sm-6">
 																	<input type="text" name="rua" id="rua"
 																		class="form-control" required="required"
-																		value="${not empty rua ? rua : usuarioSalvo.endereco.rua}" />
+																		value="${rua}" />
 																</div>
 
 																<label class="col-sm-1 col-form-label">Numero:</label>
 																<div class="col-sm-1">
 																	<input type="text" name="numero" id="numero"
 																		class="form-control" required="required"
-																		value="${not empty numero ? numero : usuarioSalvo.endereco.numero}" />
+																		value="${numero}" />
 																</div>
 
 															</div>
@@ -194,7 +192,7 @@
 																<div class="col-sm-8">
 																	<input type="text" name="bairro" id="bairro"
 																		class="form-control" required="required"
-																		value="${not empty bairro ? bairro : usuarioSalvo.endereco.bairro}" />
+																		value="${bairro}" />
 																</div>
 															</div>
 															<div class="form-group row">
@@ -202,7 +200,7 @@
 																<div class="col-sm-3">
 																	<input type="text" name="cidade" id="cidade"
 																		class="form-control" required="required"
-																		value="${not empty cidade ? cidade : usuarioSalvo.endereco.cidade}" />
+																		value="${cidade}" />
 
 																</div>
 
@@ -210,14 +208,13 @@
 																<div class="col-sm-2">
 																	<input type="text" name="estado" id="estado"
 																		class="form-control" required="required"
-																		value="${not empty estado ? estado : usuarioSalvo.endereco.estado}" />
+																		value="${estado}" />
 																</div>
 
 																<label class="col-sm-1 col-form-label">UF:</label>
 																<div class="col-sm-1">
 																	<input type="text" name="uf" id="uf"
-																		class="form-control" required="required"
-																		value="${not empty uf ? uf :usuarioSalvo.endereco.uf}" />
+																		class="form-control" required="required" value="${uf}" />
 																</div>
 															</div>
 
@@ -228,7 +225,7 @@
 																<div class="col-sm-8">
 																	<input type="email" name="email" id="email"
 																		class="form-control" required="required"
-																		value="${empty email ? usuarioSalvo.email : email}" />
+																		value="${email}" />
 																</div>
 															</div>
 															<div class="form-group row">
@@ -237,12 +234,9 @@
 																	<select name="perfil" class="form-control" id="perfil"
 																		required="required">
 																		<option value="0">Selecione o Perfil</option>
-																		<option value="1"
-																			${perfil == 1 or usuarioSalvo.perfil.id == 1 ? 'selected' : ''}>Admin</option>
-																		<option value="2"
-																			${perfil == 2 or usuarioSalvo.perfil.id == 2 ?  'selected' : ''}>Secretária</option>
-																		<option value="3"
-																			${perfil == 3 or usuarioSalvo.perfil.id == 3 ? 'selected' : ''}>Auxiliar</option>
+																		<option value="1" ${perfil == 1 ? 'selected' : ''}>Admin</option>
+																		<option value="2" ${perfil == 2 ?  'selected' : ''}>Secretária</option>
+																		<option value="3" ${perfil == 3 ? 'selected' : ''}>Auxiliar</option>
 																	</select>
 																</div>
 															</div>
@@ -251,7 +245,7 @@
 																<div class="col-sm-8">
 																	<input type="text" name="login" id="login"
 																		class="form-control" required="required"
-																		value="${empty login ? usuarioSalvo.login : login}" />
+																		value="${login}" />
 																</div>
 															</div>
 															<div class="form-group row">
@@ -259,16 +253,17 @@
 																<div class="col-sm-8">
 																	<input type="password" name="senha" id="senha"
 																		class="form-control" required="required"
-																		value="${empty senha ? usuarioSalvo.senha : senha}" />
+																		value="${senha}" />
 
 																</div>
 															</div>
 
 															<%
-															/*removendo o usuarioSalvo e imagemBase64 da sessão com JSTL*/
+															/*removendo a imagemBase64 da sessão com JSTL*/
 															%>
-															<c:remove var="usuarioSalvo" scope="session" />
-															<c:remove var="imagemBase64" scope="session" />
+															<c:if test="${not empty sessionScope.imagemBase64}">
+																<c:remove var="imagemBase64" scope="session" />
+															</c:if>
 
 
 															<div class="form-group row">
@@ -295,10 +290,9 @@
 																	class="btn btn-danger btn-round waves-effect hor-grd btn-grd-danger"
 																	id="btn-form-cadastro"
 																	onclick="excluirCadastroUsuario();">Excluir</button>
-																<c:if
-																	test="${not empty id || not empty usuarioSalvo.id}">
+																<c:if test="${not empty id}">
 																	<a
-																		href="${pageContext.request.contextPath}/TelefoneServlet?id=${empty id ? usuarioSalvo.id : id}"
+																		href="${pageContext.request.contextPath}/TelefoneServlet?id=${id}"
 																		class="btn btn-info btn-round  waves-effect hor-grd btn-grd-info"
 																		id="btn-form-cadastro-telefone">Telefone</a>
 																</c:if>
@@ -477,29 +471,32 @@
 
 	<!-- Notificações -->
 	<script>
-			 $(document).ready(function () {
-				<c:choose>
-					<c:when test="${erros != null}">
-					
-						<c:forEach var="erro" items="${erros}">
-						 	triggerNotification("top", "right", "fa fa-exclamation-triangle", "danger", "animated fadeInRight", "animated fadeOutRight", " ${erro}", '');
-						</c:forEach>
-						
-					</c:when>
-					<%-- Este é um comentário JSP, que não causa erro --%>
-					<c:when test="${param.acao eq 'salvar'}">
-					
-						 triggerNotification('top', 'center', 'fa fa-check', 'success', 'animated bounceIn', 'animated bounceOut', ' Registro salvo com sucesso!', '');
-						 
-					</c:when>
-					<c:when test="${param.acao eq 'atualizar'}">
-					
-					 	triggerNotification('top', 'center', 'fa fa-check', 'success', 'animated bounceIn', 'animated bounceOut', ' Registro atualizado com sucesso!', '');
-					 
-					</c:when>
-				</c:choose>
-			 });
-		</script>
+	    $(document).ready(function () {
+	        <c:if test="${erros != null}">
+	            <c:forEach var="erro" items="${erros}">
+	                triggerNotification("top", "right", "fa fa-exclamation-triangle", "danger", "animated fadeInRight", "animated fadeOutRight", " ${erro}", '');
+	            </c:forEach>
+	        </c:if>
+	
+	        <c:if test="${not empty sessionScope.Salvar}">
+	            triggerNotification('top', 'center', 'fa fa-check', 'success', 'animated bounceIn', 'animated bounceOut', ' Registro salvo com sucesso!', '');
+	        </c:if>
+	
+	        <c:if test="${not empty sessionScope.Atualizar}">
+	            triggerNotification('top', 'center', 'fa fa-check', 'success', 'animated bounceIn', 'animated bounceOut', ' Registro atualizado com sucesso!', '');
+	        </c:if>
+	    });
+	</script>
+
+	<%-- Remoção da variável da sessão fora do <script> para evitar problemas --%>
+	<!-- Remover Salvar da sessão após uso  com JSTL-->
+	<c:if test="${not empty sessionScope.Salvar}">
+		<c:remove var="Salvar" scope="session" />
+	</c:if>
+
+	<c:if test="${not empty sessionScope.Atualizar}">
+		<c:remove var="Atualizar" scope="session" />
+	</c:if>
 
 	<!-- Mascara para Cep -->
 	<script>
