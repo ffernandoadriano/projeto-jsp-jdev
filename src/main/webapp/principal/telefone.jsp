@@ -88,7 +88,7 @@
 															<div class="form-group row">
 																<label class="col-sm-1 col-form-label">Contato:</label>
 																<div class="col-sm-3">
-																	<input type="tel" name="contato" id="contato"
+																	<input type="tel" name="contato" id="contato" placeholder="(XX) XXXXX-XXXX" maxlength="15"
 																		class="form-control" required="required"
 																		value="${contato}" />
 																</div>
@@ -225,6 +225,36 @@
 	<c:if test="${not empty sessionScope.Atualizar}">
 		<c:remove var="Atualizar" scope="session" />
 	</c:if>
+	
+	<!-- Mascara para Telefone  -->
+	<script>
+	  document.getElementById('contato').addEventListener('input', function (e) {
+	    let valor = e.target.value;
+	
+	    // Remove tudo que não for número
+	    valor = valor.replace(/\D/g, '');
+	
+	    // Limita a no máximo 11 dígitos numéricos
+	    valor = valor.substring(0, 11);
+	
+	    // Se não tiver pelo menos 8 dígitos, não aplica a máscara
+	    if (valor.length < 8) {
+	      e.target.value = valor;
+	      return;
+	    }
+	
+	    // Aplica a máscara de acordo com o tamanho
+	    if (valor.length <= 10) {
+	      // Telefone fixo: (11) 2345-6789
+	      valor = valor.replace(/^(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+	    } else {
+	      // Celular: (11) 98765-4321
+	      valor = valor.replace(/^(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
+	    }
+	
+	    e.target.value = valor;
+	  });
+	</script>
 
 </body>
 
