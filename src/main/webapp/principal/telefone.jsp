@@ -226,35 +226,33 @@
 		<c:remove var="Atualizar" scope="session" />
 	</c:if>
 	
+	  <!-- Mascara telefone -->
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/inputmask/5.0.8/inputmask.min.js"></script>
+	
 	<!-- Mascara para Telefone  -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.9/jquery.inputmask.min.js"></script>
+	
 	<script>
-	  document.getElementById('contato').addEventListener('input', function (e) {
-	    let valor = e.target.value;
+	  const input = document.getElementById('contato');
 	
-	    // Remove tudo que não for número
-	    valor = valor.replace(/\D/g, '');
+	  const maskOptions = {
+	    mask: [
+	      { mask: '(99) 9999-9999' }, // Telefone fixo
+	      { mask: '(99) 99999-9999' } // Celular
+	    ],
+	    dispatch: function (appended, dynamicMasked) {
+	      const number = (dynamicMasked.value + appended).replace(/\D/g, '');
 	
-	    // Limita a no máximo 11 dígitos numéricos
-	    valor = valor.substring(0, 11);
-	
-	    // Se não tiver pelo menos 8 dígitos, não aplica a máscara
-	    if (valor.length < 8) {
-	      e.target.value = valor;
-	      return;
+	      return number.length > 10
+	        ? dynamicMasked.compiledMasks[1]
+	        : dynamicMasked.compiledMasks[0];
 	    }
+	  };
 	
-	    // Aplica a máscara de acordo com o tamanho
-	    if (valor.length <= 10) {
-	      // Telefone fixo: (11) 2345-6789
-	      valor = valor.replace(/^(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
-	    } else {
-	      // Celular: (11) 98765-4321
-	      valor = valor.replace(/^(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
-	    }
-	
-	    e.target.value = valor;
-	  });
+	  const mask = new Inputmask(maskOptions);
+	  mask.mask(input);
 	</script>
+
 
 </body>
 
