@@ -1,6 +1,7 @@
 package servlet;
 
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import dao.DaoException;
@@ -52,7 +53,7 @@ public class CadastrarUsuarioServlet extends HttpServlet {
 			if (action != null && (action.equalsIgnoreCase("edit") || action.equalsIgnoreCase("save"))) {
 				String userId = request.getParameter("userID");
 
-				Usuario usuario = usuarioDao.buscarPorIdSePertencerComEndereco(Long.parseLong(userId),
+				Usuario usuario = usuarioDao.buscarPorIdComEndereco(Long.parseLong(userId),
 						UsuarioLogadoSession.getUsuarioLogado(request).getId());
 
 				ImagemDao imagemDao = new ImagemDao();
@@ -87,6 +88,10 @@ public class CadastrarUsuarioServlet extends HttpServlet {
 		/* Usuario */
 		request.setAttribute("id", usuario.getId());
 		request.setAttribute("nome", usuario.getNome());
+		if (usuario.getDataNascimento() != null) {
+			request.setAttribute("dataNascimento",
+					usuario.getDataNascimento().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+		}
 		request.setAttribute("sexo", usuario.getSexo().getSigla());
 		request.setAttribute("email", usuario.getEmail());
 		request.setAttribute("perfil", usuario.getPerfil().getId());

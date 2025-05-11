@@ -124,6 +124,17 @@
 																</div>
 															</div>
 
+															<div class="form-group row">
+																<label class="col-sm-1 col-form-label">Data
+																	Nascimento:</label>
+																<div class="col-sm-2">
+																	<input type="text" name="dataNascimento"
+																		placeholder="dd/mm/aaaa" maxlength="10"
+																		id="dataNascimento" class="form-control"
+																		style="width: 140px;" required="required"
+																		value="${dataNascimento}" />
+																</div>
+															</div>
 
 
 
@@ -134,7 +145,7 @@
 																<label class="col-sm-1 col-form-label">Sexo:</label>
 
 
-																<div class="col-sm-1 col-form-label" id="radioSexo">
+																<div class="col-sm-1 col-form-label" id="sexoM">
 																	<div class="col-sm-8" id="radioSexo">
 																		<input class="form-check-input" type="radio"
 																			name="sexo" value="M" required="required"
@@ -144,8 +155,8 @@
 
 																</div>
 
-																<div class="col-sm-1 col-form-label" id="radioSexo"
-																	style="margin-left: 21px">
+																<div class="col-sm-1 col-form-label" id="sexoF"
+																	style="margin-left: 18px">
 																	<input class="form-check-input" type="radio"
 																		name="sexo" value="F" required="required"
 																		${sexo eq 'F' ? 'checked' : ''}> <label
@@ -231,8 +242,8 @@
 															<div class="form-group row">
 																<label class="col-sm-1 col-form-label">Perfil:</label>
 																<div class="col-sm-2">
-																	<select name="perfil" class="form-control" id="perfil"
-																		required="required">
+																	<select name="perfil" class="form-control"
+																		style="width: 153px;" id="perfil" required="required">
 																		<option value="0">Selecione o Perfil</option>
 																		<option value="1" ${perfil == 1 ? 'selected' : ''}>Admin</option>
 																		<option value="2" ${perfil == 2 ?  'selected' : ''}>Secretária</option>
@@ -577,6 +588,45 @@
 			   });
 			 });
 		</script>
+
+	<!-- DatePicker em Português (Jquery) -->
+	<script>
+	  $(function() {
+	    $("#dataNascimento").datepicker({
+	      dateFormat: 'dd/mm/yy',
+	      dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'],
+	      dayNamesMin: ['D','S','T','Q','Q','S','S'],
+	      dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'],
+	      monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
+	      monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'],
+	      nextText: 'Próximo',
+	      prevText: 'Anterior',
+	      changeMonth: true,
+	      changeYear: true
+	    });
+	  });
+	</script>
+
+	<!-- Mascara para Data de Nascimento -->
+	<script>
+	  const campoData = document.getElementById('dataNascimento');
+	
+	  campoData.addEventListener('input', function(e) {
+	    let valor = e.target.value.replace(/\D/g, ''); // Remove tudo que não for número
+	
+	    if (valor.length > 2) {
+	      valor = valor.slice(0, 2) + '/' + valor.slice(2);
+	    }
+	    if (valor.length > 5) {
+	      valor = valor.slice(0, 5) + '/' + valor.slice(5);
+	    }
+	    if (valor.length > 10) {
+	      valor = valor.slice(0, 10);
+	    }
+	
+	    e.target.value = valor;
+	  });
+	</script>
 </body>
 
 </html>

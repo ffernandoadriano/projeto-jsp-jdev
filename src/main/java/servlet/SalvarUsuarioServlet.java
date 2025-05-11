@@ -1,7 +1,9 @@
 package servlet;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -65,6 +67,7 @@ public class SalvarUsuarioServlet extends HttpServlet {
 		// null não pode ser passado diretamente para Long.valueOf()
 		Long id = (StringUtils.isEmpty(idParam)) ? null : Long.valueOf(idParam);
 		String nome = request.getParameter("nome").trim();
+		String dataNascimento = request.getParameter("dataNascimento").trim();
 		String sexo = request.getParameter("sexo").trim();
 		String email = request.getParameter("email").trim();
 		String perfil = request.getParameter("perfil").trim();
@@ -98,7 +101,7 @@ public class SalvarUsuarioServlet extends HttpServlet {
 		// na request (para permitir que o formulário
 		// exiba os campos preenchidos) e volta para a mesma tela.
 		if (existemErros()) {
-			definirValores(idParam, nome, sexo, email, perfil, login, senha);
+			definirValores(idParam, nome, dataNascimento, sexo, email, perfil, login, senha);
 			definirValoresEndereco(cep, rua, numero, bairro, cidade, estado, uf);
 
 			if (imagemPerfil != null) {
@@ -125,6 +128,7 @@ public class SalvarUsuarioServlet extends HttpServlet {
 		Usuario usuario = new Usuario();
 		usuario.setId(id);
 		usuario.setNome(nome);
+		usuario.setDataNascimento(LocalDate.parse(dataNascimento, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 		usuario.setSexo(Sexo.fromSigla(sexo));
 		usuario.setEmail(email);
 		usuario.setLogin(login);
@@ -164,10 +168,11 @@ public class SalvarUsuarioServlet extends HttpServlet {
 	 * 
 	 * @throws IOException
 	 */
-	private void definirValores(String id, String nome, String sexo, String email, String perfil, String login,
-			String senha) throws IOException {
+	private void definirValores(String id, String nome, String dataNascimento, String sexo, String email, String perfil,
+			String login, String senha) throws IOException {
 		request.setAttribute("id", id);
 		request.setAttribute("nome", nome);
+		request.setAttribute("dataNascimento", dataNascimento);
 		request.setAttribute("sexo", sexo);
 		request.setAttribute("email", email);
 		request.setAttribute("perfil", perfil);
@@ -247,7 +252,7 @@ public class SalvarUsuarioServlet extends HttpServlet {
 
 			// Verifica UPDATE de formulário
 			if (id != null) {
-				Usuario usuarioBanco = usuarioDao.buscarPorIdSePertencerComEndereco(id,
+				Usuario usuarioBanco = usuarioDao.buscarPorIdComEndereco(id,
 						UsuarioLogadoSession.getUsuarioLogado(request).getId());
 				String emailBanco = usuarioBanco.getEmail();
 
@@ -301,7 +306,7 @@ public class SalvarUsuarioServlet extends HttpServlet {
 
 			// Verifica UPDATE de formulário
 			if (id != null) {
-				Usuario usuarioBanco = usuarioDao.buscarPorIdSePertencerComEndereco(id,
+				Usuario usuarioBanco = usuarioDao.buscarPorIdComEndereco(id,
 						UsuarioLogadoSession.getUsuarioLogado(request).getId());
 				String loginBanco = usuarioBanco.getLogin();
 

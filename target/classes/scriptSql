@@ -81,3 +81,5 @@ CREATE TABLE telefone (
   CONSTRAINT fk_telefone_usuario FOREIGN KEY (usuario_id) REFERENCES usuario(id) ON DELETE CASCADE,
   CONSTRAINT fk_telefone_usuario_inclusao FOREIGN KEY (usuario_inclusao_id) REFERENCES usuario(id) ON DELETE CASCADE
 );
+
+ALTER TABLE usuario ADD COLUMN data_nascimento DATE;

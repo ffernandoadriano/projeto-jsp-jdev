@@ -55,6 +55,8 @@
 <!-- Animate.css -->
 <link rel="stylesheet" type="text/css"
 	href="<%=request.getContextPath()%>/assets/css/animate.css/css/animate.css">
+<!-- DatePicker -->
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 
 
 <style type="text/css">

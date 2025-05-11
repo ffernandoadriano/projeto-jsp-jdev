@@ -1,6 +1,7 @@
 package model;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Objects;
 
 import model.enums.Perfil;
@@ -12,6 +13,7 @@ public class Usuario implements Serializable {
 
 	private Long id;
 	private String nome;
+	private LocalDate dataNascimento;
 	private Sexo sexo;
 	private String email;
 	private String login;
@@ -42,6 +44,14 @@ public class Usuario implements Serializable {
 
 	public void setNome(String nome) {
 		this.nome = nome;
+	}
+
+	public LocalDate getDataNascimento() {
+		return dataNascimento;
+	}
+
+	public void setDataNascimento(LocalDate dataNascimento) {
+		this.dataNascimento = dataNascimento;
 	}
 
 	public Sexo getSexo() {
@@ -119,8 +129,9 @@ public class Usuario implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Usuario [id=" + id + ", nome=" + nome + ", sexo=" + sexo + ", email=" + email + ", login=" + login
-				+ ", perfil=" + perfil + ", senha=" + senha + ", admin=" + admin + ", endereco=" + endereco + "]";
+		return "Usuario [id=" + id + ", nome=" + nome + ", dataNascimento=" + dataNascimento + ", sexo=" + sexo
+				+ ", email=" + email + ", login=" + login + ", perfil=" + perfil + ", senha=" + senha + ", admin="
+				+ admin + ", endereco=" + endereco + "]";
 	}
 
 }
