@@ -89,7 +89,7 @@
 																<label class="col-sm-1 col-form-label">Contato:</label>
 																<div class="col-sm-3">
 																	<input type="tel" name="contato" id="contato" placeholder="(XX) XXXXX-XXXX" maxlength="15"
-																		class="form-control" required="required"
+																		class="form-control" required="required" style="width: 165px;"
 																		value="${contato}" />
 																</div>
 															</div>
