@@ -69,7 +69,7 @@ public class UsuarioDao {
 	 */
 	public void inserir(Usuario usuario, Long idUsuarioLogado) throws DaoException {
 
-		String insertSql = "INSERT INTO usuario (nome, email, login, senha, usuario_id, perfil_id, sexo, endereco_id, data_nascimento) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		String insertSql = "INSERT INTO usuario (nome, email, login, senha, usuario_id, perfil_id, sexo, endereco_id, data_nascimento, renda_mensal) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 		try {
 			enderecoDao.inserir(usuario.getEndereco());
@@ -84,6 +84,7 @@ public class UsuarioDao {
 				pstmt.setString(7, usuario.getSexo().getSigla());
 				pstmt.setLong(8, usuario.getEndereco().getId());
 				pstmt.setObject(9, usuario.getDataNascimento());
+				pstmt.setDouble(10, usuario.getRendaMensal());
 
 				// Executa a query
 				int linhas = pstmt.executeUpdate();
@@ -119,7 +120,7 @@ public class UsuarioDao {
 	 */
 	public Usuario buscarPorIdComEndereco(Long id, Long idUsuarioLogado) throws DaoException {
 
-		String sql = "SELECT id, nome, data_nascimento, email, login, senha, perfil_id, sexo, endereco_id FROM usuario WHERE id = ? AND admin is false AND usuario_id = ?";
+		String sql = "SELECT id, nome, data_nascimento, renda_mensal, email, login, senha, perfil_id, sexo, endereco_id FROM usuario WHERE id = ? AND admin is false AND usuario_id = ?";
 
 		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
 			pstmt.setLong(1, id);
@@ -133,6 +134,7 @@ public class UsuarioDao {
 					usuario.setId(rs.getLong("id"));
 					usuario.setNome(rs.getString("nome"));
 					usuario.setDataNascimento(rs.getObject("data_nascimento", LocalDate.class));
+					usuario.setRendaMensal(rs.getDouble("renda_mensal"));
 					usuario.setSexo(Sexo.fromSigla(rs.getString("sexo")));
 					usuario.setEmail(rs.getString("email"));
 					usuario.setLogin(rs.getString("login"));
@@ -170,7 +172,7 @@ public class UsuarioDao {
 	 */
 	public Usuario buscarPorIdComEndereco(Long id) throws DaoException {
 
-		String sql = "SELECT id, nome, data_nascimento, email, login, senha, admin, perfil_id, sexo, endereco_id FROM usuario WHERE id = ?";
+		String sql = "SELECT id, nome, data_nascimento, renda_mensal, email, login, senha, admin, perfil_id, sexo, endereco_id FROM usuario WHERE id = ?";
 
 		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
 			pstmt.setLong(1, id);
@@ -183,6 +185,7 @@ public class UsuarioDao {
 					usuario.setId(rs.getLong("id"));
 					usuario.setNome(rs.getString("nome"));
 					usuario.setDataNascimento(rs.getObject("data_nascimento", LocalDate.class));
+					usuario.setRendaMensal(rs.getDouble("renda_mensal"));
 					usuario.setEmail(rs.getString("email"));
 					usuario.setLogin(rs.getString("login"));
 					usuario.setSenha(rs.getString("senha"));
@@ -221,7 +224,7 @@ public class UsuarioDao {
 	 */
 	public Optional<Usuario> buscarPorLogin(String login) throws DaoException {
 
-		String sql = "SELECT id, nome, data_nascimento, email, login, senha, admin, perfil_id, sexo, endereco_id FROM usuario WHERE UPPER(login) = UPPER(?)";
+		String sql = "SELECT id, nome, data_nascimento, renda_mensal, email, login, senha, admin, perfil_id, sexo, endereco_id FROM usuario WHERE UPPER(login) = UPPER(?)";
 
 		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
 			pstmt.setString(1, login);
@@ -234,6 +237,7 @@ public class UsuarioDao {
 					usuario.setId(rs.getLong("id"));
 					usuario.setNome(rs.getString("nome"));
 					usuario.setDataNascimento(rs.getObject("data_nascimento", LocalDate.class));
+					usuario.setRendaMensal(rs.getDouble("renda_mensal"));
 					usuario.setEmail(rs.getString("email"));
 					usuario.setLogin(rs.getString("login"));
 					usuario.setSenha(rs.getString("senha"));
@@ -269,7 +273,7 @@ public class UsuarioDao {
 	 */
 	public Optional<Usuario> buscarPorLogin(String login, Long idUsuarioLogado) throws DaoException {
 
-		String sql = "SELECT id, nome, data_nascimento, email, login, senha, perfil_id, sexo FROM usuario WHERE UPPER(login) = UPPER(?) AND admin is false AND usuario_id = ?";
+		String sql = "SELECT id, nome, data_nascimento, renda_mensal, email, login, senha, perfil_id, sexo FROM usuario WHERE UPPER(login) = UPPER(?) AND admin is false AND usuario_id = ?";
 
 		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
 			pstmt.setString(1, login);
@@ -283,6 +287,7 @@ public class UsuarioDao {
 					usuario.setId(rs.getLong("id"));
 					usuario.setNome(rs.getString("nome"));
 					usuario.setDataNascimento(rs.getObject("data_nascimento", LocalDate.class));
+					usuario.setRendaMensal(rs.getDouble("renda_mensal"));
 					usuario.setEmail(rs.getString("email"));
 					usuario.setLogin(rs.getString("login"));
 					usuario.setSenha(rs.getString("senha"));
@@ -311,7 +316,7 @@ public class UsuarioDao {
 	 */
 	public List<Usuario> listarTodosPorNome(String nome, Long idUsuarioLogado, int offset) throws DaoException {
 
-		String sql = "SELECT id, nome, data_nascimento, email, login, senha, perfil_id, sexo FROM usuario WHERE UPPER(nome) LIKE CONCAT('%',UPPER(?),'%') AND admin is false AND usuario_id = ? ORDER BY id OFFSET ? LIMIT ?";
+		String sql = "SELECT id, nome, data_nascimento, renda_mensal, email, login, senha, perfil_id, sexo FROM usuario WHERE UPPER(nome) LIKE CONCAT('%',UPPER(?),'%') AND admin is false AND usuario_id = ? ORDER BY id OFFSET ? LIMIT ?";
 
 		List<Usuario> usuarios = new ArrayList<>();
 
@@ -329,6 +334,7 @@ public class UsuarioDao {
 					usuario.setId(rs.getLong("id"));
 					usuario.setNome(rs.getString("nome"));
 					usuario.setDataNascimento(rs.getObject("data_nascimento", LocalDate.class));
+					usuario.setRendaMensal(rs.getDouble("renda_mensal"));
 					usuario.setSexo(Sexo.fromSigla(rs.getString("sexo")));
 					usuario.setEmail(rs.getString("email"));
 					usuario.setLogin(rs.getString("login"));
@@ -354,7 +360,7 @@ public class UsuarioDao {
 	 */
 	public List<Usuario> listarPorUsuarioLogado(Long idUsuarioLogado, int offset) throws DaoException {
 
-		String sql = "SELECT id, nome, data_nascimento, email, login FROM usuario WHERE admin is false AND usuario_id = ? ORDER BY id OFFSET ? LIMIT ?";
+		String sql = "SELECT id, nome, data_nascimento, renda_mensal, email, login FROM usuario WHERE admin is false AND usuario_id = ? ORDER BY id OFFSET ? LIMIT ?";
 
 		List<Usuario> usuarios = new ArrayList<>();
 
@@ -371,6 +377,7 @@ public class UsuarioDao {
 					usuario.setId(rs.getLong("id"));
 					usuario.setNome(rs.getString("nome"));
 					usuario.setDataNascimento(rs.getObject("data_nascimento", LocalDate.class));
+					usuario.setRendaMensal(rs.getDouble("renda_mensal"));
 					usuario.setEmail(rs.getString("email"));
 					usuario.setLogin(rs.getString("login"));
 
@@ -442,7 +449,7 @@ public class UsuarioDao {
 	 */
 	public void atualizarComEndereco(Usuario usuario) throws DaoException {
 
-		String sql = "UPDATE usuario SET nome = ?, email = ?, login = ?, senha = ?, perfil_id = ?, sexo = ?, data_nascimento = ? WHERE id = ?";
+		String sql = "UPDATE usuario SET nome = ?, email = ?, login = ?, senha = ?, perfil_id = ?, sexo = ?, data_nascimento = ?, renda_mensal = ? WHERE id = ?";
 
 		try {
 			// Atualiza o endereço
@@ -457,7 +464,8 @@ public class UsuarioDao {
 				pstmt.setInt(5, usuario.getPerfil().getId());
 				pstmt.setString(6, usuario.getSexo().getSigla());
 				pstmt.setObject(7, usuario.getDataNascimento());
-				pstmt.setLong(8, usuario.getId());
+				pstmt.setDouble(8, usuario.getRendaMensal());
+				pstmt.setLong(9, usuario.getId());
 
 				// Executa a query
 				pstmt.executeUpdate();
@@ -492,6 +500,7 @@ public class UsuarioDao {
 			connection.commit();
 
 		} catch (SQLException e) {
+			rollback();
 			throw new DaoException("Erro ao remover um registro " + e.getMessage(), e);
 		}
 	}

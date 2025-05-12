@@ -18,6 +18,7 @@ public class Usuario implements Serializable {
 	private String email;
 	private String login;
 	private Perfil perfil;
+	private Double rendaMensal;
 	private String senha;
 	private boolean admin;
 	private Endereco endereco;
@@ -86,6 +87,14 @@ public class Usuario implements Serializable {
 		this.perfil = perfil;
 	}
 
+	public Double getRendaMensal() {
+		return rendaMensal;
+	}
+
+	public void setRendaMensal(Double rendaMensal) {
+		this.rendaMensal = rendaMensal;
+	}
+
 	public String getSenha() {
 		return senha;
 	}
@@ -130,8 +139,8 @@ public class Usuario implements Serializable {
 	@Override
 	public String toString() {
 		return "Usuario [id=" + id + ", nome=" + nome + ", dataNascimento=" + dataNascimento + ", sexo=" + sexo
-				+ ", email=" + email + ", login=" + login + ", perfil=" + perfil + ", senha=" + senha + ", admin="
-				+ admin + ", endereco=" + endereco + "]";
+				+ ", email=" + email + ", login=" + login + ", perfil=" + perfil + ", rendaMensal=" + rendaMensal
+				+ ", senha=" + senha + ", admin=" + admin + ", endereco=" + endereco + "]";
 	}
 
 }

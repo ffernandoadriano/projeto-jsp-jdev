@@ -126,6 +126,12 @@
 		  // Seleciona o perfil para 0 "padrão"
 		  document.getElementById("perfil").selectedIndex = 0;
 
+		  // Limpar o campo de renda formatado com Cleave.js
+		  valorBruto = "0";
+		  if (typeof cleave !== 'undefined') {
+		      cleave.setRawValue('0,00'); // zera o valor e aplica a formatação corretamente
+		  }
+		  
 		  // esconde o botão telefone, se ele existir
 		  const telefoneBtn = document.getElementById("btn-form-cadastro-telefone");
 		  	if (telefoneBtn) {

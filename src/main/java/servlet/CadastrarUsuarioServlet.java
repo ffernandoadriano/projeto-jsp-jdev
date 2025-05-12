@@ -1,8 +1,10 @@
 package servlet;
 
 import java.io.IOException;
+import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 
 import dao.DaoException;
 import dao.ImagemDao;
@@ -95,6 +97,7 @@ public class CadastrarUsuarioServlet extends HttpServlet {
 		request.setAttribute("sexo", usuario.getSexo().getSigla());
 		request.setAttribute("email", usuario.getEmail());
 		request.setAttribute("perfil", usuario.getPerfil().getId());
+		request.setAttribute("rendaMensal", formatarParaMoeda(usuario.getRendaMensal()));
 		request.setAttribute("login", usuario.getLogin());
 		request.setAttribute("senha", usuario.getSenha());
 
@@ -109,5 +112,11 @@ public class CadastrarUsuarioServlet extends HttpServlet {
 			request.setAttribute("estado", usuario.getEndereco().getEstado());
 			request.setAttribute("uf", usuario.getEndereco().getUf());
 		}
+	}
+
+	public String formatarParaMoeda(double valor) {
+		Locale brasil = Locale.of("pt", "BR");
+		NumberFormat formatador = NumberFormat.getCurrencyInstance(brasil);
+		return formatador.format(valor);
 	}
 }

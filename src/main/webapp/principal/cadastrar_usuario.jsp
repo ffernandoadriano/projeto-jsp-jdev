@@ -137,9 +137,7 @@
 															</div>
 
 
-
 															<!-- Radio sexo inicio -->
-
 
 															<div class="form-group row">
 																<label class="col-sm-1 col-form-label">Sexo:</label>
@@ -251,6 +249,17 @@
 																	</select>
 																</div>
 															</div>
+
+															<div class="form-group row">
+																<label class="col-sm-1 col-form-label">Renda
+																	Mensal:</label>
+																<div class="col-sm-2">
+																	<input type="text" name="rendaMensal" id="rendaMensal"
+																		placeholder="R$ 0,00" maxlength="20"  class="form-control"
+																		required="required" value="${rendaMensal}" />
+																</div>
+															</div>
+
 															<div class="form-group row">
 																<label class="col-sm-1 col-form-label">login:</label>
 																<div class="col-sm-8">
@@ -627,6 +636,57 @@
 	    e.target.value = valor;
 	  });
 	</script>
+
+	<!-- Máscara Monetária (Cleave.js) -->
+	<!-- Cleave.js é uma biblioteca que formata campos de texto em tempo real (números, datas, moeda etc.). -->
+	<script
+		src="https://cdn.jsdelivr.net/npm/cleave.js@1.6.0/dist/cleave.min.js"></script>
+
+	<script>
+		// Inicia com 0
+	    let valorBruto = "0"; // Armazena somente os dígitos que o usuário digitou
+	
+	    const input = document.getElementById('rendaMensal');
+	    const cleave = new Cleave(input, {
+	      numeral: true, //  ativa formatação numérica
+	      numeralThousandsGroupStyle: 'thousand', // garante que os milhares sejam agrupados
+	      delimiter: '.', //  separador de milhar brasileiro
+	      numeralDecimalMark: ',', // vírgula como separador decimal (pt-BR)
+	      numeralDecimalScale: 2, // Casas decimais
+	      prefix: 'R$ ', // adiciona "R$ " antes do número
+	      rawValueTrimPrefix: true // permite pegar o valor sem o R$ depois, se quiser
+	    });
+
+		 // Define o valor inicial como R$ 0,00
+	    cleave.setRawValue('0,00');
+	
+	    input.addEventListener('input', function (e) {
+	      const digitado = e.data; // é o último caractere digitado
+
+	  	 // Se for um backspace → apaga o último caractere de valorBruto
+	      if (e.inputType === 'deleteContentBackward') {
+	        valorBruto = valorBruto.slice(0, -1);
+
+	        // Se for um número → adiciona ao valorBruto
+	      } else if (/\d/.test(digitado)) {
+	        valorBruto += digitado;
+	      }
+
+	  	  // divide valorBruto por 100 para transformar em reais
+	  	  // Ex: "123" → 1.23 → R$ 1,23
+	      const valorFormatado = (parseInt(valorBruto || "0", 10) / 100).toFixed(2);
+	      // atualiza o valor exibido com a formatação correta
+	      cleave.setRawValue(valorFormatado.replace('.', ','));
+	    });
+
+		 // Garante que o usuário só possa digitar números e comandos de navegação (como setas e backspace).
+	    input.addEventListener('keydown', function (e) {
+	      const permitidos = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight'];
+	      if (!/\d/.test(e.key) && !permitidos.includes(e.key)) {
+	        e.preventDefault();
+	      }
+	    });
+	  </script>
 </body>
 
 </html>

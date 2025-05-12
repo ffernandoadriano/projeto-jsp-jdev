@@ -83,3 +83,5 @@ CREATE TABLE telefone (
 );
 
 ALTER TABLE usuario ADD COLUMN data_nascimento DATE;
+
+ALTER TABLE usuario ADD COLUMN renda_mensal NUMERIC(10,2);

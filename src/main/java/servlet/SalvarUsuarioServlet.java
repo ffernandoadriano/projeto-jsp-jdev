@@ -71,6 +71,7 @@ public class SalvarUsuarioServlet extends HttpServlet {
 		String sexo = request.getParameter("sexo").trim();
 		String email = request.getParameter("email").trim();
 		String perfil = request.getParameter("perfil").trim();
+		String rendaMensal = request.getParameter("rendaMensal").trim();
 		String login = request.getParameter("login").trim();
 		String senha = request.getParameter("senha").trim();
 
@@ -101,7 +102,7 @@ public class SalvarUsuarioServlet extends HttpServlet {
 		// na request (para permitir que o formulário
 		// exiba os campos preenchidos) e volta para a mesma tela.
 		if (existemErros()) {
-			definirValores(idParam, nome, dataNascimento, sexo, email, perfil, login, senha);
+			definirValores(idParam, nome, dataNascimento, sexo, email, perfil, rendaMensal, login, senha);
 			definirValoresEndereco(cep, rua, numero, bairro, cidade, estado, uf);
 
 			if (imagemPerfil != null) {
@@ -125,12 +126,19 @@ public class SalvarUsuarioServlet extends HttpServlet {
 		endereco.setEstado(estado);
 		endereco.setUf(uf);
 
+		/*
+		 * Remove "R$" e espaços, substitui ponto por vazio (milhar) e vírgula por ponto
+		 * (decimal)
+		 */
+		rendaMensal = rendaMensal.replace("R$", "").replace(" ", "").replace(".", "").replace(",", ".");
+
 		Usuario usuario = new Usuario();
 		usuario.setId(id);
 		usuario.setNome(nome);
 		usuario.setDataNascimento(LocalDate.parse(dataNascimento, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 		usuario.setSexo(Sexo.fromSigla(sexo));
 		usuario.setEmail(email);
+		usuario.setRendaMensal(Double.parseDouble(rendaMensal));
 		usuario.setLogin(login);
 		usuario.setSenha(senha);
 		usuario.setPerfil(Perfil.fromId(Integer.valueOf(perfil)));
@@ -169,13 +177,14 @@ public class SalvarUsuarioServlet extends HttpServlet {
 	 * @throws IOException
 	 */
 	private void definirValores(String id, String nome, String dataNascimento, String sexo, String email, String perfil,
-			String login, String senha) throws IOException {
+			String rendaMensal, String login, String senha) throws IOException {
 		request.setAttribute("id", id);
 		request.setAttribute("nome", nome);
 		request.setAttribute("dataNascimento", dataNascimento);
 		request.setAttribute("sexo", sexo);
 		request.setAttribute("email", email);
 		request.setAttribute("perfil", perfil);
+		request.setAttribute("rendaMensal", rendaMensal);
 		request.setAttribute("login", login);
 		request.setAttribute("senha", senha);
 	}
