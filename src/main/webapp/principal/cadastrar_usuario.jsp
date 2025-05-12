@@ -658,7 +658,9 @@
 	    });
 
 		 // Define o valor inicial como R$ 0,00
-	    cleave.setRawValue('0,00');
+		<c:if test="${empty rendaMensal}">
+	    	cleave.setRawValue('0,00');
+	    </c:if>
 	
 	    input.addEventListener('input', function (e) {
 	      const digitado = e.data; // é o último caractere digitado
