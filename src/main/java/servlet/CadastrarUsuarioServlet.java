@@ -2,6 +2,7 @@ package servlet;
 
 import java.io.IOException;
 import java.text.NumberFormat;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
@@ -91,8 +92,7 @@ public class CadastrarUsuarioServlet extends HttpServlet {
 		request.setAttribute("id", usuario.getId());
 		request.setAttribute("nome", usuario.getNome());
 		if (usuario.getDataNascimento() != null) {
-			request.setAttribute("dataNascimento",
-					usuario.getDataNascimento().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+			request.setAttribute("dataNascimento", formatarData(usuario.getDataNascimento()));
 		}
 		request.setAttribute("sexo", usuario.getSexo().getSigla());
 		request.setAttribute("email", usuario.getEmail());
@@ -114,9 +114,13 @@ public class CadastrarUsuarioServlet extends HttpServlet {
 		}
 	}
 
-	public String formatarParaMoeda(double valor) {
+	private String formatarParaMoeda(double valor) {
 		Locale brasil = Locale.of("pt", "BR");
 		NumberFormat formatador = NumberFormat.getCurrencyInstance(brasil);
 		return formatador.format(valor);
+	}
+
+	private String formatarData(LocalDate data) {
+		return DateTimeFormatter.ofPattern("dd/MM/yyyy").format(data);
 	}
 }
