@@ -103,7 +103,7 @@ public class TelefoneDao {
 		String sql = "SELECT id, numero, usuario_id, usuario_inclusao_id, tipo_contato, info_adicional FROM telefone WHERE id=?";
 
 		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-			 pstmt.setLong(1, id);
+			pstmt.setLong(1, id);
 
 			try (ResultSet rs = pstmt.executeQuery()) {
 
@@ -168,5 +168,40 @@ public class TelefoneDao {
 		}
 
 		return telefones;
+	}
+
+	/**
+	 * Verifica se existe um contato com o número de telefone informado para um
+	 * determinado usuário.
+	 *
+	 * <p>
+	 * Este método executa uma consulta otimizada (leve e rápida), buscando apenas a
+	 * existência do registro sem carregar os dados completos.
+	 * </p>
+	 *
+	 * @param numero    o número de telefone a ser verificado (formato exato como
+	 *                  está armazenado no banco)
+	 * @param usuarioId o ID do usuário ao qual o telefone deve estar associado
+	 * @return {@code true} se existir ao menos um telefone correspondente ao número
+	 *         e usuário fornecidos, {@code false} caso contrário
+	 * @throws DaoException se ocorrer um erro ao acessar o banco de dados
+	 */
+	public boolean existeContato(String numero, Long usuarioId) throws DaoException {
+
+		// Mais leve e rápido ⚡ Só quer saber se existe ou não
+		String sql = "SELECT 1 FROM telefone WHERE usuario_id = ? AND numero = ?";
+
+		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+			pstmt.setLong(1, usuarioId);
+			pstmt.setString(2, numero);
+
+			try (ResultSet rs = pstmt.executeQuery()) {
+
+				return rs.next(); // true se encontrou, false se não
+
+			}
+		} catch (SQLException e) {
+			throw new DaoException(e);
+		}
 	}
 }

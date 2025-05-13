@@ -48,7 +48,7 @@ public class SalvarTelefoneServlet extends HttpServlet {
 		String contato = request.getParameter("contato").trim();
 		String info = request.getParameter("info").trim();
 
-		validarContato(contato);
+		validarContato(contato, Long.valueOf(idUser), idTel);
 		validarTipoContato(tipo);
 		validarInfo(info);
 
@@ -57,6 +57,8 @@ public class SalvarTelefoneServlet extends HttpServlet {
 		// exiba os campos preenchidos) e volta para a mesma tela.
 		if (existemErros()) {
 			definirValores(idUser, nome, tipo, contato, info);
+
+			request.setAttribute("telefones", getTelefones(idUser));
 			request.getRequestDispatcher("/principal/telefone.jsp").forward(request, response);
 			return;
 		}
@@ -111,14 +113,40 @@ public class SalvarTelefoneServlet extends HttpServlet {
 	 * Valida o contato
 	 * 
 	 * @param contato
+	 * @throws ServletException
 	 */
-	private void validarContato(String contato) {
+	private void validarContato(String contato, Long idUser, String idTel) throws ServletException {
 		if (StringUtils.isEmpty(contato)) {
 			adicionarErro("O contato é obrigatório");
 		}
 
 		if (contato.length() > 30) {
 			adicionarErro("O nome digitado é muito grande");
+		}
+
+		try {
+			boolean contatoEmUso = false;
+
+			// Verifica UPDATE de formulário
+			if (idTel != null) {
+
+				Telefone telefone = telefoneDao.buscarPorId(Long.valueOf(idTel));
+				String contatoBanco = telefone.getNumero();
+
+				if (!contato.equals(contatoBanco)) {
+					contatoEmUso = telefoneDao.existeContato(contato, idUser);
+				}
+
+				// Verifica INSERT formulários
+			} else {
+				contatoEmUso = telefoneDao.existeContato(contato, idUser);
+			}
+
+			if (contatoEmUso) {
+				adicionarErro("O contato informado já está cadastrado. Por favor, utilize outro.");
+			}
+		} catch (DaoException e) {
+			throw new ServletException(e);
 		}
 	}
 
@@ -162,6 +190,14 @@ public class SalvarTelefoneServlet extends HttpServlet {
 			return false;
 		}
 		return true;
+	}
+
+	private List<Telefone> getTelefones(String idUser) throws ServletException {
+		try {
+			return telefoneDao.listarTodosPorUsuarioId(Long.valueOf(idUser));
+		} catch (NumberFormatException | DaoException e) {
+			throw new ServletException(e);
+		}
 	}
 
 }
