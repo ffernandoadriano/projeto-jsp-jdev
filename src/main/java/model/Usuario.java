@@ -2,6 +2,8 @@ package model;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import model.enums.Perfil;
@@ -22,9 +24,10 @@ public class Usuario implements Serializable {
 	private String senha;
 	private boolean admin;
 	private Endereco endereco;
+	private List<Telefone> telefones;
 
 	public Usuario() {
-
+		telefones = new ArrayList<>();
 	}
 
 	public Usuario(Long id) {
@@ -119,6 +122,18 @@ public class Usuario implements Serializable {
 		this.endereco = endereco;
 	}
 
+	public List<Telefone> getTelefones() {
+		return telefones;
+	}
+
+	public void setTelefones(List<Telefone> telefones) {
+		this.telefones = telefones;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);
@@ -140,7 +155,7 @@ public class Usuario implements Serializable {
 	public String toString() {
 		return "Usuario [id=" + id + ", nome=" + nome + ", dataNascimento=" + dataNascimento + ", sexo=" + sexo
 				+ ", email=" + email + ", login=" + login + ", perfil=" + perfil + ", rendaMensal=" + rendaMensal
-				+ ", senha=" + senha + ", admin=" + admin + ", endereco=" + endereco + "]";
+				+ ", senha=" + senha + ", admin=" + admin + ", endereco=" + endereco + ", telefones=" + telefones + "]";
 	}
 
 }

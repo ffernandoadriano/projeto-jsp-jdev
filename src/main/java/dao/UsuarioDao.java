@@ -12,6 +12,7 @@ import java.util.Optional;
 
 import connection.ConnectionFactory;
 import model.Endereco;
+import model.Telefone;
 import model.Usuario;
 import model.enums.Perfil;
 import model.enums.Sexo;
@@ -25,6 +26,8 @@ public class UsuarioDao {
 
 	private EnderecoDao enderecoDao;
 
+	private TelefoneDao telefoneDao;
+
 	/**
 	 * Construtor que inicializa a conexão com o banco de dados.
 	 */
@@ -32,6 +35,7 @@ public class UsuarioDao {
 		this.connection = ConnectionFactory.getConnection();
 		// a conexão precisa ser a mesma para o rollback funcionar
 		this.enderecoDao = new EnderecoDao(connection);
+		this.telefoneDao = new TelefoneDao();
 	}
 
 	/**
@@ -392,16 +396,18 @@ public class UsuarioDao {
 	}
 
 	/**
-	 * Recupera a lista de usuários cadastrados por um determinado usuário logado.
+	 * Lista todos os usuários não administradores associados ao usuário logado
+	 * informado.
 	 * <p>
-	 * Este método consulta a tabela {@code usuario} e retorna apenas os registros
-	 * que não são administradores (campo {@code admin} é {@code false}) e que
-	 * possuem o campo {@code usuario_id} igual ao ID do usuário logado informado.
-	 * Os resultados são ordenados pelo campo {@code id}.
+	 * A consulta retorna usuários cujo campo {@code admin} é {@code false} e que
+	 * possuem o {@code usuario_id} igual ao ID do usuário logado fornecido. Os
+	 * dados retornados incluem informações básicas do usuário e seus telefones
+	 * associados.
 	 * </p>
 	 *
-	 * @param idUsuarioLogado o ID do usuário logado, usado como filtro na consulta
-	 * @return uma lista de objetos {@link Usuario} correspondentes ao critério
+	 * @param idUsuarioLogado o ID do usuário logado (usado para filtrar os usuários
+	 *                        associados)
+	 * @return uma lista de {@link Usuario} contendo os usuários encontrados
 	 * @throws DaoException se ocorrer um erro ao acessar o banco de dados
 	 */
 	public List<Usuario> listarPorUsuarioLogado(Long idUsuarioLogado) throws DaoException {
@@ -424,6 +430,9 @@ public class UsuarioDao {
 					usuario.setRendaMensal(rs.getDouble("renda_mensal"));
 					usuario.setEmail(rs.getString("email"));
 					usuario.setLogin(rs.getString("login"));
+
+					List<Telefone> telefones = telefoneDao.listarTodosPorUsuarioId(usuario.getId());
+					usuario.setTelefones(telefones);
 
 					usuarios.add(usuario);
 				}

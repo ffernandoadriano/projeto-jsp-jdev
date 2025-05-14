@@ -97,7 +97,10 @@
 																					<tr>
 																						<td>${usuario.id}</td>
 																						<td>${usuario.nome}</td>
-																						<td>${telefone.numero}</td>
+																						<td><c:forEach items="${usuario.telefones}"
+																								var="telefone">
+                                                												${telefone.numero} - ${telefone.tipoContato.descricao}  <br>
+																							</c:forEach></td>
 																					</tr>
 
 																				</c:forEach>
