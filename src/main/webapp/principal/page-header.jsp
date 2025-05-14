@@ -22,12 +22,17 @@
 						<c:when test="${caminho  eq '/principal/cadastrar_usuario.jsp' }">
 							<h5 class="m-b-10">Cadastrar Usuário</h5>
 							<p class="m-b-0">Formulário / Lista de Usuários</p>
-							<c:set var="id" value="Cadastros" />
+							<c:set var="id" value="cadastros" />
 						</c:when>
 						<c:when test="${caminho  eq '/principal/telefone.jsp' }">
 							<h5 class="m-b-10">Telefone</h5>
 							<p class="m-b-0">Formulário / Lista de Contato</p>
-							<c:set var="id" value="Cadastros" />
+							<c:set var="id" value="cadastros" />
+						</c:when>
+						<c:when test="${caminho  eq '/principal/relatorio_usuario.jsp' }">
+							<h5 class="m-b-10">Relatório de Usuário</h5>
+							<p class="m-b-0">Filtrar</p>
+							<c:set var="id" value="usuarios" />
 						</c:when>
 						<c:otherwise>
 							<h5 class="m-b-10">Dashboard</h5>
@@ -58,6 +63,10 @@
 
 						<c:when test="${caminho eq '/principal/telefone.jsp'}">
 							<li class="breadcrumb-item" aria-current="page"><a href="#!">Cadastros</a></li>
+						</c:when>
+						
+						<c:when test="${caminho eq '/principal/relatorio_usuario.jsp'}">
+							<li class="breadcrumb-item" aria-current="page"><a href="#!">Usuários</a></li>
 						</c:when>
 
 						<c:otherwise>
