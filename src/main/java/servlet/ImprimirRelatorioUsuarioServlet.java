@@ -40,8 +40,6 @@ public class ImprimirRelatorioUsuarioServlet extends HttpServlet {
 		String dataInicial = request.getParameter("dataInicial");
 		String dataFinal = request.getParameter("dataFinal");
 
-		validarDataInicial(dataInicial);
-		validarDataFinal(dataFinal);
 		validarPeriodo(dataInicial, dataFinal);
 
 		if (existemErros()) {
@@ -55,21 +53,10 @@ public class ImprimirRelatorioUsuarioServlet extends HttpServlet {
 		String dataInicialEncoded = URLEncoder.encode(dataInicial, StandardCharsets.UTF_8);
 		String dataFinalEncoded = URLEncoder.encode(dataFinal, StandardCharsets.UTF_8);
 
-		response.sendRedirect(request.getContextPath() + String
-				.format("/RelatorioUsuarioServlet?dataInicial=%s&dataFinal=%s", dataInicialEncoded, dataFinalEncoded));
+		response.sendRedirect(request.getContextPath()
+				+ String.format("/RelatorioUsuarioServlet?dataInicial=%s&dataFinal=%s&action=print", dataInicialEncoded,
+						dataFinalEncoded));
 
-	}
-
-	private void validarDataInicial(String dataInicial) {
-		if (StringUtils.isEmpty(dataInicial)) {
-			adicionarErro("O Período incial é obrigatório.");
-		}
-	}
-
-	private void validarDataFinal(String dataFinal) {
-		if (StringUtils.isEmpty(dataFinal)) {
-			adicionarErro("O Período final é obrigatório.");
-		}
 	}
 
 	private void validarPeriodo(String dataInicial, String dataFinal) {

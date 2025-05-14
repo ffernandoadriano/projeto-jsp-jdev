@@ -46,17 +46,16 @@
 													<!-- Formulario inicio -->
 													<div class="card-block">
 														<h4 class="sub-title">Filtrar</h4>
-														<form class="was-validated"
+														<form
 															action="${pageContext.request.contextPath}/ImprimirRelatorioUsuarioServlet"
 															method="post" id="relatorioUsuarioForm" novalidate>
 
 															<div class="form-row align-items-end">
 																<div class="form-group col-12 col-sm-4">
 																	<label for="dataInicial">Período:</label> <input
-																		type="text" class="form-control is-invalid"
-																		id="dataInicial" name="dataInicial"
-																		value="${dataInicial}" placeholder="dd/MM/aaaa"
-																		autocomplete="off" required>
+																		type="text" class="form-control" id="dataInicial"
+																		name="dataInicial" value="${dataInicial}"
+																		placeholder="dd/MM/aaaa" autocomplete="off" required>
 																</div>
 
 																<div class="form-group col-12 col-sm-4">
@@ -75,10 +74,50 @@
 													</div>
 													<!-- Formulario Fim -->
 												</div>
-
 												<!-- Basic Form Inputs card end -->
 
+												<c:if test="${not empty usuarios}">
+													<!-- linha de Contatos Inicio -->
+													<div class="row">
+														<div class="col-lg-12">
+															<div class="card">
+																<div class="card-block table-border-style">
+																	<h4 class="sub-title">Lista de usuários</h4>
+																	<div class="table-responsive">
+																		<table class="table table-hover">
+																			<thead>
+																				<tr>
+																					<th>ID</th>
+																					<th>Nome</th>
+																					<th>Contato</th>
+																				</tr>
+																			</thead>
+																			<tbody>
+																				<c:forEach items="${usuarios}" var="usuario">
+																					<tr>
+																						<td>${usuario.id}</td>
+																						<td>${usuario.nome}</td>
+																						<td>${telefone.numero}</td>
+																					</tr>
+
+																				</c:forEach>
+
+																			</tbody>
+																		</table>
+																	</div>
+
+																</div>
+
+															</div>
+														</div>
+													</div>
+
+													<!-- linha de Contatos Inicio -->
+
+												</c:if>
 											</div>
+
+
 
 										</div>
 									</div>

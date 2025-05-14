@@ -392,6 +392,50 @@ public class UsuarioDao {
 	}
 
 	/**
+	 * Recupera a lista de usuários cadastrados por um determinado usuário logado.
+	 * <p>
+	 * Este método consulta a tabela {@code usuario} e retorna apenas os registros
+	 * que não são administradores (campo {@code admin} é {@code false}) e que
+	 * possuem o campo {@code usuario_id} igual ao ID do usuário logado informado.
+	 * Os resultados são ordenados pelo campo {@code id}.
+	 * </p>
+	 *
+	 * @param idUsuarioLogado o ID do usuário logado, usado como filtro na consulta
+	 * @return uma lista de objetos {@link Usuario} correspondentes ao critério
+	 * @throws DaoException se ocorrer um erro ao acessar o banco de dados
+	 */
+	public List<Usuario> listarPorUsuarioLogado(Long idUsuarioLogado) throws DaoException {
+
+		String sql = "SELECT id, nome, data_nascimento, renda_mensal, email, login FROM usuario WHERE admin is false AND usuario_id = ? ORDER BY id";
+
+		List<Usuario> usuarios = new ArrayList<>();
+
+		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+			pstmt.setLong(1, idUsuarioLogado);
+
+			try (ResultSet rs = pstmt.executeQuery()) {
+
+				while (rs.next()) {
+					Usuario usuario = new Usuario();
+
+					usuario.setId(rs.getLong("id"));
+					usuario.setNome(rs.getString("nome"));
+					usuario.setDataNascimento(rs.getObject("data_nascimento", LocalDate.class));
+					usuario.setRendaMensal(rs.getDouble("renda_mensal"));
+					usuario.setEmail(rs.getString("email"));
+					usuario.setLogin(rs.getString("login"));
+
+					usuarios.add(usuario);
+				}
+			}
+		} catch (SQLException e) {
+			throw new DaoException(e);
+		}
+
+		return usuarios;
+	}
+
+	/**
 	 * Verifica se existe um usuário com o email informado.
 	 *
 	 * @param email o email a verificar
