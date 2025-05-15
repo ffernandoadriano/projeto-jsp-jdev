@@ -46,6 +46,18 @@ public class RelatorioUsuarioServlet extends HttpServlet {
 			} catch (DaoException e) {
 				throw new ServletException(e);
 			}
+		} else if ((!StringUtils.isEmpty(dataInicial) && !StringUtils.isEmpty(dataFinal)) && action != null
+				&& action.equalsIgnoreCase("print")) {
+			UsuarioDao usuarioDao = new UsuarioDao();
+
+			try {
+				List<Usuario> usuarios = usuarioDao.listarPorUsuarioLogado(
+						UsuarioLogadoSession.getUsuarioLogado(request).getId(), dataInicial, dataFinal);
+				request.setAttribute("usuarios", usuarios);
+			} catch (DaoException e) {
+				throw new ServletException(e);
+			}
+
 		}
 
 		definirValores(request, dataInicial, dataFinal);

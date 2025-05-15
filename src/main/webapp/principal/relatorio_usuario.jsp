@@ -52,7 +52,7 @@
 
 															<div class="form-row align-items-end">
 																<div class="form-group col-12 col-sm-4">
-																	<label for="dataInicial">Período:</label> <input
+																	<label for="dataInicial">Data de Nascimento Período:</label> <input
 																		type="text" class="form-control" id="dataInicial"
 																		name="dataInicial" value="${dataInicial}"
 																		placeholder="dd/MM/aaaa" autocomplete="off" required>

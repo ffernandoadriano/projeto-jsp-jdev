@@ -6,8 +6,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import connection.ConnectionFactory;
@@ -430,7 +433,55 @@ public class UsuarioDao {
 					usuario.setRendaMensal(rs.getDouble("renda_mensal"));
 					usuario.setEmail(rs.getString("email"));
 					usuario.setLogin(rs.getString("login"));
+					// CUIDADO: N+1
+					// Melhorar essa query futuramente
+					List<Telefone> telefones = telefoneDao.listarTodosPorUsuarioId(usuario.getId());
+					usuario.setTelefones(telefones);
 
+					usuarios.add(usuario);
+				}
+			}
+		} catch (SQLException e) {
+			throw new DaoException(e);
+		}
+
+		return usuarios;
+	}
+
+	public List<Usuario> listarPorUsuarioLogado(Long idUsuarioLogado, String dataNascInicial, String dataNascFinal)
+			throws DaoException {
+
+		String sql = "SELECT id, nome, data_nascimento, renda_mensal, email, login FROM usuario WHERE admin is false AND usuario_id = ? AND data_nascimento BETWEEN ? AND ? ORDER BY id";
+
+		List<Usuario> usuarios = new ArrayList<>();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+		LocalDate dataInicio = LocalDate.parse(dataNascInicial, formatter);
+		LocalDate dataFinal = LocalDate.parse(dataNascFinal, formatter);
+
+		if (dataInicio.isAfter(dataFinal)) {
+			throw new DaoException("Data inicial não pode ser posterior à data final.");
+		}
+
+		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+			pstmt.setLong(1, idUsuarioLogado);
+			pstmt.setObject(2, dataInicio);
+			pstmt.setObject(3, dataFinal);
+
+			try (ResultSet rs = pstmt.executeQuery()) {
+
+				while (rs.next()) {
+					Usuario usuario = new Usuario();
+					long id = rs.getLong("id");
+
+					usuario.setId(id);
+					usuario.setNome(rs.getString("nome"));
+					usuario.setDataNascimento(rs.getObject("data_nascimento", LocalDate.class));
+					usuario.setRendaMensal(rs.getDouble("renda_mensal"));
+					usuario.setEmail(rs.getString("email"));
+					usuario.setLogin(rs.getString("login"));
+					// CUIDADO: N+1
+					// Melhorar essa query futuramente
 					List<Telefone> telefones = telefoneDao.listarTodosPorUsuarioId(usuario.getId());
 					usuario.setTelefones(telefones);
 
