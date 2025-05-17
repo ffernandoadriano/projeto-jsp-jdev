@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -52,10 +53,11 @@
 
 															<div class="form-row align-items-end">
 																<div class="form-group col-12 col-sm-4">
-																	<label for="dataInicial">Data de Nascimento Período:</label> <input
-																		type="text" class="form-control" id="dataInicial"
-																		name="dataInicial" value="${dataInicial}"
-																		placeholder="dd/MM/aaaa" autocomplete="off" required>
+																	<label for="dataInicial">Data de Nascimento
+																		Período:</label> <input type="text" class="form-control"
+																		id="dataInicial" name="dataInicial"
+																		value="${dataInicial}" placeholder="dd/MM/aaaa"
+																		autocomplete="off" required>
 																</div>
 
 																<div class="form-group col-12 col-sm-4">
@@ -89,6 +91,7 @@
 																				<tr>
 																					<th>ID</th>
 																					<th>Nome</th>
+																					<th>Dt. Nascimento</th>
 																					<th>Contato</th>
 																				</tr>
 																			</thead>
@@ -97,6 +100,7 @@
 																					<tr>
 																						<td>${usuario.id}</td>
 																						<td>${usuario.nome}</td>
+																						<td>${usuario.dataNascimentoFormatada}</td>
 																						<td><c:forEach items="${usuario.telefones}"
 																								var="telefone">
                                                 												${telefone.numero} - ${telefone.tipoContato.descricao}  <br>
