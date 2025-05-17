@@ -16,8 +16,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import util.StringUtils;
 
-@WebServlet("/ImprimirRelatorioUsuarioServlet")
-public class ImprimirRelatorioUsuarioServlet extends HttpServlet {
+@WebServlet("/VisualizarRelatorioUsuarioServlet")
+public class VisualizarRelatorioUsuarioServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	private HttpServletRequest request;
