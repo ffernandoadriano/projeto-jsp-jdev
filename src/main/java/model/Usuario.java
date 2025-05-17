@@ -2,6 +2,7 @@ package model;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -52,6 +53,10 @@ public class Usuario implements Serializable {
 
 	public LocalDate getDataNascimento() {
 		return dataNascimento;
+	}
+
+	public String getDataNascimentoFormatada() {
+		return (dataNascimento != null) ? dataNascimento.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) : "";
 	}
 
 	public void setDataNascimento(LocalDate dataNascimento) {
