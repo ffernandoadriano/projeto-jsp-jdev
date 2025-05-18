@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -48,7 +47,7 @@
 													<div class="card-block">
 														<h4 class="sub-title">Filtrar</h4>
 														<form
-															action="${pageContext.request.contextPath}/ImprimirRelatorioUsuarioServlet"
+															action="${pageContext.request.contextPath}/VisualizarRelatorioUsuarioServlet"
 															method="post" id="relatorioUsuarioForm" novalidate>
 
 															<div class="form-row align-items-end">
@@ -69,7 +68,8 @@
 
 																<div class="form-group col-12 col-sm-4">
 																	<label class="d-none d-sm-block">&nbsp;</label>
-																	<button type="submit" class="btn btn-primary btn-block">Imprimir</button>
+																	<button type="submit" class="btn btn-primary btn-block">Visualizar Relatório</button>
+																	<button type="button" onclick="gerarRelatorioUsuarioPDF();" class="btn btn-primary btn-block">Imprimir PDF</button>
 																</div>
 															</div>
 														</form>

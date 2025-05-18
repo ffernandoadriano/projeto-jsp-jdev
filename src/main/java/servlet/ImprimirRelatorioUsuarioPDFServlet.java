@@ -18,8 +18,8 @@ import net.sf.jasperreports.engine.JasperPrint;
 import util.ReportUtil;
 import util.StringUtils;
 
-@WebServlet("/ImprimriRelatorioUsuarioPDFServlet")
-public class ImprimriRelatorioUsuarioPDFServlet extends HttpServlet {
+@WebServlet("/ImprimirRelatorioUsuarioPDFServlet")
+public class ImprimirRelatorioUsuarioPDFServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	@Override

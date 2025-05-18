@@ -32,26 +32,30 @@ public class ReportUtil {
 	 */
 	public static JasperPrint gerarRelatorio(String caminhoRelatorio, Map<String, Object> parametros,
 			Connection conexao) throws JRException {
-		InputStream inputStream = ReportUtil.class.getResourceAsStream(caminhoRelatorio);
 
-		if (inputStream == null) {
-			throw new JRException("Relatório não encontrado: " + caminhoRelatorio);
+		try (InputStream inputStream = ReportUtil.class.getResourceAsStream(caminhoRelatorio)) {
+
+			if (inputStream == null) {
+				throw new JRException("Relatório não encontrado: " + caminhoRelatorio);
+			}
+
+			// Detecta extensão
+			boolean isJrxml = caminhoRelatorio.toLowerCase().endsWith(".jrxml");
+
+			JasperReport jasperReport;
+			if (isJrxml) {
+				// ⚠️ Essa abordagem é prática, mas mais lenta, já que compila o relatório toda
+				// vez que ele é usado.
+				jasperReport = JasperCompileManager.compileReport(inputStream);
+			} else {
+				// Rodar o relatório com performance, pois já está compilado.
+				jasperReport = (JasperReport) JRLoader.loadObject(inputStream);
+			}
+
+			return JasperFillManager.fillReport(jasperReport, parametros, conexao);
+		} catch (IOException e) {
+			throw new JRException("Erro ao ler o arquivo do relatório", e);
 		}
-
-		// Detecta extensão
-		boolean isJrxml = caminhoRelatorio.toLowerCase().endsWith(".jrxml");
-
-		JasperReport jasperReport;
-		if (isJrxml) {
-			// ⚠️ Essa abordagem é prática, mas mais lenta, já que compila o relatório toda
-			// vez que ele é usado.
-			jasperReport = JasperCompileManager.compileReport(inputStream);
-		} else {
-			// Rodar o relatório com performance, pois já está compilado.
-			jasperReport = (JasperReport) JRLoader.loadObject(inputStream);
-		}
-
-		return JasperFillManager.fillReport(jasperReport, parametros, conexao);
 	}
 
 	/**

@@ -56,7 +56,8 @@
 <link rel="stylesheet" type="text/css"
 	href="<%=request.getContextPath()%>/assets/css/animate.css/css/animate.css">
 <!-- DatePicker -->
-<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+<link rel="stylesheet"
+	href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 
 
 <style type="text/css">
@@ -587,6 +588,44 @@
 		            alert("CEP não encontrado.");
 		        }
 			 }
+
+			 function gerarRelatorioUsuarioPDF(){
+
+				const dataInicial = document.forms["relatorioUsuarioForm"].dataInicial.value; // Nome do formulário > nome do campo > valor campo. 
+				const dataFinal = document.forms["relatorioUsuarioForm"].dataFinal.value; // Nome do formulário > nome do campo > valor campo. 
+
+				if(dataInicial != null && dataFinal != null ){
+					
+					const dIni = parseDataBR(dataInicial);
+				    const dFim = parseDataBR(dataFinal);
+	
+				    if (dIni > dFim) {
+				        alert("A data inicial não pode ser maior que a data final.");
+				        return;
+				    }
+				}
+  
+				 const url = "${pageContext.request.contextPath}/ImprimirRelatorioUsuarioPDFServlet?dataInicial=" + encodeURIComponent(dataInicial) + "&dataFinal=" + encodeURIComponent(dataFinal);
+
+				// Abre em uma nova aba
+				window.open(url, '_blank');
+			}
+
+			 function parseDataBR(dataStr) {
+			    const partes = dataStr.split('/');
+			    if (partes.length !== 3) return null;
+
+			    const [dia, mes, ano] = partes.map(Number);
+
+			    const data = new Date(ano, mes - 1, dia); // mês começa do zero (0 = janeiro)
+
+			    // Verifica se a data é válida (por exemplo, 31/02/2025 não é)
+			    if (data.getFullYear() !== ano || data.getMonth() !== mes - 1 || data.getDate() !== dia) {
+			        return null;
+			    }
+
+			    return data;
+			}
 
 </script>
 </head>

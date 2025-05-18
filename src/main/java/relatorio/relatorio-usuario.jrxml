@@ -1,21 +1,36 @@
 <!-- Created with Jaspersoft Studio version 7.0.2.final using JasperReports Library version 7.0.2-31532122640f516c6d17238ae0e41a08113d5ac0  -->
 <jasperReport name="relatorio-usuario" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0b93ad23-557c-4b48-944a-f882ce9ebdb0">
-	<property name="com.jaspersoft.studio.data.sql.tables" value="dXN1YXJpbyAsMTUsMTUsNmIyYmMzM2QtNTM5NC00MGQ2LWIyOTEtOTg5ZTg5YzU1ZTViOw=="/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="curso-jsp-jdev.jrdax"/>
+	<parameter name="P_DATA_INICIAL" class="java.sql.Date">
+		<description><![CDATA[Data Inicial]]></description>
+		<defaultValueExpression><![CDATA[null]]></defaultValueExpression>
+	</parameter>
+	<parameter name="P_DATA_FINAL" class="java.sql.Date">
+		<description><![CDATA[Data Final]]></description>
+		<defaultValueExpression><![CDATA[null]]></defaultValueExpression>
+	</parameter>
 	<query language="SQL"><![CDATA[SELECT nome,
-	email,
-	login,
-	senha,
-	admin,
-	usuario_id,
-	perfil_id,
-	sexo,
-	endereco_id,
-	data_nascimento,
-	renda_mensal,
-	id
+       email,
+       login,
+       senha,
+       admin,
+       usuario_id,
+       perfil_id,
+       sexo,
+       endereco_id,
+       data_nascimento,
+       renda_mensal,
+       id
 FROM usuario
-ORDER BY usuario.id DESC]]></query>
+WHERE (
+ CAST($P{P_DATA_INICIAL} AS DATE) IS NULL
+  OR data_nascimento >=$P{P_DATA_INICIAL}
+)
+AND ( CAST($P{P_DATA_FINAL} AS DATE) IS NULL
+  OR data_nascimento <=$P{P_DATA_FINAL})
+ORDER BY id
+]]></query>
 	<field name="id" class="java.lang.Long">
 		<property name="com.jaspersoft.studio.field.name" value="id"/>
 		<property name="com.jaspersoft.studio.field.label" value="id"/>
@@ -81,7 +96,7 @@ ORDER BY usuario.id DESC]]></query>
 	</variable>
 	<background splitType="Stretch"/>
 	<title height="66" splitType="Stretch">
-		<element kind="staticText" uuid="8d244095-78fd-4045-8dfd-e80b7e030de5" x="154" y="0" width="330" height="50" fontSize="25.0" bold="true" underline="false" hTextAlign="Center" vTextAlign="Middle">
+		<element kind="staticText" uuid="8d244095-78fd-4045-8dfd-e80b7e030de5" x="154" y="0" width="330" height="50" fontSize="25.0" underline="false" bold="true" hTextAlign="Center" vTextAlign="Middle">
 			<text><![CDATA[Relatório de Usuário]]></text>
 		</element>
 		<element kind="image" uuid="bd74bfe7-f89d-4a43-895d-16682f817140" x="0" y="11" width="150" height="39">

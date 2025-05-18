@@ -20,8 +20,6 @@ import util.StringUtils;
 public class VisualizarRelatorioUsuarioServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	private HttpServletRequest request;
-
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -35,14 +33,12 @@ public class VisualizarRelatorioUsuarioServlet extends HttpServlet {
 	}
 
 	private void doIt(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		this.request = request;
-
 		String dataInicial = request.getParameter("dataInicial");
 		String dataFinal = request.getParameter("dataFinal");
 
-		validarPeriodo(dataInicial, dataFinal);
+		validarPeriodo(dataInicial, dataFinal, request);
 
-		if (existemErros()) {
+		if (existemErros(request)) {
 			definirValores(request, dataInicial, dataFinal);
 			request.getRequestDispatcher("principal/relatorio_usuario.jsp").forward(request, response);
 			return;
@@ -59,9 +55,8 @@ public class VisualizarRelatorioUsuarioServlet extends HttpServlet {
 
 	}
 
-	private void validarPeriodo(String dataInicial, String dataFinal) {
+	private void validarPeriodo(String dataInicial, String dataFinal, HttpServletRequest request) {
 		if (!StringUtils.isEmpty(dataInicial) && !StringUtils.isEmpty(dataFinal)) {
-
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
 			try {
@@ -69,14 +64,13 @@ public class VisualizarRelatorioUsuarioServlet extends HttpServlet {
 				LocalDate dataFin = LocalDate.parse(dataFinal, formatter);
 
 				if (dataIni.isAfter(dataFin)) {
-					adicionarErro("A data inicial não pode ser maior que a data final.");
+					adicionarErro("A data inicial não pode ser maior que a data final.", request);
 				}
 
 			} catch (DateTimeParseException e) {
-				adicionarErro("Formato de data inválido. Use o padrão DD/MM/AAAA.");
+				adicionarErro("Formato de data inválido. Use o padrão DD/MM/AAAA.", request);
 			}
 		}
-
 	}
 
 	private void definirValores(HttpServletRequest request, String dataInicial, String dataFinal) {
@@ -91,13 +85,12 @@ public class VisualizarRelatorioUsuarioServlet extends HttpServlet {
 	 * @param erro
 	 */
 	@SuppressWarnings("unchecked")
-	private void adicionarErro(String erro) {
+	private void adicionarErro(String erro, HttpServletRequest request) {
 		List<String> erros = (List<String>) request.getAttribute("erros");
 		if (erros == null) {
 			erros = new ArrayList<>();
 			request.setAttribute("erros", erros);
 		}
-
 		erros.add(erro);
 	}
 
@@ -107,12 +100,9 @@ public class VisualizarRelatorioUsuarioServlet extends HttpServlet {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	private boolean existemErros() {
+	private boolean existemErros(HttpServletRequest request) {
 		List<String> erros = (List<String>) request.getAttribute("erros");
-		if (erros == null || erros.isEmpty()) {
-			return false;
-		}
-		return true;
+		return erros != null && !erros.isEmpty();
 	}
 
 }
