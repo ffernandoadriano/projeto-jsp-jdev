@@ -69,7 +69,8 @@
 																<div class="form-group col-12 col-sm-4">
 																	<label class="d-none d-sm-block">&nbsp;</label>
 																	<button type="submit" class="btn btn-primary btn-block">Visualizar Relatório</button>
-																	<button type="button" onclick="gerarRelatorioUsuarioPDF();" class="btn btn-primary btn-block">Imprimir PDF</button>
+																	<button type="button" onclick="gerarRelatorioUsuario('PDF');" class="btn btn-primary btn-block">Imprimir PDF</button>
+																	<button type="button" onclick="gerarRelatorioUsuario('EXCEL');" class="btn btn-primary btn-block">Imprimir Excel</button>
 																</div>
 															</div>
 														</form>

@@ -30,7 +30,8 @@ public class ImprimirRelatorioUsuarioPDFServlet extends HttpServlet {
 		String dataFinal = request.getParameter("dataFinal");
 
 		Map<String, Object> parametros = new HashMap<>();
-		parametros.put("PARAM_SUB_RELATORIO", "/relatorio/sub-relatorio-usuario.jasper"); //Inserir o caminho do sub-relatório, caso haja.
+		// Inserir o caminho do sub-relatório, casohaja.
+		parametros.put("PARAM_SUB_RELATORIO", "/relatorio/pdf/sub-relatorio-usuario.jasper");
 
 		try {
 			// adicionando os parâmetros para filtro
@@ -45,7 +46,7 @@ public class ImprimirRelatorioUsuarioPDFServlet extends HttpServlet {
 				parametros.put("P_DATA_FINAL", Date.valueOf(dtFin));
 			}
 
-			String caminho = "/relatorio/relatorio-usuario.jasper";
+			String caminho = "/relatorio/pdf/relatorio-usuario.jasper";
 
 			JasperPrint gerarRelatorio = ReportUtil.gerarRelatorio(caminho, parametros,
 					ConnectionFactory.getConnection());

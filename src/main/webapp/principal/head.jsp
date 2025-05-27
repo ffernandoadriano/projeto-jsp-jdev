@@ -589,7 +589,7 @@
 		        }
 			 }
 
-			 function gerarRelatorioUsuarioPDF(){
+			 function gerarRelatorioUsuario(tipoArquivo){
 
 				const dataInicial = document.forms["relatorioUsuarioForm"].dataInicial.value; // Nome do formulário > nome do campo > valor campo. 
 				const dataFinal = document.forms["relatorioUsuarioForm"].dataFinal.value; // Nome do formulário > nome do campo > valor campo. 
@@ -604,8 +604,18 @@
 				        return;
 				    }
 				}
-  
-				 const url = "${pageContext.request.contextPath}/ImprimirRelatorioUsuarioPDFServlet?dataInicial=" + encodeURIComponent(dataInicial) + "&dataFinal=" + encodeURIComponent(dataFinal);
+
+				let url;
+				
+				if(equalsIgnoreCase(tipoArquivo, "PDF")){
+					
+					url = "${pageContext.request.contextPath}/ImprimirRelatorioUsuarioPDFServlet?dataInicial=" + encodeURIComponent(dataInicial) + "&dataFinal=" + encodeURIComponent(dataFinal);
+					
+				}else if(equalsIgnoreCase(tipoArquivo, "EXCEL")){
+
+					url = "${pageContext.request.contextPath}/ImprimirRelatorioUsuarioEXCELServlet?dataInicial=" + encodeURIComponent(dataInicial) + "&dataFinal=" + encodeURIComponent(dataFinal);
+
+				}
 
 				// Abre em uma nova aba
 				window.open(url, '_blank');
@@ -625,6 +635,12 @@
 			    }
 
 			    return data;
+			}
+
+
+			 function equalsIgnoreCase(valueA, valueB) {
+			    if (typeof valueA !== "string" || typeof valueB !== "string") return false;
+			    return valueA.toLowerCase() === valueB.toLowerCase();
 			}
 
 </script>
