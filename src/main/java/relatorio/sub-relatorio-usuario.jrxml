@@ -1,0 +1,22 @@
+<!-- Created with Jaspersoft Studio version 7.0.2.final using JasperReports Library version 7.0.2-31532122640f516c6d17238ae0e41a08113d5ac0  -->
+<jasperReport name="sub-relatorio-usuario" language="java" pageWidth="180" pageHeight="842" columnWidth="180" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="198fd62c-2e16-4f4c-893e-79d1e063eba7">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="curso-jsp-jdev.jrdax"/>
+	<parameter name="P_USUARIO_ID" forPrompting="false" class="java.lang.Long"/>
+	<query language="SQL"><![CDATA[SELECT CONCAT( numero,' - ',tipo_contato) AS "contato"
+FROM telefone
+WHERE 
+	 telefone.usuario_id =  $P{P_USUARIO_ID} ]]></query>
+	<field name="contato" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="contato"/>
+		<property name="com.jaspersoft.studio.field.label" value="contato"/>
+	</field>
+	<detail>
+		<band height="17" splitType="Stretch">
+			<element kind="textField" uuid="4c1dd040-51b2-4e0d-b9c4-1ba356db3bb8" x="4" y="2" width="175" height="15">
+				<expression><![CDATA[$F{contato}]]></expression>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			</element>
+		</band>
+	</detail>
+</jasperReport>
