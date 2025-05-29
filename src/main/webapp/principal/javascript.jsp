@@ -32,6 +32,9 @@
     <!-- notification js -->
      <script type="text/javascript" src="<%= request.getContextPath() %>/assets/js/bootstrap-growl.min.js"></script>
      
+     <!-- chart.js -->
+     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+     
      <script>
 		'use strict';
 		

@@ -105,6 +105,10 @@
 	height: 60px;
 	width: 50px;
 }
+
+#graficoContainer {
+	display: none;
+}
 </style>
 
 <script type="text/javascript">
@@ -642,6 +646,34 @@
 			    if (typeof valueA !== "string" || typeof valueB !== "string") return false;
 			    return valueA.toLowerCase() === valueB.toLowerCase();
 			}
+
+
+		function gerarGraficoSalarial(){
+			
+			 // Mostra o gráfico
+		    document.getElementById("graficoContainer").style.display = "block";
+
+			const ctx = document.getElementById('myChart');
+
+			  new Chart(ctx, {
+			    type: 'bar',
+			    data: {
+			      labels: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho'],
+			      datasets: [{
+			        label: 'Gráfico de média salarial por tipo',
+			        data: [12, 19, 3, 5, 2, 3],
+			        borderWidth: 1
+			      }]
+			    },
+			    options: {
+			      scales: {
+			        y: {
+			          beginAtZero: true
+			        }
+			      }
+			    }
+			  });
+		}
 
 </script>
 </head>

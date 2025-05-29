@@ -34,6 +34,11 @@
 							<p class="m-b-0">Filtrar</p>
 							<c:set var="id" value="usuarios" />
 						</c:when>
+						<c:when test="${caminho  eq '/principal/grafico_salarios.jsp' }">
+							<h5 class="m-b-10">Gráfico Salarial</h5>
+							<p class="m-b-0">Filtrar</p>
+							<c:set var="id" value="salarios" />
+						</c:when>
 						<c:otherwise>
 							<h5 class="m-b-10">Dashboard</h5>
 							<p class="m-b-0">Welcome to Mega Able</p>
@@ -64,9 +69,13 @@
 						<c:when test="${caminho eq '/principal/telefone.jsp'}">
 							<li class="breadcrumb-item" aria-current="page"><a href="#!">Cadastros</a></li>
 						</c:when>
-						
+
 						<c:when test="${caminho eq '/principal/relatorio_usuario.jsp'}">
 							<li class="breadcrumb-item" aria-current="page"><a href="#!">Usuários</a></li>
+						</c:when>
+						
+						<c:when test="${caminho eq '/principal/grafico_salarios.jsp'}">
+							<li class="breadcrumb-item" aria-current="page"><a href="#!">Salários</a></li>
 						</c:when>
 
 						<c:otherwise>
