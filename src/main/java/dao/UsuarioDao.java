@@ -8,10 +8,13 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import connection.ConnectionFactory;
+import dto.MediaSalarialDTO;
 import model.Endereco;
 import model.Telefone;
 import model.Usuario;
@@ -605,6 +608,36 @@ public class UsuarioDao {
 			rollback();
 			throw new DaoException("Erro ao remover um registro " + e.getMessage(), e);
 		}
+	}
+
+	public List<MediaSalarialDTO> medialSalarialPorPerfil(Long idUsuarioLogado) throws DaoException {
+
+		String sql = "SELECT ROUND(AVG(renda_mensal),2) as media_salarial, perfil_id FROM usuario WHERE usuario_id = ? GROUP BY perfil_id  ORDER BY 1";
+
+		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+			pstmt.setLong(1, idUsuarioLogado);
+
+			List<MediaSalarialDTO> mediaSalarial = new ArrayList<>();
+
+			try (ResultSet rs = pstmt.executeQuery()) {
+
+				while (rs.next()) {
+					MediaSalarialDTO mediaSalarialDTO = new MediaSalarialDTO();
+
+					mediaSalarialDTO.setPerfil(Perfil.fromId(rs.getInt("perfil_id")));
+					mediaSalarialDTO.setMediaSalarial(rs.getDouble("media_salarial"));
+
+					mediaSalarial.add(mediaSalarialDTO);
+				}
+			}
+
+			return mediaSalarial;
+
+		} catch (SQLException e) {
+			rollback();
+			throw new DaoException("Erro ao consultar média salarial: " + e.getMessage(), e);
+		}
+
 	}
 
 	/**
