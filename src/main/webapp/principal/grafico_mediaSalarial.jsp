@@ -47,8 +47,8 @@
 													<div class="card-block">
 														<h4 class="sub-title">Filtrar</h4>
 														<form
-															action="${pageContext.request.contextPath}/VisualizarRelatorioUsuarioServlet"
-															method="post" id="relatorioUsuarioForm" novalidate>
+															action="${pageContext.request.contextPath}/GraficoMediaSalarialServlet"
+															method="post" id="graficoMediaSalarialForm" novalidate>
 
 															<div class="form-row align-items-end">
 																<div class="form-group col-12 col-sm-4">
@@ -78,15 +78,15 @@
 													<!-- Formulario Fim -->
 												</div>
 												<!-- Basic Form Inputs card end -->
-										
-										
-		
+
+
+
 												<!-- Gráfico Inicio -->
 												<div class="row" id="graficoContainer">
 													<div class="col-lg-12">
 														<div class="card">
 															<div class="card-block table-border-style"></div>
-															<div>
+															<div style="margin: 0px 15px 15px 15px">
 																<canvas id="myChart"></canvas>
 															</div>
 														</div>
@@ -164,35 +164,6 @@
 		aplicarMascaraData(campoDataInicial);
 		aplicarMascaraData(campoDataFinal);
 	</script>
-
-	<!-- Notificações -->
-	<script>
-	    $(document).ready(function () {
-	        <c:if test="${erros != null}">
-	            <c:forEach var="erro" items="${erros}">
-	                triggerNotification("top", "right", "fa fa-exclamation-triangle", "danger", "animated fadeInRight", "animated fadeOutRight", " ${erro}", '');
-	            </c:forEach>
-	        </c:if>
-	
-	        <c:if test="${not empty sessionScope.Salvar}">
-	            triggerNotification('top', 'center', 'fa fa-check', 'success', 'animated bounceIn', 'animated bounceOut', ' Registro salvo com sucesso!', '');
-	        </c:if>
-	
-	        <c:if test="${not empty sessionScope.Atualizar}">
-	            triggerNotification('top', 'center', 'fa fa-check', 'success', 'animated bounceIn', 'animated bounceOut', ' Registro atualizado com sucesso!', '');
-	        </c:if>
-	    });
-	</script>
-
-	<%-- Remoção da variável da sessão fora do <script> para evitar problemas --%>
-	<!-- Remover Salvar da sessão após uso  com JSTL-->
-	<c:if test="${not empty sessionScope.Salvar}">
-		<c:remove var="Salvar" scope="session" />
-	</c:if>
-
-	<c:if test="${not empty sessionScope.Atualizar}">
-		<c:remove var="Atualizar" scope="session" />
-	</c:if>
 
 </body>
 

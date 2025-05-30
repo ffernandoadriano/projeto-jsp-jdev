@@ -169,10 +169,10 @@
 		<div class="pcoded-navigation-label" data-i18n="nav.category.forms">Gráficos</div>
 		<ul class="pcoded-item pcoded-left-item">
 			<li class="" id="salarios"><a
-				href="<%=request.getContextPath()%>/GraficoSalariosServlet"
+				href="<%=request.getContextPath()%>/GraficoMediaSalarialServlet"
 				class="waves-effect waves-dark"> <span class="pcoded-micon"><i
 						class="ti-bar-chart"></i><b>FC</b></span> <span class="pcoded-mtext"
-					data-i18n="nav.form-components.main">Salários</span> <span
+					data-i18n="nav.form-components.main">Média Salarial</span> <span
 					class="pcoded-mcaret"></span>
 			</a></li>
 		</ul>

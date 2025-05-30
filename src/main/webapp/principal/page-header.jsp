@@ -34,8 +34,9 @@
 							<p class="m-b-0">Filtrar</p>
 							<c:set var="id" value="usuarios" />
 						</c:when>
-						<c:when test="${caminho  eq '/principal/grafico_salarios.jsp' }">
-							<h5 class="m-b-10">Gráfico Salarial</h5>
+						<c:when
+							test="${caminho  eq '/principal/grafico_mediaSalarial.jsp' }">
+							<h5 class="m-b-10">Gráfico Média Salarial</h5>
 							<p class="m-b-0">Filtrar</p>
 							<c:set var="id" value="salarios" />
 						</c:when>
@@ -73,9 +74,11 @@
 						<c:when test="${caminho eq '/principal/relatorio_usuario.jsp'}">
 							<li class="breadcrumb-item" aria-current="page"><a href="#!">Usuários</a></li>
 						</c:when>
-						
-						<c:when test="${caminho eq '/principal/grafico_salarios.jsp'}">
-							<li class="breadcrumb-item" aria-current="page"><a href="#!">Salários</a></li>
+
+						<c:when
+							test="${caminho eq '/principal/grafico_mediaSalarial.jsp'}">
+							<li class="breadcrumb-item" aria-current="page"><a href="#!">Média
+									salarial</a></li>
 						</c:when>
 
 						<c:otherwise>

@@ -625,54 +625,111 @@
 				window.open(url, '_blank');
 			}
 
-			 function parseDataBR(dataStr) {
-			    const partes = dataStr.split('/');
-			    if (partes.length !== 3) return null;
+		 function parseDataBR(dataStr) {
+		    const partes = dataStr.split('/');
+		    if (partes.length !== 3) return null;
 
-			    const [dia, mes, ano] = partes.map(Number);
+		    const [dia, mes, ano] = partes.map(Number);
 
-			    const data = new Date(ano, mes - 1, dia); // mês começa do zero (0 = janeiro)
+		    const data = new Date(ano, mes - 1, dia); // mês começa do zero (0 = janeiro)
 
-			    // Verifica se a data é válida (por exemplo, 31/02/2025 não é)
-			    if (data.getFullYear() !== ano || data.getMonth() !== mes - 1 || data.getDate() !== dia) {
-			        return null;
-			    }
+		    // Verifica se a data é válida (por exemplo, 31/02/2025 não é)
+		    if (data.getFullYear() !== ano || data.getMonth() !== mes - 1 || data.getDate() !== dia) {
+		        return null;
+		    }
 
-			    return data;
-			}
+		    return data;
+		}
 
 
-			 function equalsIgnoreCase(valueA, valueB) {
-			    if (typeof valueA !== "string" || typeof valueB !== "string") return false;
-			    return valueA.toLowerCase() === valueB.toLowerCase();
-			}
+		function equalsIgnoreCase(valueA, valueB) {
+		    if (typeof valueA !== "string" || typeof valueB !== "string") return false;
+		    return valueA.toLowerCase() === valueB.toLowerCase();
+		}
 
 
 		function gerarGraficoSalarial(){
-			
-			 // Mostra o gráfico
-		    document.getElementById("graficoContainer").style.display = "block";
 
-			const ctx = document.getElementById('myChart');
+			// URL para onde vai ser redirecionada
+			let urlDirecionamento = document.getElementById("graficoMediaSalarialForm").action; // retorna o nome da 'action' do formulário
 
-			  new Chart(ctx, {
-			    type: 'bar',
-			    data: {
-			      labels: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho'],
-			      datasets: [{
-			        label: 'Gráfico de média salarial por tipo',
-			        data: [12, 19, 3, 5, 2, 3],
-			        borderWidth: 1
-			      }]
-			    },
-			    options: {
-			      scales: {
-			        y: {
-			          beginAtZero: true
-			        }
-			      }
+			const dataInicial = document.forms["graficoMediaSalarialForm"].dataInicial.value; // Nome do formulário > nome do campo > valor campo. 
+			const dataFinal = document.forms["graficoMediaSalarialForm"].dataFinal.value; // Nome do formulário > nome do campo > valor campo. 
+
+			if(dataInicial != null && dataFinal != null ){
+				
+				const dIni = parseDataBR(dataInicial);
+			    const dFim = parseDataBR(dataFinal);
+
+			    if (dIni > dFim) {
+			        triggerNotification("top", "right", "fa fa-exclamation-triangle", "danger", "animated fadeInRight", "animated fadeOutRight", " A data inicial não pode ser maior que a data final.", '');
+			        return;
 			    }
-			  });
+			}
+			
+			// ajax do Bootstrap
+			$.ajax({
+				
+				method: "POST",
+				url: urlDirecionamento,
+				data: {
+			        dataInicial: encodeURIComponent(dataInicial),  // uma forma de passar os parâmetros
+			        dataFinal: encodeURIComponent(dataFinal),
+			        acao: "gerarGrafico"
+			      },
+				dataType: "json", // Especifica que a resposta esperada é JSON
+				success: function(json, textStatus, jqXHR){
+					/*
+					1 - data: Os dados retornados pelo servidor.
+					2 - textStatus: Uma string que descreve o status da requisição (por exemplo, "success").
+					3 - jqXHR: O objeto jQuery XMLHttpRequest, que contém informações detalhadas sobre a requisição, incluindo os headers da resposta.
+					*/
+
+				 // Mostra o gráfico
+			    document.getElementById("graficoContainer").style.display = "block";
+		
+				const ctx = document.getElementById('myChart');
+
+				//  método .map() do JavaScript para transformar um array de objetos JSON em dois novos arrays:
+				const labels = json.map(item => item.perfil);
+				const valores = json.map(item => item.mediaSalarial);
+
+				// monta o gráfico na tela
+				new Chart(ctx, {
+					  type: 'bar',
+					  data: {
+					    labels: labels,
+					    datasets: [{
+					      label: 'Gráfico de média salarial por Perfil',
+					      data: valores,
+					      borderWidth: 1,
+					      backgroundColor: 'rgba(54, 162, 235, 0.6)'
+					    }]
+					  },
+					  options: {
+					    scales: {
+					      y: {
+					        beginAtZero: true,
+					        ticks: {
+					          callback: v => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+					        }
+					      }
+					    },
+					    plugins: {
+					      tooltip: {
+					        callbacks: {
+					          label: ctx => ctx.parsed.y.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+					        }
+					      }
+					    }
+					  }
+					});
+
+			} 
+	
+			}).fail(function(xhr, status, errorThrown){
+					alert("Erro ao tentar gerar gráfico: "+ xhr.responseText);
+				} ); // xhr- detalhes do erro // status - status do erro // errorThrown - exceção de erro
 		}
 
 </script>

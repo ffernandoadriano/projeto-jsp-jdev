@@ -2,6 +2,8 @@ package model.enums;
 
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum Perfil {
 	ADMINISTRADOR(1, "Administrador"), SECRETARIA(2, "Secretária"), AUXILIAR(3, "Auxiliar");
 
@@ -17,6 +19,7 @@ public enum Perfil {
 		return id;
 	}
 
+	@JsonValue
 	public String getDescricao() {
 		return descricao;
 	}

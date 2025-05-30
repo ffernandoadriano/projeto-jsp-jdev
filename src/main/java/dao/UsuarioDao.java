@@ -8,9 +8,7 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import connection.ConnectionFactory;
@@ -610,7 +608,7 @@ public class UsuarioDao {
 		}
 	}
 
-	public List<MediaSalarialDTO> medialSalarialPorPerfil(Long idUsuarioLogado) throws DaoException {
+	public List<MediaSalarialDTO> listarMediaSalarialPorPerfil(Long idUsuarioLogado) throws DaoException {
 
 		String sql = "SELECT ROUND(AVG(renda_mensal),2) as media_salarial, perfil_id FROM usuario WHERE usuario_id = ? GROUP BY perfil_id  ORDER BY 1";
 
