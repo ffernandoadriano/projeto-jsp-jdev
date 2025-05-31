@@ -608,12 +608,81 @@ public class UsuarioDao {
 		}
 	}
 
+	/**
+	 * Retorna uma lista com a média salarial agrupada por perfil, considerando
+	 * apenas os usuários subordinados ao usuário logado (usuário pai).
+	 * <p>
+	 * A média é calculada com duas casas decimais usando a função
+	 * {@code ROUND(AVG(...), 2)} no banco de dados. O agrupamento é feito com base
+	 * no {@code perfil_id} de cada usuário.
+	 *
+	 * @param idUsuarioLogado ID do usuário logado (usuário pai), utilizado para
+	 *                        filtrar os registros.
+	 * @return Lista de {@link MediaSalarialDTO} contendo a média salarial por
+	 *         perfil dos usuários vinculados.
+	 * @throws DaoException Caso ocorra erro de SQL, falha de conexão ou durante o
+	 *                      rollback em caso de exceção.
+	 */
 	public List<MediaSalarialDTO> listarMediaSalarialPorPerfil(Long idUsuarioLogado) throws DaoException {
 
 		String sql = "SELECT ROUND(AVG(renda_mensal),2) as media_salarial, perfil_id FROM usuario WHERE usuario_id = ? GROUP BY perfil_id  ORDER BY 1";
 
 		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
 			pstmt.setLong(1, idUsuarioLogado);
+
+			List<MediaSalarialDTO> mediaSalarial = new ArrayList<>();
+
+			try (ResultSet rs = pstmt.executeQuery()) {
+
+				while (rs.next()) {
+					MediaSalarialDTO mediaSalarialDTO = new MediaSalarialDTO();
+
+					mediaSalarialDTO.setPerfil(Perfil.fromId(rs.getInt("perfil_id")));
+					mediaSalarialDTO.setMediaSalarial(rs.getDouble("media_salarial"));
+
+					mediaSalarial.add(mediaSalarialDTO);
+				}
+			}
+
+			return mediaSalarial;
+
+		} catch (SQLException e) {
+			rollback();
+			throw new DaoException("Erro ao consultar média salarial: " + e.getMessage(), e);
+		}
+
+	}
+
+	/**
+	 * Retorna uma lista com a média salarial agrupada por perfil, considerando
+	 * apenas os usuários subordinados ao usuário logado (usuário pai) e cuja data
+	 * de nascimento esteja dentro do intervalo especificado.
+	 * <p>
+	 * A média é calculada com duas casas decimais ({@code ROUND(AVG(...), 2)}) e
+	 * agrupada por {@code perfil_id}.
+	 * <p>
+	 * Os resultados são ordenados pela média salarial.
+	 *
+	 * @param idUsuarioLogado ID do usuário logado (usuário pai), utilizado como
+	 *                        filtro.
+	 * @param dataInicial     Data inicial do intervalo de nascimento dos usuários a
+	 *                        serem considerados.
+	 * @param dataFinal       Data final do intervalo de nascimento dos usuários a
+	 *                        serem considerados.
+	 * @return Lista de {@link MediaSalarialDTO} contendo a média salarial por
+	 *         perfil dos usuários no intervalo informado.
+	 * @throws DaoException Caso ocorra erro de SQL, falha de conexão ou durante o
+	 *                      rollback em caso de exceção.
+	 */
+	public List<MediaSalarialDTO> listarMediaSalarialPorPerfil(Long idUsuarioLogado, LocalDate dataInicial,
+			LocalDate dataFinal) throws DaoException {
+
+		String sql = "SELECT ROUND(AVG(renda_mensal),2) as media_salarial, perfil_id FROM usuario WHERE usuario_id = ? AND data_nascimento >= ? AND data_nascimento <= ? GROUP BY perfil_id  ORDER BY 1";
+
+		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+			pstmt.setLong(1, idUsuarioLogado);
+			pstmt.setObject(2, dataInicial);
+			pstmt.setObject(3, dataFinal);
 
 			List<MediaSalarialDTO> mediaSalarial = new ArrayList<>();
 

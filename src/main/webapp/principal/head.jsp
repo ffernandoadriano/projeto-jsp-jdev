@@ -648,6 +648,8 @@
 		}
 
 
+		let graficoAtual = null; // variável global com a instância do gráfico.
+		
 		function gerarGraficoSalarial(){
 
 			// URL para onde vai ser redirecionada
@@ -685,17 +687,25 @@
 					3 - jqXHR: O objeto jQuery XMLHttpRequest, que contém informações detalhadas sobre a requisição, incluindo os headers da resposta.
 					*/
 
-				 // Mostra o gráfico
+				 // Mostra o gráfico ao clicar no gerar gráfico
 			    document.getElementById("graficoContainer").style.display = "block";
-		
-				const ctx = document.getElementById('myChart');
+
+				// O ctx deve ser obtido como getContext('2d'), não apenas getElementById(...).
+                // Essa abordagem funciona bem para cenários onde o gráfico é redesenhado com dados diferentes dinamicamente.
+				const ctx = document.getElementById('myChart').getContext('2d');
+
+				// Destroi o gráfico anterior, se existir
+				if (graficoAtual) {
+				    graficoAtual.destroy();
+				}
 
 				//  método .map() do JavaScript para transformar um array de objetos JSON em dois novos arrays:
 				const labels = json.map(item => item.perfil);
 				const valores = json.map(item => item.mediaSalarial);
 
-				// monta o gráfico na tela
-				new Chart(ctx, {
+				// Monta o gráfico na tela
+				// Cria novo gráfico e salva na variável global
+				graficoAtual = new Chart(ctx, {
 					  type: 'bar',
 					  data: {
 					    labels: labels,

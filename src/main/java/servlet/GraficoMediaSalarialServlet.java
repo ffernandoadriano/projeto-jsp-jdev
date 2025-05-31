@@ -1,6 +1,10 @@
 package servlet;
 
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,6 +18,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import session.UsuarioLogadoSession;
+import util.StringUtils;
 
 @WebServlet("/GraficoMediaSalarialServlet")
 public class GraficoMediaSalarialServlet extends HttpServlet {
@@ -42,8 +47,27 @@ public class GraficoMediaSalarialServlet extends HttpServlet {
 			UsuarioDao usuarioDao = new UsuarioDao();
 
 			try {
-				List<MediaSalarialDTO> mediaSalarialPorPerfil = usuarioDao
-						.listarMediaSalarialPorPerfil(UsuarioLogadoSession.getUsuarioLogado(request).getId());
+				List<MediaSalarialDTO> mediaSalarialPorPerfil;
+
+				if (!StringUtils.isEmpty(dataInicial) && !StringUtils.isEmpty(dataFinal)) {
+
+					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+					dataInicial = URLDecoder.decode(dataInicial, StandardCharsets.UTF_8);
+					dataFinal = URLDecoder.decode(dataFinal, StandardCharsets.UTF_8);
+
+					LocalDate dataIni = LocalDate.parse(dataInicial, formatter);
+					LocalDate dataFin = LocalDate.parse(dataFinal, formatter);
+
+					mediaSalarialPorPerfil = usuarioDao.listarMediaSalarialPorPerfil(
+							UsuarioLogadoSession.getUsuarioLogado(request).getId(), dataIni, dataFin);
+
+				} else {
+
+					mediaSalarialPorPerfil = usuarioDao
+							.listarMediaSalarialPorPerfil(UsuarioLogadoSession.getUsuarioLogado(request).getId());
+
+				}
 
 				ObjectMapper mapper = new ObjectMapper();
 				String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(mediaSalarialPorPerfil);
