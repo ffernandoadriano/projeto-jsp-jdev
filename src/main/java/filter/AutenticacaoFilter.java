@@ -13,8 +13,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import model.Usuario;
 import session.UsuarioLogadoSession;
 
-@WebFilter("/principal/*") /* intercepta todas as requisições do mapeamento */
-public class FilterAutenticacao implements Filter {
+@WebFilter("/*") /* intercepta todas as requisições do mapeamento */
+public class AutenticacaoFilter implements Filter {
 
 	/* Inicia os processos ou recursos quando o servidor sobe o projeto */
 	// ex: inicia a conexão com o banco
@@ -38,20 +38,29 @@ public class FilterAutenticacao implements Filter {
 			throws IOException, ServletException {
 
 		HttpServletRequest req = (HttpServletRequest) request;
-
 		String urlParaAutenticar = req.getServletPath(); // url que está sendo acessado
 
 		// session retorna um objeto
 		Usuario usuario = UsuarioLogadoSession.getUsuarioLogado(req);
 
+		// Define quais URLs são públicas
+		boolean urlPublica = urlParaAutenticar.startsWith("/Login") ||
+								 urlParaAutenticar.endsWith(".css") ||
+				                  urlParaAutenticar.endsWith(".js") ||
+				                 urlParaAutenticar.endsWith(".png") ||
+				                 urlParaAutenticar.endsWith(".jpg");
+		/*.css, .js, .png, .jpg: servem para permitir o carregamento de arquivos estáticos (como estilos, scripts e imagens) mesmo que o usuário não esteja logado.*/
+;
+
 		/* validar se está logado, senão, redireciona para tela de login */
-		if (usuario == null && !urlParaAutenticar.contains("LoginFormServlet") && !urlParaAutenticar.contains("LoginServlet")) {
+		if (usuario == null && !urlPublica) {
 			req.setAttribute("messageErro", "Por favor, realize o login!");
-			req.getRequestDispatcher(String.format("/LoginFormServlet?url=%s", urlParaAutenticar)).forward(request, response);
+			req.getRequestDispatcher(String.format("/LoginFormServlet?url=%s", urlParaAutenticar)).forward(request,
+					response);
 		} else {
 
 			// redireciona para Servlet desejada
-			chain.doFilter(request, response);
+			chain.doFilter(request, response); // continua a requisição
 		}
 
 	}

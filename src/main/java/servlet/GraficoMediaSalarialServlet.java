@@ -37,7 +37,7 @@ public class GraficoMediaSalarialServlet extends HttpServlet {
 	}
 
 	private void doIt(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+		
 		String dataInicial = request.getParameter("dataInicial");
 		String dataFinal = request.getParameter("dataFinal");
 		String acao = request.getParameter("acao");
