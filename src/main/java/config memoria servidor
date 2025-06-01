@@ -1,0 +1,13 @@
+# Aumentando a memória para o servidor tomcat
+
+1 - criar o arquivo com essa estrutura:
+
+export CATALINA_OPTS="$CATALINA_OPTS -Xms1512m" (memória mínima - não incluir no arquivo essa obs)
+export CATALINA_OPTS="$CATALINA_OPTS -Xmx3512m" (memória máxima - não incluir no arquivo essa obs)
+export CATALINA_OPTS="$CATALINA_OPTS -XX:MaxPermSize=1512m" (Essa opção (MaxPermSize) só é válida para o Java 7 ou anterior - não incluir no arquivo essa obs)
+export CATALINA_OPTS="$CATALINA_OPTS -XX:MaxMetaspaceSize=512m (Java 8 ou superior, remova MaxPermSize - não incluir no arquivo essa obs)
+
+
+2 - salvar o arquivo como:  'setenv' dentro do apache-tomcat na pasta "bin" com a extensão '.sh' (obs: escolha a opção all types no tipo)
+
+
