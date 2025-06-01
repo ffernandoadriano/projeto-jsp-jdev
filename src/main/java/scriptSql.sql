@@ -85,3 +85,8 @@ CREATE TABLE telefone (
 ALTER TABLE usuario ADD COLUMN data_nascimento DATE;
 
 ALTER TABLE usuario ADD COLUMN renda_mensal NUMERIC(10,2);
+
+CREATE TABLE versionadordb(
+  id BIGSERIAL PRIMARY KEY,
+  arquivo_sql VARCHAR(50) NOT NULL
+);

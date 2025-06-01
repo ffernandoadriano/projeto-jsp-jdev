@@ -1,7 +1,16 @@
 package filter;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.stream.Stream;
 
+import dao.DaoException;
+import dao.VersionadorDbDao;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
@@ -20,7 +29,30 @@ public class AutenticacaoFilter implements Filter {
 	// ex: inicia a conexão com o banco
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
-		Filter.super.init(filterConfig);
+		VersionadorDbDao versionadorDbDao = new VersionadorDbDao();
+
+		List<Path> arquivosSql = leitorArquivoSql();
+
+		for (Path path : arquivosSql) {
+
+			try {
+				String nomeArquivo = path.getFileName().toString();
+				
+				if (!versionadorDbDao.existeArquivo(nomeArquivo)) {
+
+					// Ler o conteúdo do arquivo
+					String conteudoSql = Files.readString(path);
+					
+					// executa o sql do arquivo no banco
+					versionadorDbDao.executeUpdate(conteudoSql);
+
+					// salva o nome do arquivo lido no versionamento
+					versionadorDbDao.insert(nomeArquivo);
+				}
+			} catch (DaoException | IOException e) {
+				throw new ServletException(e);
+			}
+		}
 	}
 
 	/* Encerra os processos quando o servidor é parado */
@@ -44,13 +76,15 @@ public class AutenticacaoFilter implements Filter {
 		Usuario usuario = UsuarioLogadoSession.getUsuarioLogado(req);
 
 		// Define quais URLs são públicas
-		boolean urlPublica = urlParaAutenticar.startsWith("/Login") ||
-								 urlParaAutenticar.endsWith(".css") ||
-				                  urlParaAutenticar.endsWith(".js") ||
-				                 urlParaAutenticar.endsWith(".png") ||
-				                 urlParaAutenticar.endsWith(".jpg");
-		/*.css, .js, .png, .jpg: servem para permitir o carregamento de arquivos estáticos (como estilos, scripts e imagens) mesmo que o usuário não esteja logado.*/
-;
+		boolean urlPublica = urlParaAutenticar.startsWith("/Login") || urlParaAutenticar.endsWith(".css")
+				|| urlParaAutenticar.endsWith(".js") || urlParaAutenticar.endsWith(".png")
+				|| urlParaAutenticar.endsWith(".jpg");
+		/*
+		 * .css, .js, .png, .jpg: servem para permitir o carregamento de arquivos
+		 * estáticos (como estilos, scripts e imagens) mesmo que o usuário não esteja
+		 * logado.
+		 */
+		;
 
 		/* validar se está logado, senão, redireciona para tela de login */
 		if (usuario == null && !urlPublica) {
@@ -63,6 +97,31 @@ public class AutenticacaoFilter implements Filter {
 			chain.doFilter(request, response); // continua a requisição
 		}
 
+	}
+
+	private List<Path> leitorArquivoSql() throws ServletException {
+
+		URL url = AutenticacaoFilter.class.getResource("/db/versionamento");
+
+		if (url == null) {
+			throw new ServletException("Diretório 'db/versionamento' não encontrado no classpath.");
+		}
+
+		try {
+
+			Path caminhoVersionamento = Paths.get(url.toURI()); // Evita problemas com url.getFile() (ex: espaços, %20,
+																// etc).
+
+			try (Stream<Path> arquivos = Files.list(caminhoVersionamento)) {
+				return arquivos.filter(Files::isRegularFile) // apenas arquivos, ignora pastas
+						.filter(path -> path.toString().endsWith(".sql")) // só arquivos .sql
+						.sorted() // ordena por nome
+						.toList();
+			}
+
+		} catch (URISyntaxException | IOException e) {
+			throw new ServletException("Erro ao tentar ler Arquivo: ", e);
+		}
 	}
 
 }
