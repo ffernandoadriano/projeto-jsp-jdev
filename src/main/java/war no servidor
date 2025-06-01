@@ -1,0 +1,22 @@
+depois de executar os passos:
+
+# Gerando o WAR de implantação no servidor
+1 - abrir local do projeto (ex: C:\Users\Fernando Adriano\Desktop\curso-jsp-jdev-treinamento)
+2 - abrir o cmd e digite: cd clicar com o botão direito do mouse (Enter)
+3 - mvn clean package
+
+
+# Implantando projeto localmente no servidor Apache Tomcat
+
+# configurar as veriaveis de ambiente
+1 - criar uma nova variavel
+2 - nome: CATALINA_NOME / valor: D:\Programas\apache-tomcat-11.0.5
+
+# Copie o arquivo war gerado para a pasta do apache-tomcat.
+
+1 - entre na pasta do 'apache-tomcat'
+2 - entre na pasta 'webapps' e cole o war gerado
+3 - entre na pasta bin
+4 - clique em startup para iniciar o servidor
+5 - clique em shutdown para derrubar o servidor
+6 - lemnbra-se sempre de remover o war para mexer no eclipse na maquina de desenvolvimento
