@@ -1,0 +1,17 @@
+# Tomcat como serviço automático no Windows
+# definindo o serviço:
+	obs: tomar cuidado para o serviço não entrar em conflito com o desenvolvimento.
+1 - localizar a basta do tomcat
+2 - entrar na basta bin do tomcat
+3 - identificar o arquivo service ou service.bat
+4 - abrir o cmd
+5 - quando estiver no caminho do bin, digite: 'service.bat install' e instale o serviço
+6 - localizar o arquivo tomcat11w (no meu caso o meu instalado é o 11, tem que ser o que tem o W)
+7 - clique nele para instalar ou execute ele por linha de comando no cmd.
+8 - vai abrir uma janela, configure o 'Startup type' para 'Automatic'.
+9 - clicar em 'Start' para iniciar
+10 - na aba de cima 'java', configure a memória inicial e memória máxima (ex: Initial memory pool: 800, Maximum memory pool: 1024)
+
+
+# comando para remover um serviço já incluido
+1 - dentro da pasta bin do tomcat digite: 'service.bat remove'
