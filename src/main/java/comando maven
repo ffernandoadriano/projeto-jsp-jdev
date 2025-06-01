@@ -1,0 +1,4 @@
+#Gerando o WAR de implantação no servidor
+1 - abrir local do projeto (ex: C:\Users\Fernando Adriano\Desktop\curso-jsp-jdev-treinamento)
+2 - abrir o cmd e clicar com o botão direito do mouse (Enter)
+3 - mvn clean package
