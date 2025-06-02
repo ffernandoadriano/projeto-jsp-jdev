@@ -1,0 +1,39 @@
+POSTGRESQL - Melhorando a performance do PostgreSQL
+
+1 - entrar na pasta de instalação do postgres
+2 - entrar na pasta 'data'
+3 - localizar o arquivo 'postgresql.conf' 
+4 - iremos editar esse arquivo conforme as informações que estão aqui em baixo:
+5 - obs: se estiver com "#" remova para pode ler as informações
+6 - após configurar tudo, reinicie o serviço para pode funcionar.
+
+max_connections = 4000
+Configurado para o atual número de conexões simultâneas que você espera precisar.
+
+
+
+shared_buffers = 4000MB
+Define a quantidade de memória que o servidor de banco de dados usa para buffers de memória compartilhada.
+
+Estes são compartilhados entre os processos de back-end, como o nome sugere. 
+
+
+
+work_mem = 500MB
+Chamado de sort_mem, cobre ordenações, agregações e mais algumas operações.
+
+Sendo alocada para cada operação (uma a várias vezes por consulta).
+
+Esta configuração está coloca um teto na quantidade de memória que uma única operação ocupar antes de ser forçada para o disco.
+
+Este deve ser calculado dividindo a RAM disponível (depois das aplicações e do shared_buffers) pela expectativa de máximo de consultas concorrentes vezes o número de memória utilizada por conexão
+
+
+
+maintenance_work_mem = 2000MB
+Especifica a quantidade máxima de memória que pode ser utilizada pelas operações de manutenção, como VACUUM, CREATE INDEX e ALTER TABLE ADD FOREIGN KEY
+
+
+
+max_stack_depth = 1MB
+Especifica quantidade de memoria para rodas funções complexas execução do servidor.
