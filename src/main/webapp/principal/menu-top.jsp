@@ -121,8 +121,9 @@
                             </a>
                         </li>
                          -->
-						<li class="waves-effect waves-light"><a
-							href="user-profile.html"> <i class="ti-user"></i> Ver perfil
+						<li class="waves-effect waves-light" id="perfil"><a
+							href="PerfilUsuarioServlet"> <i class="ti-user"></i> Ver
+								perfil
 						</a></li>
 						<!-- 
 						<li class="waves-effect waves-light"><a

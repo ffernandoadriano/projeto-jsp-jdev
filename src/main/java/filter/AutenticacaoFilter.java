@@ -37,12 +37,12 @@ public class AutenticacaoFilter implements Filter {
 
 			try {
 				String nomeArquivo = path.getFileName().toString();
-				
+
 				if (!versionadorDbDao.existeArquivo(nomeArquivo)) {
 
 					// Ler o conteúdo do arquivo
 					String conteudoSql = Files.readString(path);
-					
+
 					// executa o sql do arquivo no banco
 					versionadorDbDao.executeUpdate(conteudoSql);
 
@@ -76,9 +76,9 @@ public class AutenticacaoFilter implements Filter {
 		Usuario usuario = UsuarioLogadoSession.getUsuarioLogado(req);
 
 		// Define quais URLs são públicas
-		boolean urlPublica = urlParaAutenticar.startsWith("/Login") || urlParaAutenticar.endsWith(".css")
-				|| urlParaAutenticar.endsWith(".js") || urlParaAutenticar.endsWith(".png")
-				|| urlParaAutenticar.endsWith(".jpg");
+		boolean urlPublica = urlParaAutenticar.startsWith("/index") || urlParaAutenticar.startsWith("/Login")
+				|| urlParaAutenticar.endsWith(".css") || urlParaAutenticar.endsWith(".js")
+				|| urlParaAutenticar.endsWith(".png") || urlParaAutenticar.endsWith(".jpg");
 		/*
 		 * .css, .js, .png, .jpg: servem para permitir o carregamento de arquivos
 		 * estáticos (como estilos, scripts e imagens) mesmo que o usuário não esteja

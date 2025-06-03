@@ -25,7 +25,7 @@
 
 			<div class="main-menu-content">
 				<ul>
-					<li class="more-details"><a href="user-profile.html"><i
+					<li class="more-details" id="perfil"><a href="PerfilUsuarioServlet"><i
 							class="ti-user"></i>Ver perfil</a> <!--  <a href="#!"><i class="ti-settings"></i>Settings</a>  -->
 						<a href="<%=request.getContextPath()%>/LogoutServlet?acao=Logout"><i
 							class="ti-layout-sidebar-left"></i>Sair</a></li>
