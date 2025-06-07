@@ -159,9 +159,6 @@ public class UsuarioDao {
 
 			}
 
-			// Confirma a transação no banco
-			connection.commit();
-
 		} catch (SQLException e) {
 			throw new DaoException("Erro ao buscar usuário com endereço: " + e.getMessage(), e);
 		}

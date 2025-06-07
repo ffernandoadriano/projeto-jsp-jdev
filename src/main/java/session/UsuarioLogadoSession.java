@@ -42,4 +42,9 @@ public class UsuarioLogadoSession {
 		}
 	}
 
+	public static String getFotoPerfil(HttpServletRequest request) {
+		HttpSession session = request.getSession(false); // não cria uma sessão automaticamente, apenas consulta.
+		return (session != null) ? (String) session.getAttribute(FOTO_PERFIL) : null;
+	}
+
 }

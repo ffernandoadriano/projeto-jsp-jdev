@@ -58,7 +58,7 @@
 														%>
 
 														<form
-															action="<%=request.getContextPath()%>/SalvarUsuarioServlet"
+															action="<%=request.getContextPath()%>/SalvarUsuarioServlet?action=editProfile"
 															method="post" id="perfilUsuarioForm"
 															enctype="multipart/form-data">
 
@@ -107,7 +107,7 @@
 																<div class="col-sm-8">
 																	<input type="file" class="form-control"
 																		accept="image/*" id="fileFoto" name="filePerfilFoto"
-																		onchange="visualizarImagemTela('fotoBase64', 'fileFoto' )";>
+																		onchange="visualizarImagemTela('fotoBase64', 'fileFoto' );">
 																	<%
 																	/*restringe para aceitar apenas imagem*/
 																	%>

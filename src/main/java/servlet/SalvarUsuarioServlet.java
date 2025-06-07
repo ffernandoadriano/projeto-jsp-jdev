@@ -62,6 +62,8 @@ public class SalvarUsuarioServlet extends HttpServlet {
 
 		this.request = request;
 
+		// ação 'editProfile' editar perfil usuario
+		String action = request.getParameter("action");
 		// Extrai os dados digitados no formulário
 		String idParam = request.getParameter("id");
 		// null não pode ser passado diretamente para Long.valueOf()
@@ -93,9 +95,9 @@ public class SalvarUsuarioServlet extends HttpServlet {
 		// Faz a validação dos dados digitados
 		validarNome(nome);
 		validarSexo(sexo);
-		validarEmail(email, id);
+		validarEmail(action, email, id);
 		validarPerfil(perfil);
-		validarLogin(login, id);
+		validarLogin(action, login, id);
 		validarSenha(senha);
 
 		// Caso tenha ocorrido algum erro de validação, coloca as informações novamente
@@ -162,12 +164,40 @@ public class SalvarUsuarioServlet extends HttpServlet {
 			}
 
 			NotificationSession.set(request, acao, "ok");
+
+			String redirecionamento;
+
+			if (!StringUtils.isEmpty(action)) {
+				redirecionamento = "/PerfilUsuarioServlet";
+				atualizarDadosUsuarioLogado(usuario, imagemPerfil, request);
+
+			} else {
+				redirecionamento = "/CadastrarUsuarioServlet";
+			}
+
 			response.sendRedirect(
-					request.getContextPath() + "/CadastrarUsuarioServlet?userID=" + usuario.getId() + "&action=save");
+					request.getContextPath() + redirecionamento + "?userID=" + usuario.getId() + "&action=save");
 
 		} catch (DaoException e) {
 			throw new ServletException(e);
 		}
+	}
+
+	private void atualizarDadosUsuarioLogado(Usuario usuario, Imagem imagemPerfil, HttpServletRequest request) {
+		Usuario usuarioLogado = UsuarioLogadoSession.getUsuarioLogado(request);
+		usuarioLogado.setNome(usuario.getNome());
+		usuarioLogado.setDataNascimento(usuario.getDataNascimento());
+		usuarioLogado.setSexo(usuario.getSexo());
+		usuarioLogado.setEmail(usuario.getEmail());
+		usuarioLogado.setLogin(usuario.getLogin());
+		usuarioLogado.setPerfil(usuario.getPerfil());
+		usuarioLogado.setRendaMensal(usuario.getRendaMensal());
+		usuarioLogado.setSenha(usuario.getSenha());
+		usuarioLogado.setAdmin(usuario.isAdmin());
+		usuarioLogado.setEndereco(usuario.getEndereco());
+		usuarioLogado.setTelefones(usuario.getTelefones());
+		// Foto Perfil
+		UsuarioLogadoSession.createFotoPerfil(request, imagemPerfil);
 	}
 
 	/**
@@ -242,7 +272,7 @@ public class SalvarUsuarioServlet extends HttpServlet {
 	 * @param email
 	 * @throws ServletException
 	 */
-	private void validarEmail(String email, Long id) throws ServletException {
+	private void validarEmail(String acao, String email, Long id) throws ServletException {
 		if (StringUtils.isEmpty(email)) {
 			adicionarErro("O e-mail é obrigatório");
 		}
@@ -261,8 +291,16 @@ public class SalvarUsuarioServlet extends HttpServlet {
 
 			// Verifica UPDATE de formulário
 			if (id != null) {
-				Usuario usuarioBanco = usuarioDao.buscarPorIdComEndereco(id,
-						UsuarioLogadoSession.getUsuarioLogado(request).getId());
+				Usuario usuarioBanco;
+
+				if (!StringUtils.isEmpty(acao)) {
+					usuarioBanco = usuarioDao.buscarPorIdComEndereco(id);
+
+				} else {
+					usuarioBanco = usuarioDao.buscarPorIdComEndereco(id,
+							UsuarioLogadoSession.getUsuarioLogado(request).getId());
+				}
+
 				String emailBanco = usuarioBanco.getEmail();
 
 				if (!emailBanco.equalsIgnoreCase(email)) {
@@ -301,7 +339,7 @@ public class SalvarUsuarioServlet extends HttpServlet {
 	 * @throws ServletException
 	 * 
 	 */
-	private void validarLogin(String login, Long id) throws ServletException {
+	private void validarLogin(String acao, String login, Long id) throws ServletException {
 		if (StringUtils.isEmpty(login)) {
 			adicionarErro("O login é obrigatório");
 		}
@@ -315,8 +353,16 @@ public class SalvarUsuarioServlet extends HttpServlet {
 
 			// Verifica UPDATE de formulário
 			if (id != null) {
-				Usuario usuarioBanco = usuarioDao.buscarPorIdComEndereco(id,
-						UsuarioLogadoSession.getUsuarioLogado(request).getId());
+				Usuario usuarioBanco;
+
+				if (!StringUtils.isEmpty(acao)) {
+					usuarioBanco = usuarioDao.buscarPorIdComEndereco(id);
+
+				} else {
+					usuarioBanco = usuarioDao.buscarPorIdComEndereco(id,
+							UsuarioLogadoSession.getUsuarioLogado(request).getId());
+				}
+
 				String loginBanco = usuarioBanco.getLogin();
 
 				if (!loginBanco.equalsIgnoreCase(login)) {
