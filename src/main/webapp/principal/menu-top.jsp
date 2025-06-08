@@ -60,20 +60,19 @@
 						<li>
 							<h6>Novidades</h6> <label class="label label-danger">Novo</label>
 						</li>
-						<li class="waves-effect waves-light">
+					 	<li class="waves-effect waves-light">
 							<div class="media">
 								<img class="d-flex align-self-center img-radius"
 									src="<%=request.getContextPath()%>/assets/images/avatar-2.jpg"
 									alt="Generic placeholder image">
 								<div class="media-body">
 									<h5 class="notification-user">${usuarioLogado.login}</h5>
-									<p class="notification-msg">Lorem ipsum dolor sit amet,
-										consectetuer elit.</p>
-									<span class="notification-time">30 minutes ago</span>
+									<p class="notification-msg">Desenvolvido geração de gráfico e relatórios.</p>
+									<span class="notification-time">há 1 minuto</span>
 								</div>
 							</div>
 						</li>
-						<li class="waves-effect waves-light">
+					<!--	<li class="waves-effect waves-light">
 							<div class="media">
 								<img class="d-flex align-self-center img-radius"
 									src="<%=request.getContextPath()%>/assets/images/avatar-4.jpg"
@@ -99,6 +98,7 @@
 								</div>
 							</div>
 						</li>
+						 -->
 					</ul></li>
 
 				<!-- Foto Perfil -->
