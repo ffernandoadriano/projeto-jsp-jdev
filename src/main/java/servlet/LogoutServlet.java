@@ -7,10 +7,11 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import session.UsuarioLogadoSession;
+import service.UsuarioSessionService;
 
 @WebServlet("/LogoutServlet")
 public class LogoutServlet extends HttpServlet {
+
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -25,11 +26,13 @@ public class LogoutServlet extends HttpServlet {
 
 	private void doIt(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+		UsuarioSessionService usuarioSessionService = new UsuarioSessionService(request);
+
 		String acao = request.getParameter("acao");
 
 		if (acao != null && acao.equals("Logout")) {
 
-			UsuarioLogadoSession.deslogar(request);
+			usuarioSessionService.deslogar();
 			request.getRequestDispatcher("index.jsp").forward(request, response); // redireciona para página inicial
 			return;
 		}

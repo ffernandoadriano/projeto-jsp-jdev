@@ -5,9 +5,6 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import dao.DaoException;
-import dao.ImagemDao;
-import dao.UsuarioDao;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -15,7 +12,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.Imagem;
 import model.Usuario;
-import session.UsuarioLogadoSession;
+import model.enums.TipoImagem;
+import service.ImagemService;
+import service.ServiceException;
+import service.UsuarioService;
+import service.UsuarioSessionService;
 import util.PasswordUtil;
 import util.StringUtils;
 
@@ -24,10 +25,6 @@ import util.StringUtils;
 public class LoginServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
-
-	private final UsuarioDao usuarioDao = new UsuarioDao();
-
-	private final ImagemDao imagemDao = new ImagemDao();
 
 	private static final Logger LOGGER = Logger.getLogger(LoginServlet.class.getName());
 
@@ -46,7 +43,11 @@ public class LoginServlet extends HttpServlet {
 	/* Atendimento de requisição GET ou POST */
 	private void doIt(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		if (UsuarioLogadoSession.isLogado(request)) {
+		UsuarioSessionService usuarioSessionService = new UsuarioSessionService(request);
+		UsuarioService usuarioService = new UsuarioService();
+		ImagemService imagemService = new ImagemService();
+
+		if (usuarioSessionService.isLogado()) {
 			request.getRequestDispatcher("/principal/principal.jsp").forward(request, response);
 
 		} else {
@@ -58,18 +59,19 @@ public class LoginServlet extends HttpServlet {
 
 				try {
 
-					Optional<Usuario> usuarioOptinal = usuarioDao.buscarPorLogin(login);
+					Optional<Usuario> usuarioOptinal = usuarioService.buscarPorLogin(login);
 
 					if (usuarioOptinal.isPresent()
 							&& PasswordUtil.verifyPassword(senha, usuarioOptinal.get().getSenha())) {
-						
+
 						Usuario usuario = usuarioOptinal.get();
 
-						Imagem fotoPerfil = imagemDao.buscarPorUsuarioIdETipo(usuario.getId(), "perfil");
+						Imagem fotoPerfil = imagemService.buscarPorUsuarioIdETipo(usuario.getId(),
+								TipoImagem.PERFIL.getDescricao());
 
 						// coloca o obj na sessão
-						UsuarioLogadoSession.logar(request, usuario);
-						UsuarioLogadoSession.createFotoPerfil(request, fotoPerfil);
+						usuarioSessionService.logar(usuario);
+						usuarioSessionService.createFotoPerfil(fotoPerfil);
 						response.sendRedirect(request.getContextPath() + "/HomeServlet");
 
 					} else {
@@ -78,7 +80,7 @@ public class LoginServlet extends HttpServlet {
 						forwardIndex(request, response);
 
 					}
-				} catch (DaoException e) {
+				} catch (ServiceException e) {
 					LOGGER.log(Level.SEVERE, "Error", e);
 				}
 
