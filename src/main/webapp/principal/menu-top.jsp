@@ -66,7 +66,7 @@
 									src="<%=request.getContextPath()%>/assets/images/avatar-2.jpg"
 									alt="Generic placeholder image">
 								<div class="media-body">
-									<h5 class="notification-user">${usuarioLogado.login}</h5>
+									<h5 class="notification-user">Admin</h5>
 									<p class="notification-msg">Desenvolvido geração de gráfico e relatórios.</p>
 									<span class="notification-time">há 1 minuto</span>
 								</div>
