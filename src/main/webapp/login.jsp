@@ -47,7 +47,7 @@
 		
 	</style>
 	
-	<title>curso JSP</title>
+	<title>Projeto JSP</title>
 
 	<!-- Google font-->
       <link href="https://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet">
