@@ -40,8 +40,8 @@ public class PasswordUtil {
 	 * @param senha a senha original (em texto puro)
 	 * @return o hash seguro da senha, incluindo o salt
 	 */
-	public static String hashPassword(String senha) {
-		return BCrypt.hashpw(senha, BCrypt.gensalt());
+	public static String hashPassword(String plainPassword) {
+		return BCrypt.hashpw(plainPassword, BCrypt.gensalt());
 	}
 
 	/**
@@ -52,7 +52,7 @@ public class PasswordUtil {
 	 * @return {@code true} se a senha corresponder ao hash, {@code false} caso
 	 *         contrário
 	 */
-	public static boolean verifyPassword(String senha, String senhaHash) {
-		return BCrypt.checkpw(senha, senhaHash);
+	public static boolean verifyPassword(String plainPassword, String hashedPassword) {
+		return BCrypt.checkpw(plainPassword, hashedPassword);
 	}
 }

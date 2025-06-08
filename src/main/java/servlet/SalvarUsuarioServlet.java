@@ -28,6 +28,7 @@ import session.NotificationSession;
 import session.PaginationSession;
 import session.UsuarioLogadoSession;
 import util.PaginacaoUtil;
+import util.PasswordUtil;
 import util.StringUtils;
 
 /**
@@ -134,6 +135,11 @@ public class SalvarUsuarioServlet extends HttpServlet {
 		 */
 		rendaMensal = rendaMensal.replace("R$", "").replace(" ", "").replace(".", "").replace(",", ".");
 
+		/*
+		 * Verifica se a senha digitada é diferente dos caracteres
+		 */
+		boolean deveAtualizarSenha = !senha.equals("********");
+
 		Usuario usuario = new Usuario();
 		usuario.setId(id);
 		usuario.setNome(nome);
@@ -142,7 +148,7 @@ public class SalvarUsuarioServlet extends HttpServlet {
 		usuario.setEmail(email);
 		usuario.setRendaMensal(Double.parseDouble(rendaMensal));
 		usuario.setLogin(login);
-		usuario.setSenha(senha);
+		usuario.setSenha(PasswordUtil.hashPassword(senha));
 		usuario.setPerfil(Perfil.fromId(Integer.valueOf(perfil)));
 		usuario.setEndereco(endereco);
 
@@ -155,7 +161,7 @@ public class SalvarUsuarioServlet extends HttpServlet {
 				acao = "Salvar";
 
 			} else {
-				usuarioDao.atualizarComEndereco(usuario);
+				usuarioDao.atualizarComEndereco(usuario, deveAtualizarSenha);
 				acao = "Atualizar";
 			}
 

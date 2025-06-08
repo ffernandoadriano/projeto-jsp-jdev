@@ -99,7 +99,8 @@ public class CadastrarUsuarioServlet extends HttpServlet {
 		request.setAttribute("perfil", usuario.getPerfil().getId());
 		request.setAttribute("rendaMensal", formatarParaMoeda(usuario.getRendaMensal()));
 		request.setAttribute("login", usuario.getLogin());
-		request.setAttribute("senha", usuario.getSenha());
+		request.setAttribute("senha", "********"); // Caracteres padrão 8: ********
+		// obs: a senha é alterada quando for diferente dos caracteres
 
 		/* Endereço */
 		if (usuario.getEndereco() != null) {

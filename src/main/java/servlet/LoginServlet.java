@@ -16,6 +16,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import model.Imagem;
 import model.Usuario;
 import session.UsuarioLogadoSession;
+import util.PasswordUtil;
+import util.StringUtils;
 
 /*As Servlets são chamado de controller*/
 @WebServlet(urlPatterns = { "/principal/LoginServlet", "/LoginServlet" }) /* Mapeamento de URL que vem da tela */
@@ -43,39 +45,27 @@ public class LoginServlet extends HttpServlet {
 
 	/* Atendimento de requisição GET ou POST */
 	private void doIt(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String url = "/principal/principal.jsp"; /* request.getServletPath(); */
 
-		Usuario usuarioLogado = UsuarioLogadoSession.getUsuarioLogado(request);
-
-		if (usuarioLogado != null) {
-			request.getRequestDispatcher(url).forward(request, response);
+		if (UsuarioLogadoSession.isLogado(request)) {
+			request.getRequestDispatcher("/principal/principal.jsp").forward(request, response);
 
 		} else {
 
 			String login = request.getParameter("login");
 			String senha = request.getParameter("senha");
 
-			if (login != null && senha != null) {
-
-				Usuario usuario = new Usuario();
-				usuario.setLogin(login);
-				usuario.setSenha(senha);
+			if (!StringUtils.isEmpty(login) && !StringUtils.isEmpty(senha)) {
 
 				try {
 
-					if (usuarioDao.validarAutenticacao(usuario)) {
+					Optional<Usuario> usuarioOptinal = usuarioDao.buscarPorLogin(login);
 
-						Optional<Usuario> optionalUser = usuarioDao.buscarPorLogin(login);
-						Imagem fotoPerfil = null;
+					if (usuarioOptinal.isPresent()
+							&& PasswordUtil.verifyPassword(senha, usuarioOptinal.get().getSenha())) {
+						
+						Usuario usuario = usuarioOptinal.get();
 
-						/*
-						 * muda referencia do obj para ter mais informações na sessão (obs: quando o
-						 * usuário não é adm)
-						 */
-						if (optionalUser.isPresent()) {
-							usuario = optionalUser.get();
-							fotoPerfil = imagemDao.buscarPorUsuarioIdETipo(usuario.getId(), "perfil");
-						}
+						Imagem fotoPerfil = imagemDao.buscarPorUsuarioIdETipo(usuario.getId(), "perfil");
 
 						// coloca o obj na sessão
 						UsuarioLogadoSession.logar(request, usuario);

@@ -544,12 +544,19 @@ public class UsuarioDao {
 	/**
 	 * Atualiza os dados do usuário e do seu endereço.
 	 *
-	 * @param usuario o usuário com dados atualizados
+	 * @param usuario o usuário com os dados atualizados
+	 * @param senha   se true, atualiza também a senha do usuário
 	 * @throws DaoException em caso de falha na atualização
 	 */
-	public void atualizarComEndereco(Usuario usuario) throws DaoException {
+	public void atualizarComEndereco(Usuario usuario, boolean senha) throws DaoException {
 
-		String sql = "UPDATE usuario SET nome = ?, email = ?, login = ?, senha = ?, perfil_id = ?, sexo = ?, data_nascimento = ?, renda_mensal = ? WHERE id = ?";
+		String sql;
+
+		if (senha) {
+			sql = "UPDATE usuario SET nome = ?, email = ?, login = ?, senha = ?, perfil_id = ?, sexo = ?, data_nascimento = ?, renda_mensal = ? WHERE id = ?";
+		} else {
+			sql = "UPDATE usuario SET nome = ?, email = ?, login = ?, perfil_id = ?, sexo = ?, data_nascimento = ?, renda_mensal = ? WHERE id = ?";
+		}
 
 		try {
 			// Atualiza o endereço
@@ -557,15 +564,19 @@ public class UsuarioDao {
 
 			// Atualiza o usuário
 			try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-				pstmt.setString(1, usuario.getNome());
-				pstmt.setString(2, usuario.getEmail());
-				pstmt.setString(3, usuario.getLogin());
-				pstmt.setString(4, usuario.getSenha());
-				pstmt.setInt(5, usuario.getPerfil().getId());
-				pstmt.setString(6, usuario.getSexo().getSigla());
-				pstmt.setObject(7, usuario.getDataNascimento());
-				pstmt.setDouble(8, usuario.getRendaMensal());
-				pstmt.setLong(9, usuario.getId());
+				int i = 0;
+
+				pstmt.setString(++i, usuario.getNome());
+				pstmt.setString(++i, usuario.getEmail());
+				pstmt.setString(++i, usuario.getLogin());
+				if (senha) {
+					pstmt.setString(++i, usuario.getSenha());
+				}
+				pstmt.setInt(++i, usuario.getPerfil().getId());
+				pstmt.setString(++i, usuario.getSexo().getSigla());
+				pstmt.setObject(++i, usuario.getDataNascimento());
+				pstmt.setDouble(++i, usuario.getRendaMensal());
+				pstmt.setLong(++i, usuario.getId());
 
 				// Executa a query
 				pstmt.executeUpdate();
