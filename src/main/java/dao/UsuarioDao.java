@@ -116,15 +116,19 @@ public class UsuarioDao {
 	}
 
 	/**
-	 * Busca um usuário por ID, incluindo seu endereço, desde que pertença ao
-	 * usuário logado.
+	 * Busca um usuário pelo seu ID e pelo ID do usuário logado, garantindo que o
+	 * usuário encontrado não seja um administrador (admin = false) e que pertença
+	 * ao usuário logado. Também carrega os dados do endereço associado, se houver.
 	 *
-	 * @param id              ID do usuário a ser buscado
-	 * @param idUsuarioLogado ID do usuário logado
-	 * @return o usuário encontrado ou null se não existir ou não pertencer
-	 * @throws DaoException em caso de erro de acesso ao banco
+	 * @param id              o ID do usuário a ser buscado.
+	 * @param idUsuarioLogado o ID do usuário atualmente logado (proprietário do
+	 *                        usuário buscado).
+	 * @return um {@link Optional} contendo o {@link Usuario} encontrado com seu
+	 *         endereço carregado, ou {@link Optional#empty()} se nenhum usuário for
+	 *         encontrado.
+	 * @throws DaoException se ocorrer um erro ao acessar o banco de dados.
 	 */
-	public Usuario buscarPorIdComEndereco(Long id, Long idUsuarioLogado) throws DaoException {
+	public Optional<Usuario> buscarPorIdComEndereco(Long id, Long idUsuarioLogado) throws DaoException {
 
 		String sql = "SELECT id, nome, data_nascimento, renda_mensal, email, login, senha, perfil_id, sexo, endereco_id FROM usuario WHERE id = ? AND admin is false AND usuario_id = ?";
 
@@ -154,7 +158,7 @@ public class UsuarioDao {
 						usuario.setEndereco(endereco);
 					}
 
-					return usuario;
+					return Optional.of(usuario);
 				}
 
 			}
@@ -163,7 +167,7 @@ public class UsuarioDao {
 			throw new DaoException("Erro ao buscar usuário com endereço: " + e.getMessage(), e);
 		}
 
-		return null;
+		return Optional.empty();
 	}
 
 	/**
