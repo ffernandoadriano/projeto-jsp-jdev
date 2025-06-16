@@ -6,10 +6,10 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import dao.DaoException;
-import dao.ImagemDao;
-import dao.UsuarioDao;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -17,8 +17,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.Imagem;
 import model.Usuario;
+import model.enums.TipoImagem;
+import service.ImagemService;
+import service.ServiceException;
+import service.UsuarioService;
+import service.UsuarioSessionService;
 import session.PaginationSession;
-import session.UsuarioLogadoSession;
 import util.PaginacaoUtil;
 
 @WebServlet("/CadastrarUsuarioServlet")
@@ -26,7 +30,7 @@ public class CadastrarUsuarioServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
-	private UsuarioDao usuarioDao = new UsuarioDao();
+	private static final Logger LOGGER = Logger.getLogger(CadastrarUsuarioServlet.class.getName());
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -39,6 +43,9 @@ public class CadastrarUsuarioServlet extends HttpServlet {
 	}
 
 	private void doIt(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+		UsuarioSessionService usuarioSessionService = new UsuarioSessionService(request);
+		UsuarioService usuarioService = new UsuarioService();
 
 		try {
 
@@ -56,28 +63,41 @@ public class CadastrarUsuarioServlet extends HttpServlet {
 			if (action != null && (action.equalsIgnoreCase("edit") || action.equalsIgnoreCase("save"))) {
 				String userId = request.getParameter("userID");
 
-				Usuario usuario = usuarioDao.buscarPorIdComEndereco(Long.parseLong(userId),
-						UsuarioLogadoSession.getUsuarioLogado(request).getId());
+				Optional<Usuario> usuarioOptional = usuarioService.buscarPorIdComEndereco(Long.valueOf(userId),
+						usuarioSessionService.getUsuarioLogado().getId());
 
-				ImagemDao imagemDao = new ImagemDao();
-				Imagem imagem = imagemDao.buscarPorUsuarioIdETipo(usuario.getId(), "perfil");
+				usuarioOptional.ifPresent(usuario -> {
 
-				request.setAttribute("PerfilFoto", imagem);
-				definirValores(request, usuario);
+					ImagemService imagemService = new ImagemService();
+
+					try {
+
+						Imagem imagem = imagemService.buscarPorUsuarioIdETipo(usuario.getId(),
+								TipoImagem.PERFIL.getDescricao());
+
+						request.setAttribute("PerfilFoto", imagem);
+						definirValores(request, usuario);
+
+					} catch (ServiceException e) {
+						LOGGER.log(Level.SEVERE, "Error", e);
+					}
+
+				});
 			}
 
-			int totalPaginas = usuarioDao.calcularTotalPaginas(UsuarioLogadoSession.getUsuarioLogado(request).getId());
-			int offset = PaginacaoUtil.calcularOffset(Integer.parseInt(paginaAtual), usuarioDao.getLimitePagina());
+			int totalPaginas = usuarioService.calcularTotalPaginas(usuarioSessionService.getUsuarioLogado().getId());
+			int offset = PaginacaoUtil.calcularOffset(Integer.parseInt(paginaAtual), usuarioService.getLimitePagina());
 
-			List<Usuario> usuarios = usuarioDao
-					.listarPorUsuarioLogado(UsuarioLogadoSession.getUsuarioLogado(request).getId(), offset);
+			List<Usuario> usuarios = usuarioService
+					.listarPorUsuarioLogado(usuarioSessionService.getUsuarioLogado().getId(), offset);
 
 			PaginationSession.set(request, "paginacao", paginaAtual);
 			PaginationSession.set(request, "totalPaginas", totalPaginas);
+
 			request.setAttribute("usuarios", usuarios);
 			request.getRequestDispatcher("/principal/cadastrar_usuario.jsp").forward(request, response);
 
-		} catch (DaoException e) {
+		} catch (ServiceException e) {
 			throw new ServletException(e);
 		}
 	}
