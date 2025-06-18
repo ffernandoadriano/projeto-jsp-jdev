@@ -140,7 +140,7 @@ public class UsuarioService {
 				if (usuarioOptional.isEmpty()) {
 					return false; // ou lançar exceção
 				}
-				
+
 				usuarioBanco = usuarioOptional.get();
 			}
 
@@ -177,13 +177,13 @@ public class UsuarioService {
 				usuarioBanco = buscarPorIdComEndereco(id);
 
 			} else {
-				
+
 				Optional<Usuario> usuarioOptional = buscarPorIdComEndereco(id, usuarioSS.getUsuarioLogado().getId());
 
 				if (usuarioOptional.isEmpty()) {
 					return false; // ou lançar exceção se fizer mais sentido no seu domínio
 				}
-				
+
 				usuarioBanco = usuarioOptional.get();
 			}
 
@@ -252,6 +252,37 @@ public class UsuarioService {
 	}
 
 	/**
+	 * Lista os usuários por nome com paginação, vinculados ao usuário logado.
+	 *
+	 * @param nome            nome parcial a ser buscado
+	 * @param idUsuarioLogado ID do usuário logado
+	 * @param offset          posição inicial para paginação
+	 * @return lista de usuários encontrados
+	 * @throws ServiceException em caso de erro
+	 */
+	public List<Usuario> listarTodosPorNome(String nome, Long idUsuarioLogado, int offset) throws ServiceException {
+		try {
+			return usuarioDao.listarTodosPorNome(nome, idUsuarioLogado, offset);
+		} catch (DaoException e) {
+			throw new ServiceException(e);
+		}
+	}
+
+	/**
+	 * Remove um usuário pelo ID, desde que não seja um administrador.
+	 *
+	 * @param id o ID do usuário
+	 * @throws ServiceException em caso de erro ao deletar
+	 */
+	public void deletarPorId(Long id) throws ServiceException {
+		try {
+			usuarioDao.deletarPorId(id);
+		} catch (DaoException e) {
+			throw new ServiceException(e);
+		}
+	}
+
+	/**
 	 * Calcula o número total de páginas de usuários cadastrados pelo usuário
 	 * logado.
 	 *
@@ -262,6 +293,23 @@ public class UsuarioService {
 	public int calcularTotalPaginas(Long idUsuarioLogado) throws ServiceException {
 		try {
 			return usuarioDao.calcularTotalPaginas(idUsuarioLogado);
+		} catch (DaoException e) {
+			throw new ServiceException(e);
+		}
+	}
+
+	/**
+	 * Calcula o total de páginas filtrando pelo nome, considerando o usuário
+	 * logado.
+	 *
+	 * @param nome            nome parcial
+	 * @param idUsuarioLogado ID do usuário logado
+	 * @return total de páginas
+	 * @throws ServiceException em caso de erro
+	 */
+	public int calcularTotalPaginasPorNome(String nome, Long idUsuarioLogado) throws ServiceException {
+		try {
+			return usuarioDao.calcularTotalPaginasPorNome(nome, idUsuarioLogado);
 		} catch (DaoException e) {
 			throw new ServiceException(e);
 		}
