@@ -2,13 +2,13 @@ package servlet;
 
 import java.io.IOException;
 
-import dao.DaoException;
-import dao.UsuarioDao;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import service.ServiceException;
+import service.UsuarioService;
 
 @WebServlet("/ExcluirUsuarioServlet")
 public class ExcluirUsuarioServlet extends HttpServlet {
@@ -46,10 +46,10 @@ public class ExcluirUsuarioServlet extends HttpServlet {
 	private void deletarRegistro(Long id) throws ServletException {
 		try {
 
-			UsuarioDao usuarioDao = new UsuarioDao();
-			usuarioDao.deletarPorId(id);
+			UsuarioService usuarioService = new UsuarioService();
+			usuarioService.deletarPorId(id);
 
-		} catch (DaoException | NumberFormatException e) {
+		} catch (ServiceException e) {
 			throw new ServletException(e);
 		}
 	}
