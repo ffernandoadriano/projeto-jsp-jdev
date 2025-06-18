@@ -9,8 +9,6 @@ import java.util.Base64;
 import java.util.List;
 
 import dao.DaoException;
-import dao.ImagemDao;
-import dao.UsuarioDao;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -23,10 +21,13 @@ import model.Imagem;
 import model.Usuario;
 import model.enums.Perfil;
 import model.enums.Sexo;
-import session.ImagemBase64Session;
+import service.ImagemService;
+import service.ImagemUploadSessionService;
+import service.ServiceException;
+import service.UsuarioService;
+import service.UsuarioSessionService;
 import session.NotificationSession;
 import session.PaginationSession;
-import session.UsuarioLogadoSession;
 import util.PaginacaoUtil;
 import util.PasswordUtil;
 import util.StringUtils;
@@ -43,11 +44,9 @@ public class SalvarUsuarioServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
-	private HttpServletRequest request;
+	private final transient UsuarioService usuarioService = new UsuarioService();
 
-	private final UsuarioDao usuarioDao = new UsuarioDao();
-
-	private final ImagemDao imagemDao = new ImagemDao();
+	private final transient ImagemService imagemService = new ImagemService();
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -61,10 +60,12 @@ public class SalvarUsuarioServlet extends HttpServlet {
 
 	private void doIt(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		this.request = request;
+		UsuarioSessionService usuarioSS = new UsuarioSessionService(request);
+		ImagemUploadSessionService imagemUSS = new ImagemUploadSessionService(request);
 
 		// ação 'editProfile' editar perfil usuario
 		String action = request.getParameter("action");
+
 		// Extrai os dados digitados no formulário
 		String idParam = request.getParameter("id");
 		// null não pode ser passado diretamente para Long.valueOf()
@@ -91,29 +92,29 @@ public class SalvarUsuarioServlet extends HttpServlet {
 		String uf = request.getParameter("uf").trim();
 
 		// Foto Perfil
-		Imagem imagemPerfil = carregarImagemPerfil(request, id);
+		Imagem imagemPerfil = carregarImagemPerfil(request, id, imagemUSS);
 
 		// Faz a validação dos dados digitados
-		validarNome(nome);
-		validarSexo(sexo);
-		validarEmail(action, email, id);
-		validarPerfil(perfil);
-		validarLogin(action, login, id);
-		validarSenha(senha);
+		validarNome(nome, request);
+		validarSexo(sexo, request);
+		validarEmail(action, email, id, request, usuarioSS);
+		validarPerfil(perfil, request);
+		validarLogin(action, login, id, request, usuarioSS);
+		validarSenha(senha, request);
 
 		// Caso tenha ocorrido algum erro de validação, coloca as informações novamente
 		// na request (para permitir que o formulário
 		// exiba os campos preenchidos) e volta para a mesma tela.
-		if (existemErros()) {
-			definirValores(idParam, nome, dataNascimento, sexo, email, perfil, rendaMensal, login, senha);
-			definirValoresEndereco(cep, rua, numero, bairro, cidade, estado, uf);
+		if (existemErros(request)) {
+			definirValores(idParam, nome, dataNascimento, sexo, email, perfil, rendaMensal, login, senha, request);
+			definirValoresEndereco(cep, rua, numero, bairro, cidade, estado, uf, request);
 
 			if (imagemPerfil != null) {
-				definirValoresFotoPerfil(imagemPerfil);
+				definirValoresFotoPerfil(imagemPerfil, imagemUSS);
 			}
 
 			// Mostra a lista de usuários
-			request.setAttribute("usuarios", getUsuarios());
+			request.setAttribute("usuarios", getUsuarios(usuarioSS, request));
 
 			request.getRequestDispatcher("/principal/cadastrar_usuario.jsp").forward(request, response);
 			return;
@@ -152,21 +153,12 @@ public class SalvarUsuarioServlet extends HttpServlet {
 		usuario.setPerfil(Perfil.fromId(Integer.valueOf(perfil)));
 		usuario.setEndereco(endereco);
 
-		String acao;
-
 		try {
 
-			if (usuario.getId() == null) {
-				usuarioDao.inserir(usuario, UsuarioLogadoSession.getUsuarioLogado(request).getId());
-				acao = "Salvar";
-
-			} else {
-				usuarioDao.atualizarComEndereco(usuario, deveAtualizarSenha);
-				acao = "Atualizar";
-			}
+			String acao = usuarioService.salvarOuAtualizarUsuario(usuario, usuarioSS, deveAtualizarSenha);
 
 			if (imagemPerfil != null) {
-				salvarFotoPerfil(imagemPerfil, usuario);
+				salvarFotoPerfil(imagemPerfil, usuario, imagemUSS);
 			}
 
 			NotificationSession.set(request, acao, "ok");
@@ -175,7 +167,7 @@ public class SalvarUsuarioServlet extends HttpServlet {
 
 			if (!StringUtils.isEmpty(action)) {
 				redirecionamento = "/PerfilUsuarioServlet";
-				atualizarDadosUsuarioLogado(usuario, imagemPerfil, request);
+				atualizarDadosUsuarioLogado(usuario, imagemPerfil, usuarioSS);
 
 			} else {
 				redirecionamento = "/CadastrarUsuarioServlet";
@@ -183,14 +175,16 @@ public class SalvarUsuarioServlet extends HttpServlet {
 
 			response.sendRedirect(
 					request.getContextPath() + redirecionamento + "?userID=" + usuario.getId() + "&action=save");
-
-		} catch (DaoException e) {
+		} catch (ServiceException | DaoException e) {
 			throw new ServletException(e);
 		}
+
 	}
 
-	private void atualizarDadosUsuarioLogado(Usuario usuario, Imagem imagemPerfil, HttpServletRequest request) {
-		Usuario usuarioLogado = UsuarioLogadoSession.getUsuarioLogado(request);
+	private void atualizarDadosUsuarioLogado(Usuario usuario, Imagem imagemPerfil,
+			UsuarioSessionService usuarioSessionService) {
+
+		Usuario usuarioLogado = usuarioSessionService.getUsuarioLogado();
 		usuarioLogado.setNome(usuario.getNome());
 		usuarioLogado.setDataNascimento(usuario.getDataNascimento());
 		usuarioLogado.setSexo(usuario.getSexo());
@@ -202,8 +196,9 @@ public class SalvarUsuarioServlet extends HttpServlet {
 		usuarioLogado.setAdmin(usuario.isAdmin());
 		usuarioLogado.setEndereco(usuario.getEndereco());
 		usuarioLogado.setTelefones(usuario.getTelefones());
+
 		// Foto Perfil
-		UsuarioLogadoSession.createFotoPerfil(request, imagemPerfil);
+		usuarioSessionService.createFotoPerfil(imagemPerfil);
 	}
 
 	/**
@@ -213,7 +208,7 @@ public class SalvarUsuarioServlet extends HttpServlet {
 	 * @throws IOException
 	 */
 	private void definirValores(String id, String nome, String dataNascimento, String sexo, String email, String perfil,
-			String rendaMensal, String login, String senha) throws IOException {
+			String rendaMensal, String login, String senha, HttpServletRequest request) {
 		request.setAttribute("id", id);
 		request.setAttribute("nome", nome);
 		request.setAttribute("dataNascimento", dataNascimento);
@@ -225,17 +220,16 @@ public class SalvarUsuarioServlet extends HttpServlet {
 		request.setAttribute("senha", senha);
 	}
 
-	private void definirValoresFotoPerfil(Imagem imagem) {
+	private void definirValoresFotoPerfil(Imagem imagem, ImagemUploadSessionService imagemUSS) {
 
-		ImagemBase64Session.create(request, imagem);
+		imagemUSS.create(imagem);
 
 		// armazena os dados na sessão para reuso
-		ImagemBase64Session.createTemp(request, imagem);
-
+		imagemUSS.createTemp(imagem);
 	}
 
 	private void definirValoresEndereco(String cep, String rua, String numero, String bairro, String cidade,
-			String estado, String uf) {
+			String estado, String uf, HttpServletRequest request) {
 		request.setAttribute("cep", cep);
 		request.setAttribute("rua", rua);
 		request.setAttribute("numero", numero);
@@ -243,7 +237,6 @@ public class SalvarUsuarioServlet extends HttpServlet {
 		request.setAttribute("cidade", cidade);
 		request.setAttribute("estado", estado);
 		request.setAttribute("uf", uf);
-
 	}
 
 	/**
@@ -251,13 +244,13 @@ public class SalvarUsuarioServlet extends HttpServlet {
 	 * 
 	 * @param nome
 	 */
-	private void validarNome(String nome) {
+	private void validarNome(String nome, HttpServletRequest request) {
 		if (StringUtils.isEmpty(nome)) {
-			adicionarErro("O nome é obrigatório");
+			adicionarErro("O nome é obrigatório", request);
 		}
 
 		if (nome.length() > 255) {
-			adicionarErro("O nome digitado é muito grande");
+			adicionarErro("O nome digitado é muito grande", request);
 		}
 	}
 
@@ -266,9 +259,9 @@ public class SalvarUsuarioServlet extends HttpServlet {
 	 * 
 	 * @param sexo
 	 */
-	private void validarSexo(String sexo) {
+	private void validarSexo(String sexo, HttpServletRequest request) {
 		if (StringUtils.isEmpty(sexo)) {
-			adicionarErro("O sexo é obrigatório");
+			adicionarErro("O sexo é obrigatório", request);
 		}
 	}
 
@@ -278,51 +271,31 @@ public class SalvarUsuarioServlet extends HttpServlet {
 	 * @param email
 	 * @throws ServletException
 	 */
-	private void validarEmail(String acao, String email, Long id) throws ServletException {
+	private void validarEmail(String acao, String email, Long id, HttpServletRequest request,
+			UsuarioSessionService usuarioSS) throws ServletException {
+
 		if (StringUtils.isEmpty(email)) {
-			adicionarErro("O e-mail é obrigatório");
+			adicionarErro("O e-mail é obrigatório", request);
 		}
 
 		if (email.length() > 320) {
-			adicionarErro("O e-mail digitado é muito grande");
+			adicionarErro("O e-mail digitado é muito grande", request);
 		}
 
 		// Valida com base em uma expressão regular
 		if (!email.matches("[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}")) {
-			adicionarErro("O e-mail digitado não tem formato válido");
+			adicionarErro("O e-mail digitado não tem formato válido", request);
 		}
 
 		try {
-			boolean emailEmUso = false;
 
-			// Verifica UPDATE de formulário
-			if (id != null) {
-				Usuario usuarioBanco;
-
-				if (!StringUtils.isEmpty(acao)) {
-					usuarioBanco = usuarioDao.buscarPorIdComEndereco(id);
-
-				} else {
-					usuarioBanco = usuarioDao.buscarPorIdComEndereco(id,
-							UsuarioLogadoSession.getUsuarioLogado(request).getId());
-				}
-
-				String emailBanco = usuarioBanco.getEmail();
-
-				if (!emailBanco.equalsIgnoreCase(email)) {
-					emailEmUso = usuarioDao.existeEmail(email);
-				}
-
-				// Verifica INSERT formulários
-			} else {
-				emailEmUso = usuarioDao.existeEmail(email);
-			}
+			boolean emailEmUso = usuarioService.isEmailEmUso(id, email, acao, usuarioSS);
 
 			if (emailEmUso) {
-				adicionarErro("O e-mail informado já está cadastrado. Por favor, utilize outro.");
+				adicionarErro("O e-mail informado já está cadastrado. Por favor, utilize outro.", request);
 			}
 
-		} catch (DaoException e) {
+		} catch (ServiceException e) {
 			throw new ServletException(e);
 		}
 	}
@@ -332,9 +305,9 @@ public class SalvarUsuarioServlet extends HttpServlet {
 	 * 
 	 * @param perfil
 	 */
-	private void validarPerfil(String perfil) {
+	private void validarPerfil(String perfil, HttpServletRequest request) {
 		if (perfil == null || perfil.equals("0")) {
-			adicionarErro("Selecione um perfil válido.");
+			adicionarErro("Selecione um perfil válido.", request);
 		}
 	}
 
@@ -345,45 +318,24 @@ public class SalvarUsuarioServlet extends HttpServlet {
 	 * @throws ServletException
 	 * 
 	 */
-	private void validarLogin(String acao, String login, Long id) throws ServletException {
+	private void validarLogin(String acao, String login, Long id, HttpServletRequest request,
+			UsuarioSessionService usuarioSS) throws ServletException {
 		if (StringUtils.isEmpty(login)) {
-			adicionarErro("O login é obrigatório");
+			adicionarErro("O login é obrigatório", request);
 		}
 
 		if (login.length() > 50) {
-			adicionarErro("O login digitado é muito grande");
+			adicionarErro("O login digitado é muito grande", request);
 		}
 
 		try {
-			boolean loginEmUso = false;
-
-			// Verifica UPDATE de formulário
-			if (id != null) {
-				Usuario usuarioBanco;
-
-				if (!StringUtils.isEmpty(acao)) {
-					usuarioBanco = usuarioDao.buscarPorIdComEndereco(id);
-
-				} else {
-					usuarioBanco = usuarioDao.buscarPorIdComEndereco(id,
-							UsuarioLogadoSession.getUsuarioLogado(request).getId());
-				}
-
-				String loginBanco = usuarioBanco.getLogin();
-
-				if (!loginBanco.equalsIgnoreCase(login)) {
-					loginEmUso = usuarioDao.existeLogin(login);
-				}
-				// Verifica INSERT formulários
-			} else {
-				loginEmUso = usuarioDao.existeLogin(login);
-			}
+			boolean loginEmUso = usuarioService.isLoginEmUso(id, login, acao, usuarioSS);
 
 			if (loginEmUso) {
-				adicionarErro("O login informado já está em uso. Por favor, escolha outro.");
+				adicionarErro("O login informado já está em uso. Por favor, escolha outro.", request);
 			}
 
-		} catch (DaoException e) {
+		} catch (ServiceException e) {
 			throw new ServletException(e);
 		}
 	}
@@ -393,13 +345,13 @@ public class SalvarUsuarioServlet extends HttpServlet {
 	 * 
 	 * @param senha
 	 */
-	private void validarSenha(String senha) {
+	private void validarSenha(String senha, HttpServletRequest request) {
 		if (StringUtils.isEmpty(senha)) {
-			adicionarErro("O senha é obrigatório");
+			adicionarErro("O senha é obrigatório", request);
 		}
 
 		if (senha.length() > 50) {
-			adicionarErro("O senha digitado é muito grande");
+			adicionarErro("O senha digitado é muito grande", request);
 		}
 	}
 
@@ -410,7 +362,7 @@ public class SalvarUsuarioServlet extends HttpServlet {
 	 * @param erro
 	 */
 	@SuppressWarnings("unchecked")
-	private void adicionarErro(String erro) {
+	private void adicionarErro(String erro, HttpServletRequest request) {
 		List<String> erros = (List<String>) request.getAttribute("erros");
 		if (erros == null) {
 			erros = new ArrayList<>();
@@ -426,7 +378,7 @@ public class SalvarUsuarioServlet extends HttpServlet {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	private boolean existemErros() {
+	private boolean existemErros(HttpServletRequest request) {
 		List<String> erros = (List<String>) request.getAttribute("erros");
 		if (erros == null || erros.isEmpty()) {
 			return false;
@@ -434,11 +386,13 @@ public class SalvarUsuarioServlet extends HttpServlet {
 		return true;
 	}
 
-	private Imagem carregarImagemPerfil(HttpServletRequest request, Long usuairoId)
-			throws IOException, ServletException {
+	private Imagem carregarImagemPerfil(HttpServletRequest request, Long usuairoId,
+			ImagemUploadSessionService imagemUSS) throws IOException, ServletException {
+
 		// Imagem Perfil
 		Part filePart = request.getPart("filePerfilFoto"); // Pega a foto da tela do InputFile
-		Imagem tempImagem = ImagemBase64Session.getTemp(request);
+		Imagem tempImagem = imagemUSS.getTemp();
+
 		// Local do tipo da imagem
 		String tipo = request.getParameter("tipoImagem");
 
@@ -455,9 +409,9 @@ public class SalvarUsuarioServlet extends HttpServlet {
 			// carrega o preview da imagem no formulário caso seja um usuário já cadastrado
 			if (usuairoId != null) {
 				try {
-					Imagem imagem = imagemDao.buscarPorUsuarioIdETipo(usuairoId, tipo);
-					ImagemBase64Session.create(request, imagem);
-				} catch (DaoException e) {
+					Imagem imagem = imagemService.buscarPorUsuarioIdETipo(usuairoId, tipo);
+					imagemUSS.create(imagem);
+				} catch (ServiceException e) {
 					throw new ServletException(e);
 				}
 			}
@@ -468,24 +422,22 @@ public class SalvarUsuarioServlet extends HttpServlet {
 
 	}
 
-	private void salvarFotoPerfil(Imagem imagem, Usuario usuario) throws DaoException {
-
+	private void salvarFotoPerfil(Imagem imagem, Usuario usuario, ImagemUploadSessionService imagemUSS)
+			throws DaoException {
 		try {
 
 			// adiciona o usuário na imagem
 			imagem.setUsuario(usuario);
 
-			if (imagemDao.existeFotoPerfil(usuario.getId())) {
-				imagemDao.atualizar(imagem);
-			} else {
-				imagemDao.inserir(imagem);
-			}
+			boolean existeFotoPerfil = imagemService.existeFotoPerfil(usuario.getId());
+
+			imagemService.salvarOuAtualizarImagem(existeFotoPerfil, imagem);
 
 			// cria a sessão da imagem
-			ImagemBase64Session.create(request, imagem);
-			ImagemBase64Session.removerTemp(request);
+			imagemUSS.create(imagem);
+			imagemUSS.removerTemp();
 
-		} catch (Exception e) {
+		} catch (ServiceException e) {
 			throw new DaoException(e);
 		}
 	}
@@ -507,19 +459,20 @@ public class SalvarUsuarioServlet extends HttpServlet {
 		return String.format("data:%s;base64,%s", contentType, Base64.getEncoder().encodeToString(image));
 	}
 
-	private List<Usuario> getUsuarios() throws ServletException {
+	private List<Usuario> getUsuarios(UsuarioSessionService usuarioSS, HttpServletRequest request)
+			throws ServletException {
 		try {
-			return usuarioDao.listarPorUsuarioLogado(UsuarioLogadoSession.getUsuarioLogado(request).getId(), offset());
-		} catch (DaoException e) {
+			return usuarioService.listarPorUsuarioLogado(usuarioSS.getUsuarioLogado().getId(), offset(request));
+		} catch (ServiceException e) {
 			throw new ServletException(e);
 		}
 	}
 
-	private int offset() {
-		return PaginacaoUtil.calcularOffset(paginaAtual(), usuarioDao.getLimitePagina());
+	private int offset(HttpServletRequest request) {
+		return PaginacaoUtil.calcularOffset(paginaAtual(request), usuarioService.getLimitePagina());
 	}
 
-	private int paginaAtual() {
+	private int paginaAtual(HttpServletRequest request) {
 		return Integer.parseInt(PaginationSession.get(request, "paginacao"));
 	}
 }
