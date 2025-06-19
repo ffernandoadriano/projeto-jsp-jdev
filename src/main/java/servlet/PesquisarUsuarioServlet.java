@@ -6,23 +6,21 @@ import java.util.List;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-import dao.DaoException;
-import dao.UsuarioDao;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.Usuario;
-import session.UsuarioLogadoSession;
+import service.ServiceException;
+import service.UsuarioService;
+import service.UsuarioSessionService;
 import util.PaginacaoUtil;
 
 @WebServlet("/PesquisarUsuarioServlet")
 public class PesquisarUsuarioServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
-
-	private static UsuarioDao usuarioDao = new UsuarioDao();
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -36,17 +34,20 @@ public class PesquisarUsuarioServlet extends HttpServlet {
 
 	private void doIt(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+		UsuarioService usuarioService = new UsuarioService();
+		UsuarioSessionService usuarioSS = new UsuarioSessionService(request);
+
 		String nome = request.getParameter("nome");
 		String pagina = request.getParameter("pagina");
 		int numPagina = pagina != null ? Integer.parseInt(pagina) : 0;
 
 		try {
-			int totalPaginasPorNome = usuarioDao.calcularTotalPaginasPorNome(nome,
-					UsuarioLogadoSession.getUsuarioLogado(request).getId());
-			int offset = PaginacaoUtil.calcularOffset(numPagina, usuarioDao.getLimitePagina());
+			int totalPaginasPorNome = usuarioService.calcularTotalPaginasPorNome(nome,
+					usuarioSS.getUsuarioLogado().getId());
+			int offset = PaginacaoUtil.calcularOffset(numPagina, usuarioService.getLimitePagina());
 
-			List<Usuario> usuarios = usuarioDao.listarTodosPorNome(nome,
-					UsuarioLogadoSession.getUsuarioLogado(request).getId(), offset);
+			List<Usuario> usuarios = usuarioService.listarTodosPorNome(nome, usuarioSS.getUsuarioLogado().getId(),
+					offset);
 
 			ObjectMapper mapper = new ObjectMapper();
 			mapper.registerModule(new JavaTimeModule());
@@ -66,7 +67,7 @@ public class PesquisarUsuarioServlet extends HttpServlet {
 			response.getWriter().write(json);
 			response.getWriter().flush();
 
-		} catch (DaoException e) {
+		} catch (ServiceException e) {
 			throw new ServletException(e);
 		}
 	}
