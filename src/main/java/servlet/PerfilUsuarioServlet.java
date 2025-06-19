@@ -1,5 +1,11 @@
 package servlet;
 
+import java.io.IOException;
+import java.text.NumberFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -7,13 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.Imagem;
 import model.Usuario;
-import session.UsuarioLogadoSession;
-
-import java.io.IOException;
-import java.text.NumberFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
+import service.UsuarioSessionService;
 
 @WebServlet("/PerfilUsuarioServlet")
 public class PerfilUsuarioServlet extends HttpServlet {
@@ -32,8 +32,11 @@ public class PerfilUsuarioServlet extends HttpServlet {
 	}
 
 	private void doIt(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Usuario usuarioLogado = UsuarioLogadoSession.getUsuarioLogado(request);
-		String imagem64Perfil = UsuarioLogadoSession.getFotoPerfil(request);
+		UsuarioSessionService usuarioSS = new UsuarioSessionService(request);
+
+		Usuario usuarioLogado = usuarioSS.getUsuarioLogado();
+		String imagem64Perfil = usuarioSS.getFotoPerfil();
+		
 		definirValores(request, usuarioLogado, imagem64Perfil);
 
 		request.getRequestDispatcher("principal/perfil_usuario.jsp").forward(request, response);
