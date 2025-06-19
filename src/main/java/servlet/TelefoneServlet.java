@@ -3,9 +3,6 @@ package servlet;
 import java.io.IOException;
 import java.util.List;
 
-import dao.DaoException;
-import dao.TelefoneDao;
-import dao.UsuarioDao;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -13,6 +10,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.Telefone;
 import model.Usuario;
+import service.ServiceException;
+import service.TelefoneService;
+import service.UsuarioService;
 
 @WebServlet("/TelefoneServlet")
 public class TelefoneServlet extends HttpServlet {
@@ -32,39 +32,40 @@ public class TelefoneServlet extends HttpServlet {
 
 	private void doIt(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+		UsuarioService usuarioService = new UsuarioService();
+		TelefoneService telefoneService = new TelefoneService();
+
 		String id = request.getParameter("id");
 		String action = request.getParameter("action");
 
 		try {
-			UsuarioDao usuarioDao = new UsuarioDao();
-			TelefoneDao telefoneDao = new TelefoneDao();
+
 			Usuario usuario = null;
-			List<Telefone> telefones = null;
 
 			if ("edit".equalsIgnoreCase(action)) {
 				String foneId = request.getParameter("foneID");
 
-				Telefone telefone = telefoneDao.buscarPorId(Long.parseLong(foneId));
-				usuario = usuarioDao.buscarPorIdComEndereco(telefone.getUsuario().getId());
+				Telefone telefone = telefoneService.buscarPorId(Long.parseLong(foneId));
+				usuario = usuarioService.buscarPorIdComEndereco(telefone.getUsuario().getId());
 
 				definirValores(request, usuario, telefone);
-				telefones = telefoneDao.listarTodosPorUsuarioId(usuario.getId());
 
 			} else if (id != null) {
-				usuario = usuarioDao.buscarPorIdComEndereco(Long.parseLong(id));
+				usuario = usuarioService.buscarPorIdComEndereco(Long.parseLong(id));
 
 				definirValores(request, usuario);
-				telefones = telefoneDao.listarTodosPorUsuarioId(usuario.getId());
 
 			} else {
 				response.sendRedirect(request.getContextPath() + "/CadastrarUsuarioServlet");
 				return;
 			}
 
+			List<Telefone> telefones = telefoneService.listarTodosPorUsuarioId(usuario.getId());
+
 			request.setAttribute("telefones", telefones);
 			request.getRequestDispatcher("/principal/telefone.jsp").forward(request, response);
-			
-		} catch (DaoException e) {
+
+		} catch (ServiceException e) {
 			throw new ServletException(e);
 		}
 
