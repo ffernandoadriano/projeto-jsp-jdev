@@ -2,13 +2,13 @@ package servlet;
 
 import java.io.IOException;
 
-import dao.DaoException;
-import dao.TelefoneDao;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import service.ServiceException;
+import service.TelefoneService;
 
 @WebServlet("/ExcluirTelefoneServlet")
 public class ExcluirTelefoneServlet extends HttpServlet {
@@ -31,11 +31,11 @@ public class ExcluirTelefoneServlet extends HttpServlet {
 		String idUser = request.getParameter("idUser");
 
 		try {
-			TelefoneDao telefoneDao = new TelefoneDao();
-			telefoneDao.deletarPorId(Long.parseLong(idTel));
-			
+			TelefoneService telefoneService = new TelefoneService();
+			telefoneService.deletarPorId(Long.parseLong(idTel));
+
 			response.sendRedirect(request.getContextPath() + "/TelefoneServlet?id=" + idUser);
-		} catch (DaoException e) {
+		} catch (ServiceException e) {
 			throw new ServletException(e);
 		}
 	}
