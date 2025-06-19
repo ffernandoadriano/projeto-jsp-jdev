@@ -236,6 +236,35 @@ public class UsuarioService {
 	}
 
 	/**
+	 * Retorna uma lista de usuários filtrados com base no usuário logado e em um
+	 * intervalo de datas de nascimento.
+	 *
+	 * <p>
+	 * Este método consulta a base de dados por meio da camada DAO, retornando os
+	 * usuários associados ao usuário logado e que tenham data de nascimento dentro
+	 * do intervalo especificado.
+	 * </p>
+	 *
+	 * @param idUsuarioLogado ID do usuário logado que está realizando a consulta.
+	 * @param dataNascInicial Data de nascimento inicial no formato {@code String}
+	 *                        (ex: "1990-01-01").
+	 * @param dataNascFinal   Data de nascimento final no formato {@code String}
+	 *                        (ex: "2000-12-31").
+	 * @return Lista de objetos {@link Usuario} que atendem aos critérios
+	 *         informados.
+	 * @throws ServiceException Se ocorrer um erro ao acessar a camada de
+	 *                          persistência.
+	 */
+	public List<Usuario> listarPorUsuarioLogado(Long idUsuarioLogado, String dataNascInicial, String dataNascFinal)
+			throws ServiceException {
+		try {
+			return usuarioDao.listarPorUsuarioLogado(idUsuarioLogado, dataNascInicial, dataNascFinal);
+		} catch (DaoException e) {
+			throw new ServiceException(e);
+		}
+	}
+
+	/**
 	 * Lista todos os usuários vinculados ao usuário logado com paginação.
 	 *
 	 * @param idUsuarioLogado ID do usuário logado
@@ -246,6 +275,29 @@ public class UsuarioService {
 	public List<Usuario> listarPorUsuarioLogado(Long idUsuarioLogado, int offset) throws ServiceException {
 		try {
 			return usuarioDao.listarPorUsuarioLogado(idUsuarioLogado, offset);
+		} catch (DaoException e) {
+			throw new ServiceException(e);
+		}
+	}
+
+	/**
+	 * Lista todos os usuários não administradores associados ao usuário logado
+	 * informado.
+	 * <p>
+	 * A consulta retorna usuários cujo campo {@code admin} é {@code false} e que
+	 * possuem o {@code usuario_id} igual ao ID do usuário logado fornecido. Os
+	 * dados retornados incluem informações básicas do usuário e seus telefones
+	 * associados.
+	 * </p>
+	 *
+	 * @param idUsuarioLogado o ID do usuário logado (usado para filtrar os usuários
+	 *                        associados)
+	 * @return uma lista de {@link Usuario} contendo os usuários encontrados
+	 * @throws ServiceException se ocorrer um erro ao acessar o banco de dados
+	 */
+	public List<Usuario> listarPorUsuarioLogado(Long idUsuarioLogado) throws ServiceException {
+		try {
+			return usuarioDao.listarPorUsuarioLogado(idUsuarioLogado);
 		} catch (DaoException e) {
 			throw new ServiceException(e);
 		}
