@@ -51,7 +51,7 @@
 ### - **Principais dependências usadas no projeto:**
 ```
 <dependencies>
-  <dependency>
+  	<dependency>
 	    <groupId>jakarta.platform</groupId>
 	    <artifactId>jakarta.jakartaee-web-api</artifactId>
 	    <version>11.0.0-M5</version>
