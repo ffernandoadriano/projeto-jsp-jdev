@@ -20,7 +20,7 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import model.Usuario;
-import session.UsuarioLogadoSession;
+import service.UsuarioSessionService;
 
 @WebFilter("/*") /* intercepta todas as requisições do mapeamento */
 public class AutenticacaoFilter implements Filter {
@@ -68,12 +68,15 @@ public class AutenticacaoFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
+		
 
 		HttpServletRequest req = (HttpServletRequest) request;
 		String urlParaAutenticar = req.getServletPath(); // url que está sendo acessado
 
+		UsuarioSessionService usuarioSS = new UsuarioSessionService(req);
+		
 		// session retorna um objeto
-		Usuario usuario = UsuarioLogadoSession.getUsuarioLogado(req);
+		Usuario usuario = usuarioSS.getUsuarioLogado();
 
 		// Define quais URLs são públicas
 		boolean urlPublica = urlParaAutenticar.startsWith("/index") || urlParaAutenticar.startsWith("/Login")
