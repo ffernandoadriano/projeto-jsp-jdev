@@ -1,4 +1,4 @@
-# 🚧 Projeto com Java Server Pages (JSP)
+# 🚧 Projeto com JDBC e Java Server Pages (JSP)
 
 ## 📚 Conhecimentos aplicados
 ### - **Tópicos POO:**
