@@ -9,15 +9,15 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import dao.DaoException;
-import dao.UsuarioDao;
 import dto.MediaSalarialDTO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import session.UsuarioLogadoSession;
+import service.ServiceException;
+import service.UsuarioService;
+import service.UsuarioSessionService;
 import util.StringUtils;
 
 @WebServlet("/GraficoMediaSalarialServlet")
@@ -37,14 +37,15 @@ public class GraficoMediaSalarialServlet extends HttpServlet {
 	}
 
 	private void doIt(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+
 		String dataInicial = request.getParameter("dataInicial");
 		String dataFinal = request.getParameter("dataFinal");
 		String acao = request.getParameter("acao");
 
 		if (acao != null && acao.equalsIgnoreCase("gerarGrafico")) {
 
-			UsuarioDao usuarioDao = new UsuarioDao();
+			UsuarioService usuarioService = new UsuarioService();
+			UsuarioSessionService usuarioSS = new UsuarioSessionService(request);
 
 			try {
 				List<MediaSalarialDTO> mediaSalarialPorPerfil;
@@ -59,13 +60,13 @@ public class GraficoMediaSalarialServlet extends HttpServlet {
 					LocalDate dataIni = LocalDate.parse(dataInicial, formatter);
 					LocalDate dataFin = LocalDate.parse(dataFinal, formatter);
 
-					mediaSalarialPorPerfil = usuarioDao.listarMediaSalarialPorPerfil(
-							UsuarioLogadoSession.getUsuarioLogado(request).getId(), dataIni, dataFin);
+					mediaSalarialPorPerfil = usuarioService
+							.listarMediaSalarialPorPerfil(usuarioSS.getUsuarioLogado().getId(), dataIni, dataFin);
 
 				} else {
 
-					mediaSalarialPorPerfil = usuarioDao
-							.listarMediaSalarialPorPerfil(UsuarioLogadoSession.getUsuarioLogado(request).getId());
+					mediaSalarialPorPerfil = usuarioService
+							.listarMediaSalarialPorPerfil(usuarioSS.getUsuarioLogado().getId());
 
 				}
 
@@ -80,7 +81,7 @@ public class GraficoMediaSalarialServlet extends HttpServlet {
 				response.getWriter().write(json);
 				response.getWriter().flush();
 
-			} catch (DaoException e) {
+			} catch (ServiceException e) {
 				throw new ServletException(e);
 			}
 
