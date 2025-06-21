@@ -1,10 +1,12 @@
 package service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 import dao.DaoException;
 import dao.UsuarioDao;
+import dto.MediaSalarialDTO;
 import model.Usuario;
 import util.StringUtils;
 
@@ -374,6 +376,59 @@ public class UsuarioService {
 	 */
 	public int getLimitePagina() {
 		return usuarioDao.getLimitePagina();
+	}
+
+	/**
+	 * Retorna uma lista com a média salarial agrupada por perfil, considerando
+	 * apenas os usuários subordinados ao usuário logado (usuário pai) e cuja data
+	 * de nascimento esteja dentro do intervalo especificado.
+	 * <p>
+	 * A média é calculada com duas casas decimais ({@code ROUND(AVG(...), 2)}) e
+	 * agrupada por {@code perfil_id}.
+	 * <p>
+	 * Os resultados são ordenados pela média salarial.
+	 *
+	 * @param idUsuarioLogado ID do usuário logado (usuário pai), utilizado como
+	 *                        filtro.
+	 * @param dataInicial     Data inicial do intervalo de nascimento dos usuários a
+	 *                        serem considerados.
+	 * @param dataFinal       Data final do intervalo de nascimento dos usuários a
+	 *                        serem considerados.
+	 * @return Lista de {@link MediaSalarialDTO} contendo a média salarial por
+	 *         perfil dos usuários no intervalo informado.
+	 * @throws ServiceException Caso ocorra erro de SQL, falha de conexão ou durante
+	 *                          o rollback em caso de exceção.
+	 */
+	public List<MediaSalarialDTO> listarMediaSalarialPorPerfil(Long idUsuarioLogado, LocalDate dataInicial,
+			LocalDate dataFinal) throws ServiceException {
+		try {
+			return usuarioDao.listarMediaSalarialPorPerfil(idUsuarioLogado, dataInicial, dataFinal);
+		} catch (DaoException e) {
+			throw new ServiceException(e);
+		}
+	}
+
+	/**
+	 * Retorna uma lista com a média salarial agrupada por perfil, considerando
+	 * apenas os usuários subordinados ao usuário logado (usuário pai).
+	 * <p>
+	 * A média é calculada com duas casas decimais usando a função
+	 * {@code ROUND(AVG(...), 2)} no banco de dados. O agrupamento é feito com base
+	 * no {@code perfil_id} de cada usuário.
+	 *
+	 * @param idUsuarioLogado ID do usuário logado (usuário pai), utilizado para
+	 *                        filtrar os registros.
+	 * @return Lista de {@link MediaSalarialDTO} contendo a média salarial por
+	 *         perfil dos usuários vinculados.
+	 * @throws ServiceException Caso ocorra erro de SQL, falha de conexão ou durante
+	 *                          o rollback em caso de exceção.
+	 */
+	public List<MediaSalarialDTO> listarMediaSalarialPorPerfil(Long idUsuarioLogado) throws ServiceException {
+		try {
+			return usuarioDao.listarMediaSalarialPorPerfil(idUsuarioLogado);
+		} catch (DaoException e) {
+			throw new ServiceException(e);
+		}
 	}
 
 }
