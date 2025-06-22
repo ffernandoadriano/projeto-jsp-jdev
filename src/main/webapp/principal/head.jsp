@@ -59,6 +59,7 @@
 <link rel="stylesheet"
 	href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 
+<link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/home-page-estilo.css">
 
 <style type="text/css">
 #btn-form-cadastro, #btn-form-cadastro-novo, #btn-form-cadastro-telefone
