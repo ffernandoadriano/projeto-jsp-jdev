@@ -14,8 +14,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import model.Telefone;
 import model.Usuario;
 import model.enums.TipoContato;
+import service.UsuarioSessionService;
 import session.NotificationSession;
-import session.UsuarioLogadoSession;
 import util.StringUtils;
 
 @WebServlet("/SalvarTelefoneServlet")
@@ -62,11 +62,13 @@ public class SalvarTelefoneServlet extends HttpServlet {
 			request.getRequestDispatcher("/principal/telefone.jsp").forward(request, response);
 			return;
 		}
+		
+		UsuarioSessionService usuarioSS = new UsuarioSessionService(request);
 
 		Telefone telefone = new Telefone();
 		telefone.setNumero(contato);
 		telefone.setUsuario(new Usuario(Long.parseLong(idUser)));
-		telefone.setUsuarioInclusao(new Usuario(UsuarioLogadoSession.getUsuarioLogado(request).getId()));
+		telefone.setUsuarioInclusao(new Usuario(usuarioSS.getUsuarioLogado().getId()));
 		telefone.setTipoContato(TipoContato.fromId(Integer.parseInt(tipo)));
 		telefone.setInfoAdicional(info);
 
