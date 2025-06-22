@@ -87,7 +87,6 @@ public class AutenticacaoFilter implements Filter {
 		 * estáticos (como estilos, scripts e imagens) mesmo que o usuário não esteja
 		 * logado.
 		 */
-		;
 
 		/* validar se está logado, senão, redireciona para tela de login */
 		if (usuario == null && !urlPublica) {
