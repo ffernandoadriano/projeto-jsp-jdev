@@ -59,8 +59,6 @@
 <link rel="stylesheet"
 	href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 
-<link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/home-page-estilo.css">
-
 <style type="text/css">
 #btn-form-cadastro, #btn-form-cadastro-novo, #btn-form-cadastro-telefone
 	{
@@ -110,6 +108,45 @@
 #graficoContainer {
 	display: none;
 }
+
+/* Page-estilo-home-inicio */
+#conteudo-projeto {
+	max-width: 960px;
+	margin: 40px auto;
+	background-color: #ffffff;
+	padding: 40px 30px;
+	border-radius: 12px;
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+h1, h2 {
+	text-align: center;
+	margin-bottom: 20px;
+}
+
+h3 {
+	margin-top: 30px;
+}
+
+/* Estilo exclusivo para as listas dentro do #conteudo-projeto */
+#conteudo-projeto ul {
+	list-style-type: disc;
+	padding-left: 40px;
+}
+
+pre {
+	background-color: #212529;
+	color: #f8f9fa;
+	padding: 15px;
+	border-radius: 10px;
+	overflow-x: auto;
+}
+
+code {
+	font-size: 0.9rem;
+}
+
+/* Page-estilo-home-fim */
 </style>
 
 <script type="text/javascript">
