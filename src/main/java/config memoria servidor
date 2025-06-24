@@ -8,6 +8,6 @@ export CATALINA_OPTS="$CATALINA_OPTS -XX:MaxPermSize=1512m" (Essa opção (MaxPe
 export CATALINA_OPTS="$CATALINA_OPTS -XX:MaxMetaspaceSize=512m (Java 8 ou superior, remova MaxPermSize - não incluir no arquivo essa obs)
 
 
-2 - salvar o arquivo como:  'setenv' dentro do apache-tomcat na pasta "bin" com a extensão '.sh' (obs: escolha a opção all types no tipo)
+2 - salvar o arquivo como:  'setev' dentro do apache-tomcat na pasta "bin" com a extensão '.sh' (obs: escolha a opção all types no tipo)
 
 
