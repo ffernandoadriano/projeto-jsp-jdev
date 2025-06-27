@@ -561,48 +561,28 @@ code {
 			}
 
 			function pesquisarCep(){
-				
-				const valor = document.getElementById("cep").value; 
+				const cep = document.getElementById("cep").value; 
 
-				//Nova variável "cep" somente com dígitos.
-		        const cep = valor.replace(/\D/g, '');
-
-		      //Verifica se campo cep possui valor informado.
-		        if (cep != "") {
-
-		            //Expressão regular para validar o CEP.
-		            var validacep = /^[0-9]{8}$/;
-
-		            //Valida o formato do CEP.
-		            if(validacep.test(cep)) {
-
-		                //Preenche os campos com "..." enquanto consulta webservice.
-		                 document.getElementById('rua').value = "...";
-			            document.getElementById('bairro').value = "...";
-			            document.getElementById('cidade').value = "...";
-			            document.getElementById('estado').value = "...";
-			            document.getElementById('uf').value = "...";
-		            
-		                //Cria um elemento javascript.
-		                var script = document.createElement('script');
-
-		                //Sincroniza com o callback.
-		                script.src = 'https://viacep.com.br/ws/'+ cep + '/json/?callback=pesquisarCallback';
-
-		                //Insere script no documento e carrega o conteúdo.
-		                document.body.appendChild(script);
-
-		            } 
-		            else {
-		                //cep é inválido.
-		                limpaFormularioCep();
-		                alert("Formato de CEP inválido.");
+				fetch("https://viacep.com.br/ws/" + cep + "/json/")
+		        .then(resposta => {
+		            if (!resposta.ok) {
+		                throw new Error("Erro na requisição");
 		            }
-		        } 
-		        else {
-		            //cep sem valor, limpa formulário.
+		            return resposta.json();
+		        })
+		        .then(dados => {
+		            if (dados.erro) {
+		                limpaFormularioCep();
+		                alert("CEP não encontrado.");
+		                return;
+		            }
+
+		            preencherCamposComDados(dados);
+		        })
+		        .catch(error => {
 		            limpaFormularioCep();
-		        }
+		            console.error(error);
+		        });
 			}
 
 			 function limpaFormularioCep() {
@@ -615,21 +595,13 @@ code {
 	            document.getElementById('uf').value=("");
 		    }
 
-			 function pesquisarCallback(conteudo) {
-		        if (!("erro" in conteudo)) {
-		            //Atualiza os campos com os valores.
-		            document.getElementById('rua').value=(conteudo.logradouro);
-		            document.getElementById('bairro').value=(conteudo.bairro);
-		            document.getElementById('cidade').value=(conteudo.localidade);
-		            document.getElementById('estado').value=(conteudo.estado);
-		            document.getElementById('uf').value=(conteudo.uf);
-		        } 
-		        else {
-		            //CEP não Encontrado.
-		            limpaFormularioCep();
-		            alert("CEP não encontrado.");
-		        }
-			 }
+			function preencherCamposComDados(conteudo) {
+			    document.getElementById('rua').value = conteudo.logradouro || "";
+			    document.getElementById('bairro').value = conteudo.bairro || "";
+			    document.getElementById('cidade').value = conteudo.localidade || "";
+			    document.getElementById('estado').value = conteudo.estado || ""; 
+			    document.getElementById('uf').value = conteudo.uf || "";
+			}
 
 			 function gerarRelatorioUsuario(tipoArquivo){
 
